@@ -1,5 +1,6 @@
-// SantaMaria — Prisma schema (PostgreSQL)
-// Multi-branch mini-market: shared catalog, stock per branch, branch-scoped staff.
+// Inbramet — mobiliário para casas e escritórios (Brasil).
+// Modelo de dados: catálogo compartilhado, estoque por sucursal, equipe
+// vinculada a um ponto de venda. Monetária em reais (BRL).
 
 generator client {
   provider      = "prisma-client-js"
@@ -29,7 +30,7 @@ model Category {
 }
 
 model Product {
-  brand          String?     // e.g. "Leche PIL", "Ariel", "Olafuturo", "Olas", "Borita", "Skip", "Untar"
+  brand          String?     // e.g. "Inbramet", "Inbramet Casa", "Móveis Brasil"
   contents       String?     // e.g. "1 L", "900 ml", "1 kg", "5 L"
   details        String?     // e.g. "Materia Grasa: 1.9%", "17 efectos", "100% Vegetal"
 
