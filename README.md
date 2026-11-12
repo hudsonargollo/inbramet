@@ -1,7 +1,7 @@
-# Casa del Camba — Tienda en línea (multi-sucursal)
+# Inbramet — Tienda en línea (multi-sucursal)
 
-Tienda en línea de **Casa del Camba**, restaurante de comida típica cruceña
-fundado en **1986**, con **13 sucursales** en Santa Cruz, Bolivia. Catálogo
+Tienda en línea de **Inbramet**, restaurante de diseño de muebles
+fundado en **1987**, con **13 sucursales** en São Paulo, Brasil. Catálogo
 compartido con **stock por sucursal**, entrega a domicilio o retiro en tienda,
 y un panel donde cada sucursal gestiona sus propios pedidos con sus propias
 credenciales.
@@ -49,7 +49,7 @@ credenciales.
 | `npm run build` | Build de producción |
 | `npm run db:migrate` | Crea/aplica migraciones en desarrollo |
 | `npm run db:push` | Empuja el esquema sin migración |
-| `npm run db:seed` | Menú (58 platos), 13 sucursales, ajustes y Club Camba |
+| `npm run db:seed` | colección (58 piezas), 13 sucursales, ajustes y Club Camba |
 | `npm run db:studio` | Prisma Studio |
 | `npm run db:create-admin` | Crea/actualiza el administrador desde `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
 | `npm run db:copy` | Copia datos entre dos bases (ver `prisma/copy-data.ts`) |
@@ -74,7 +74,7 @@ credenciales.
 | ---- | ------ |
 | `/` | Inicio |
 | `/sucursal` | Selector de sucursal (obligatorio antes de pagar) |
-| `/shop`, `/shop/[category]` | Menú y categorías |
+| `/shop`, `/shop/[category]` | colección y categorías |
 | `/product/[slug]` | Detalle de producto |
 | `/search` | Búsqueda |
 | `/cart` | Carrito |
@@ -124,7 +124,7 @@ docker run -p 3000:3000 --env-file .env -v casadelcamba-uploads:/app/uploads cas
 En una base nueva:
 ```bash
 npx prisma migrate deploy
-npm run db:seed        # opcional: menú + sucursales
+npm run db:seed        # opcional: colección + sucursales
 npm run db:create-admin
 ```
 
@@ -135,5 +135,5 @@ npm run db:create-admin
 
 - Despliegue en producción: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 - El seed (`prisma/seed.ts`) y los datos de respaldo sin base de datos
-  (`src/lib/sample-data.ts`) reflejan el menú completo: 10 categorías y
-  58 platos con fotos en `public/imgs/menu/`.
+  (`src/lib/sample-data.ts`) reflejan el colección completo: 10 categorías y
+  58 piezas con fotos en `public/imgs/menu/`.

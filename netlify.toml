@@ -1,4 +1,4 @@
-# Netlify configuration for the Casa del Camba Next.js store
+# Netlify configuration for the Inbramet Next.js store
 # Optional target. Production runs on the VPS — see docs/DEPLOY.md.
 
 [build]

@@ -1,6 +1,6 @@
-# inbramet — Brand Guidelines & Design System
+# Inbramet — Brand Guidelines & Design System
 
-> Living document. Version: 1.0 · Draft. Status: `docs/design-system.md`
+> Living document. Version: 1.0 · Draft. Status: `docs/design-system.md` — Inbramet v1.0
 
 ## 1 · Brand Overview
 
@@ -282,7 +282,7 @@ Text: 0.875rem, slate-600 (dark) / slate-500 (light)
    - `inbramet-icon.svg` (icon-only)
    - `favicon.svg`
    - `library/` (SVG icon set, patterns)
-2. Replace `casadelcamba` references in code/placeholders with `inbramet`.
+2. Replace `inbramet` references in code/placeholders with `inbramet`.
 3. Re-skin the global CSS tokens (`slate-950`, `gold`, etc.) in Tailwind.
 4. Build the homepage template to the design spec above.
 5. Product photo replacement from the uploaded images.
@@ -290,4 +290,4 @@ Text: 0.875rem, slate-600 (dark) / slate-500 (light)
 ---
 
 *Ingest ref: public/instagram.png, public/subheader.png (placed in repo, path recorded).*
-*design direction carried over from casadelcamba: glassmorphism-gold-on-slate, bento, rounded-3xl, medical-pastel → furniture adaptation.*
+*design direction carried over from inbramet: glassmorphism-gold-on-slate, bento, rounded-3xl, medical-pastel → furniture adaptation.*
