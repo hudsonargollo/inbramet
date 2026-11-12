@@ -79,15 +79,15 @@ async function initiatePayfast(input: PaymentInitInput): Promise<PaymentInitResu
     // 2) Build the hosted-checkout redirect (buyer completes payment there)
     const params = new URLSearchParams({
       MERCHANT_ID: process.env.PAYFAST_MERCHANT_ID!,
-      MERCHANT_NAME: "Casa del Camba",
+      MERCHANT_NAME: "Inbramet",
       TOKEN: token,
       PROCCODE: "00",
       TXNAMT: input.amount.toFixed(2),
       CUSTOMER_MOBILE_NO: input.customer.phone,
       CUSTOMER_EMAIL_ADDRESS: input.customer.email,
       SIGNATURE: randomBytes(12).toString("hex"),
-      VERSION: "Casa del Camba-1.0",
-      TXNDESC: `Casa del Camba order ${input.orderNumber}`,
+      VERSION: "Inbramet-1.0",
+      TXNDESC: `Inbramet order ${input.orderNumber}`,
       SUCCESS_URL: input.returnUrl,
       FAILURE_URL: input.cancelUrl,
       CHECKOUT_URL: input.notifyUrl,

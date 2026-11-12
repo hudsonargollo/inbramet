@@ -76,15 +76,15 @@ function shell(title: string, inner: string): string {
   <div style="background:#eef6e4;padding:24px;font-family:Arial,Helvetica,sans-serif">
     <div style="max-width:560px;margin:0 auto;background:#fbfcfe;border:1px solid #dcecc6;border-radius:12px;overflow:hidden">
       <div style="background:#4c8a23;padding:22px;text-align:center">
-        <div style="color:#ffcc04;font-size:24px;letter-spacing:6px;font-weight:700">Casa del Camba</div>
-        <div style="color:#d8e8c4;font-size:13px;margin-top:4px">Comida típica cruceña · Desde 1986</div>
+        <div style="color:#ffcc04;font-size:24px;letter-spacing:6px;font-weight:700">Inbramet</div>
+        <div style="color:#d8e8c4;font-size:13px;margin-top:4px">comida típica cruceña · Desde 1986</div>
       </div>
       <div style="padding:28px">
         <h1 style="margin:0 0 8px;color:#101820;font-size:22px">${title}</h1>
         ${inner}
       </div>
       <div style="background:#4c8a23;padding:16px;text-align:center;color:#d8e8c4;font-size:12px">
-        Casa del Camba · Santa Cruz, Bolivia
+        Inbramet · Santa Cruz, Bolivia
       </div>
     </div>
   </div>`;
@@ -130,7 +130,7 @@ export async function sendOrderEmails(o: OrderEmailData): Promise<void> {
     return;
   }
 
-  const from = process.env.MAIL_FROM || `Casa del Camba <${process.env.SMTP_USER}>`;
+  const from = process.env.MAIL_FROM || `Inbramet <${process.env.SMTP_USER}>`;
   const adminTo = await alertAddress();
 
   try {
@@ -139,7 +139,7 @@ export async function sendOrderEmails(o: OrderEmailData): Promise<void> {
       transport.sendMail({
         from,
         to: o.email,
-        subject: `Tu pedido en Casa del Camba ${o.orderNumber}`,
+        subject: `Tu pedido en Inbramet ${o.orderNumber}`,
         html: customerHtml(o),
       }),
       transport.sendMail({
@@ -160,12 +160,12 @@ export async function sendPasswordResetEmail(p: { to: string; name: string; url:
     console.warn("[email] SMTP not configured — password reset email not sent.");
     return;
   }
-  const from = process.env.MAIL_FROM || `Casa del Camba <${process.env.SMTP_USER}>`;
+  const from = process.env.MAIL_FROM || `Inbramet <${process.env.SMTP_USER}>`;
   try {
     await getTransport().sendMail({
       from,
       to: p.to,
-      subject: "Restablece tu contraseña de Casa del Camba",
+      subject: "Restablece tu contraseña de Inbramet",
       html: shell(
         "Restablece tu contraseña",
         `<p style="color:#1c2b20;font-size:14px">Hola ${escape(p.name)}, recibimos una solicitud para restablecer tu contraseña.</p>
@@ -188,7 +188,7 @@ export async function sendContactNotification(m: {
   topic?: string;
 }): Promise<void> {
   if (!emailConfigured()) return; // message is still saved in the admin "Messages" page
-  const from = process.env.MAIL_FROM || `Casa del Camba <${process.env.SMTP_USER}>`;
+  const from = process.env.MAIL_FROM || `Inbramet <${process.env.SMTP_USER}>`;
   const to = await alertAddress();
   try {
     await getTransport().sendMail({
@@ -226,24 +226,24 @@ export async function sendOtpEmail(
     console.error("[email] SMTP not configured — cannot send verification code");
     return { ok: false, error: "No podemos enviar correos de verificación ahora. Intenta más tarde o contáctanos." };
   }
-  const from = process.env.MAIL_FROM || `Casa del Camba <${process.env.SMTP_USER}>`;
+  const from = process.env.MAIL_FROM || `Inbramet <${process.env.SMTP_USER}>`;
   const spaced = code.split("").join(" ");
   const title = purpose === "register" ? "Confirma tu correo" : "Verifica tu correo";
   try {
     await getTransport().sendMail({
       from,
       to,
-      subject: `${code} es tu código de verificación de Casa del Camba`,
-      text: `Tu código de verificación de Casa del Camba es ${code}. Vence en 10 minutos. Si no lo solicitaste, puedes ignorar este correo.`,
+      subject: `${code} es tu código de verificación de Inbramet`,
+      text: `Tu código de verificación de Inbramet es ${code}. Vence en 10 minutos. Si no lo solicitaste, puedes ignorar este correo.`,
       html: shell(
         title,
         `<p style="color:#1c2b20;font-size:14px">Usa este código para ${
-          purpose === "register" ? "terminar de crear tu cuenta de Casa del Camba" : "verificar tu correo electrónico"
+          purpose === "register" ? "terminar de crear tu cuenta de Inbramet" : "verificar tu correo electrónico"
         }:</p>
          <p style="margin:22px 0;text-align:center">
            <span style="display:inline-block;background:#f6f3e8;border:1px solid #ef7d06;border-radius:10px;padding:14px 22px;font-size:30px;font-weight:700;letter-spacing:8px;color:#4c8a23;font-family:'Courier New',monospace">${escape(spaced)}</span>
          </p>
-         <p style="color:#5b6b7c;font-size:13px">Este código vence en <strong>10 minutos</strong>. No lo compartas con nadie — Casa del Camba nunca te lo pedirá por teléfono ni WhatsApp.</p>
+         <p style="color:#5b6b7c;font-size:13px">Este código vence en <strong>10 minutos</strong>. No lo compartas con nadie — Inbramet nunca te lo pedirá por teléfono ni WhatsApp.</p>
          <p style="color:#5b6b7c;font-size:13px">Si no intentaste registrarte, puedes ignorar este correo.</p>`
       ),
     });

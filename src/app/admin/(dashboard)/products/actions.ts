@@ -104,7 +104,7 @@ async function createNewProduct(formData: FormData, isCombo: boolean): Promise<P
         ? (await tx.category.upsert({
             where: { slug: "combos" },
             update: {},
-            create: { name: "Combos", slug: "combos", description: "Combos creados por Casa del Camba." },
+            create: { name: "Combos", slug: "combos", description: "Combos creados por Inbramet." },
           })).id
         : parsed.data.categoryId;
       const product = await tx.product.create({ data: { ...toData(parsed.data), categoryId } });

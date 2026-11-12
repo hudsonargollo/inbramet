@@ -62,7 +62,7 @@ export async function GET(request: Request) {
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="Casa del Camba-orders-${status?.toLowerCase() || "all"}-${stamp}.csv"`,
+      "Content-Disposition": `attachment; filename="Inbramet-orders-${status?.toLowerCase() || "all"}-${stamp}.csv"`,
       "Cache-Control": "no-store",
     },
   });

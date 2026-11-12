@@ -24,8 +24,8 @@ credenciales.
 2. **Configurar la base de datos**
    Copia `.env.example` a `.env` y ajusta las conexiones:
    ```env
-   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/casadelcamba?schema=public"
-   DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/casadelcamba?schema=public"
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/inbramet?schema=public"
+   DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/inbramet?schema=public"
    ```
 
 3. **Aplicar el esquema y cargar datos**
@@ -112,13 +112,13 @@ de intentos.
 
 **VPS (systemd + nginx):** el build genera un servidor standalone
 (`output: "standalone"`). `scripts/deploy.sh` compila, sincroniza a
-`/var/www/casadelcamba` y reinicia `casadelcamba.service`. Usa **una sola instancia**
+`/var/www/inbramet` y reinicia `inbramet.service`. Usa **una sola instancia**
 de larga duración (las alertas de pedidos y el rate limit son en memoria).
 
 **Docker:**
 ```bash
-docker build -t casadelcamba .
-docker run -p 3000:3000 --env-file .env -v casadelcamba-uploads:/app/uploads casadelcamba
+docker build -t inbramet .
+docker run -p 3000:3000 --env-file .env -v inbramet-uploads:/app/uploads inbramet
 ```
 
 En una base nueva:

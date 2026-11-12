@@ -6,7 +6,7 @@ import { lookupOrder } from "./order-lookup";
 import { formatPrice, discountPercent } from "./format";
 import type { ProductView } from "./types";
 
-// Casa del Camba support assistant.
+// Inbramet support assistant.
 //  - AI mode (ANTHROPIC_API_KEY set): Claude answers any customer question,
 //    grounded in the live catalog + store settings + policies, with a
 //    track_order tool for real order status.
@@ -70,7 +70,7 @@ async function storeKnowledge(): Promise<{
   for (const p of products) counts.set(p.category.slug, (counts.get(p.category.slug) ?? 0) + 1);
 
   const text = `# Tienda
-Casa del Camba — comida típica cruceña desde 1986 en nuestras sucursales de Santa Cruz, Bolivia: majao de pato, picantes, silpancho, empanadas de keperí, parrilla, sopas, postres y bebidas. Precios en Bs (BOB).
+Inbramet — comida típica cruceña desde 1986 en nuestras sucursales de Santa Cruz, Bolivia: majao, picantes, silpancho, empanadas de keperí, parrilla, sopas, postres y bebidas. Precios en Bs (BOB).
 Páginas del sitio: Menú /shop · Categorías ${categories.map((x) => `/shop/${x.slug}`).join(", ")} · Sucursales /sucursal · Pedidos para eventos /custom · Seguimiento de pedido /account/orders · Delivery y devoluciones /shipping · Ingredientes y cuidado /care · Preguntas frecuentes /faq · Contacto /contact · Cuenta /account (registro /register).
 
 # Categorías
@@ -114,7 +114,7 @@ ${products.slice(0, 200).map(productLine).join("\n")}`;
   return { text, settings, products, categories };
 }
 
-const INSTRUCTIONS = `You are the online support assistant for Casa del Camba, a traditional cruceño restaurant with branches in Santa Cruz, Bolivia, serving typical dishes (majao, picantes, silpancho), empanadas, parrilla, soups, desserts and cold drinks since 1986. You chat with customers on the website. The shop delivers by moto in Santa Cruz and offers pickup at any branch; "delivery" always means that local route unless the store information says otherwise.
+const INSTRUCTIONS = `You are the online support assistant for Inbramet, a traditional cruceño restaurant with branches in Santa Cruz, Bolivia, serving typical dishes (majao, picantes, silpancho), empanadas, parrilla, soups, desserts and cold drinks since 1986. You chat with customers on the website. The shop delivers by moto in Santa Cruz and offers pickup at any branch; "delivery" always means that local route unless the store information says otherwise.
 
 How to answer:
 - Answer only from the store information and catalog below, and from track_order results. If something isn't covered (e.g. a policy detail, a product that isn't listed, delivery outside Santa Cruz), say you're not sure and point them to the team (WhatsApp / contact page) instead of guessing.
@@ -257,7 +257,7 @@ function basicReply(
   if (has("rastre", "seguimiento", "estado del pedido", "dónde está mi pedido", "donde esta mi pedido", "track", "order status"))
     return trackAnswer;
   if (has("cod", "contra entrega", "pago", "pagar", "efectivo", "tarjeta", "cash", "payment"))
-    return "Puedes pagar contra entrega al recibir tu pedido en tu sucursal Casa del Camba. El pago en línea con tarjeta aparece al finalizar tu compra cuando está habilitado.";
+    return "Puedes pagar contra entrega al recibir tu pedido en tu sucursal Inbramet. El pago en línea con tarjeta aparece al finalizar tu compra cuando está habilitado.";
   if (has("devol", "cambio", "reembolso", "return", "refund"))
     return `Si tu pedido llegó incompleto o en mal estado, escríbenos por ${contact} con tu número de pedido. Revisaremos tu caso con cuidado para buscar la solución adecuada lo antes posible.`;
   if (has("pedido especial", "evento", "cumpleaños", "cumpleanos", "por mayor", "volumen", "custom", "personalizado", "empresa", "negocio"))

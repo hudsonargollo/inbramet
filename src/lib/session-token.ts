@@ -22,11 +22,11 @@ function baseSecret(): string {
 
 /** A key derived from AUTH_SECRET for a given purpose (e.g. hashing OTP codes). */
 export function derivedKey(label: string): Buffer {
-  return createHmac("sha256", baseSecret()).update(`CasaDelCamba:${label}`).digest();
+  return createHmac("sha256", baseSecret()).update(`Inbramet:${label}`).digest();
 }
 
 function sign(kind: TokenKind, payload: string): string {
-  const key = createHmac("sha256", baseSecret()).update(`CasaDelCamba:${kind}`).digest();
+  const key = createHmac("sha256", baseSecret()).update(`Inbramet:${kind}`).digest();
   return createHmac("sha256", key).update(payload).digest("base64url");
 }
 
