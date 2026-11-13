@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+import { dbConfigured, prisma } from "./prisma";
 
 export type OrderLookupItem = { name: string; quantity: number; price: number };
 
@@ -19,16 +19,15 @@ export type OrderLookupResult =
     }
   | { ok: false; reason: "not-found" | "db-down" };
 
-// Looks up an order by its number + the email used at checkout.
 export async function lookupOrder(
   orderNumber: string,
   email: string
 ): Promise<OrderLookupResult> {
+  if (!dbConfigured) return { ok: false, reason: "db-down" };
   try {
     const o = await prisma.order.findFirst({
       where: {
         orderNumber: orderNumber.trim(),
-        // Older orders stored the email as typed — match case-insensitively.
         email: { equals: email.trim(), mode: "insensitive" },
       },
       include: { items: true },

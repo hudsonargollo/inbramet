@@ -1,12 +1,9 @@
 import { cookies } from "next/headers";
 import { cache } from "react";
-import { prisma } from "./prisma";
+import { dbConfigured, prisma } from "./prisma";
 import type { StoreSettings } from "./settings-shared";
 
-// The branch a shopper picked is kept in a long-lived cookie. Browsing works
-// without one (the storefront shows availability across the chain); it becomes
-// mandatory the moment an order is started.
-export const BRANCH_COOKIE = "cc_branch";
+export const BRANCH_COOKIE = "inbramet_branch";
 
 export type BranchView = {
   id: string;
@@ -70,8 +67,8 @@ function toView(b: {
   };
 }
 
-/** Active branches, in display order. Never throws (storefront must render). */
 export const getBranches = cache(async (): Promise<BranchView[]> => {
+  if (!dbConfigured) return [];
   try {
     const rows = await prisma.branch.findMany({
       where: { active: true },
@@ -88,8 +85,8 @@ export const getBranchBySlug = cache(async (slug: string): Promise<BranchView | 
   return branches.find((b) => b.slug === slug) ?? null;
 });
 
-/** Any branch by id (including inactive ones), for the admin panel. */
 export const getBranchById = cache(async (id: string): Promise<BranchView | null> => {
+  if (!dbConfigured) return null;
   try {
     const b = await prisma.branch.findUnique({ where: { id } });
     return b ? toView(b) : null;
@@ -98,8 +95,8 @@ export const getBranchById = cache(async (id: string): Promise<BranchView | null
   }
 });
 
-/** Branch picked by the shopper, or null when none/unavailable. */
 export const getSelectedBranch = cache(async (): Promise<BranchView | null> => {
+  if (!dbConfigured) return null;
   const store = await cookies();
   const slug = store.get(BRANCH_COOKIE)?.value;
   if (!slug) return null;

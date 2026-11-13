@@ -33,8 +33,10 @@
   /* Fonts (wired via next/font in layout.tsx) */
   --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
 
-  /* ---- Semantic utilities used across the code ---- */
+/* ---- Semantic utilities used across the code ---- */
+@layer utilities {
   .bg-cream { background-color: var(--color-cream); }
   .bg-cream-soft { background-color: var(--color-cream-soft); }
   .bg-panel { background-color: var(--color-panel); }
@@ -73,10 +75,10 @@
   --color-accent-strong: #F0B400;
   --color-gold: #E6FF57;
   --color-ink: #F8FAF6;
-  --color-cream: #10160b;
-  --color-cream-soft: #151c0f;
-  --color-sand: #1c2613;
-  --color-surface: #161e10;
+  --color-cream: #0f172a;
+  --color-cream-soft: #1e293b;
+  --color-sand: #334155;
+  --color-surface: #1e293b;
   --color-light: #F8FAF6;
   --color-muted: #94a3b8;
   --color-muted-dark: #cbd5e1;
@@ -150,7 +152,7 @@ p {
 
 /* Brand gradient text utility */
 .brand-text {
-  background: linear-gradient(120deg, var(--color-brand), #76b72d 55%, var(--color-accent-strong));
+  background: linear-gradient(120deg, var(--color-brand), #334155 55%, var(--color-accent-strong));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -297,7 +299,7 @@ p {
   border-radius: 9999px;
   border: 2px solid var(--color-accent-strong);
   background: radial-gradient(circle, var(--color-accent-soft) 0 28%, var(--color-surface) 32%);
-  box-shadow: 0 3px 10px rgba(18, 53, 31, 0.28);
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.28);
   cursor: grab;
   transition: transform 0.15s ease;
 }
@@ -308,7 +310,7 @@ p {
   border-radius: 9999px;
   border: 2px solid var(--color-accent-strong);
   background: radial-gradient(circle, var(--color-accent-soft) 0 28%, var(--color-surface) 32%);
-  box-shadow: 0 3px 10px rgba(18, 53, 31, 0.28);
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.28);
   cursor: grab;
 }
 .range-dual input[type="range"]:active::-webkit-slider-thumb {

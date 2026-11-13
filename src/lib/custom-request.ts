@@ -1,21 +1,15 @@
-// Options for the custom-order request form (shared by the form + server action).
-export const PIECE_TYPES = ["Platos típicos", "Parrilla", "Empanadas", "Postres", "Bebidas", "Pedido para evento", "Otro"] as const;
-export const FINISHES = ["Individual", "Para 2 personas", "Para 4 personas", "Bandeja para compartir", "No estoy seguro"] as const;
-export const BUDGETS = ["Menos de Bs 100", "Bs 100 – 300", "Bs 300 – 600", "Bs 600 o más", "No estoy seguro"] as const;
+// Opções para o formulário de pedido sob medida / corporativo.
+export const PIECE_TYPES = ["Mesas", "Cadeiras", "Bancos", "Banquetas", "Conjuntos de jantar", "Projeto corporativo", "Outro"] as const;
+export const FINISHES = ["Aço preto fosco", "Madeira maciça", "Policarbonato / colorido", "Tampo estampado", "Ainda não defini"] as const;
+export const BUDGETS = ["Até R$ 500", "R$ 500 – R$ 1.500", "R$ 1.500 – R$ 3.500", "Acima de R$ 3.500", "Ainda não defini"] as const;
 
-// Reference photos attached to a custom-order request.
 export const MAX_REFERENCE_PHOTOS = 3;
-/** Per photo, after the browser shrinks it (originals it can't shrink must fit too). */
 export const MAX_REFERENCE_BYTES = 3 * 1024 * 1024;
-/** Heading the server writes above the photo links in the saved message. */
-export const REFERENCE_PHOTOS_HEADING = "Fotos de referencia:";
+export const REFERENCE_PHOTOS_HEADING = "Fotos de referência:";
 
-// Only links to our own reference uploads are treated as photos (a customer
-// could type the heading into their description).
 const OWN_REFERENCE_URL =
   /^(\/uploads\/references\/[a-z0-9-]+\.(jpg|png|webp|avif)|https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\/references\/[a-z0-9-]+\.(jpg|png|webp|avif))$/;
 
-/** Splits a saved custom-request message into its text and reference-photo URLs. */
 export function splitReferencePhotos(message: string): { text: string; photos: string[] } {
   const at = message.lastIndexOf(`\n${REFERENCE_PHOTOS_HEADING}\n`);
   if (at === -1) return { text: message, photos: [] };

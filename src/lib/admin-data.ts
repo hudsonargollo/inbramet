@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+import { dbConfigured, prisma } from "./prisma";
 import { getStoreSettings } from "./settings";
 import { ORDER_STATUSES } from "./order-status";
 
@@ -15,6 +15,12 @@ export type AdminStats = {
 };
 
 export async function getAdminStats(branchId?: string | null): Promise<AdminStats> {
+  if (!dbConfigured) {
+    return {
+      dbConnected: false, products: 0, orders: 0, pendingOrders: 0, revenue: 0,
+      customers: 0, lowStock: 0, monthOrders: 0, monthRevenue: 0,
+    };
+  }
   try {
     const monthStart = new Date();
     monthStart.setDate(1);
@@ -73,6 +79,7 @@ export async function getAdminCustomers(branchId?: string | null): Promise<{
   dbConnected: boolean;
   customers: AdminCustomerRow[];
 }> {
+  if (!dbConfigured) return { dbConnected: false, customers: [] };
   try {
     const rows = await prisma.customer.findMany({
       where: branchId ? { orders: { some: { branchId } } } : undefined,
@@ -110,6 +117,7 @@ export async function getAdminCategories(): Promise<{
   dbConnected: boolean;
   categories: AdminCategoryRow[];
 }> {
+  if (!dbConfigured) return { dbConnected: false, categories: [] };
   try {
     const rows = await prisma.category.findMany({
       include: { _count: { select: { products: true } } },
@@ -145,6 +153,7 @@ export async function getAdminProducts(branchId?: string | null): Promise<{
   dbConnected: boolean;
   products: AdminProduct[];
 }> {
+  if (!dbConfigured) return { dbConnected: false, products: [] };
   try {
     const rows = await prisma.product.findMany({
       include: {
@@ -187,10 +196,11 @@ export type AdminInventoryRow = {
   catalogActive: boolean;
 };
 
-/** Per-branch stock for every active product in the shared catalog. */export async function getAdminInventory(
+export async function getAdminInventory(
   branchId: string,
   q?: string
 ): Promise<{ dbConnected: boolean; rows: AdminInventoryRow[] }> {
+  if (!dbConfigured) return { dbConnected: false, rows: [] };
   if (!branchId) return { dbConnected: true, rows: [] };
   try {
     const where = q
@@ -251,6 +261,7 @@ export type AdminProductDetail = {
 };
 
 export async function getAdminProduct(id: string): Promise<AdminProductDetail | null> {
+  if (!dbConfigured) return null;
   try {
     const p = await prisma.product.findUnique({ where: { id } });
     if (!p) return null;
@@ -275,6 +286,7 @@ export async function getAdminProduct(id: string): Promise<AdminProductDetail | 
 }
 
 export async function getCategoriesForSelect(): Promise<{ id: string; name: string; slug: string }[]> {
+  if (!dbConfigured) return [];
   try {
     return await prisma.category.findMany({
       select: { id: true, name: true, slug: true },
@@ -303,6 +315,7 @@ export async function getAdminOrders(branchId?: string | null): Promise<{
   dbConnected: boolean;
   orders: AdminOrderRow[];
 }> {
+  if (!dbConfigured) return { dbConnected: false, orders: [] };
   try {
     const rows = await prisma.order.findMany({
       where: branchId ? { branchId } : undefined,
@@ -334,6 +347,7 @@ export async function getAdminOrders(branchId?: string | null): Promise<{
 }
 
 export async function getAdminOrder(id: string, branchId?: string | null) {
+  if (!dbConfigured) return null;
   try {
     const o = await prisma.order.findUnique({
       where: { id },
@@ -426,7 +440,7 @@ function buildDay(rows: Row[]): SalesRange {
         ord++;
       }
     points.push({
-      label: day.toLocaleDateString("es-BO", { day: "numeric", month: "short" }),
+      label: day.toLocaleDateString("pt-BR", { day: "numeric", month: "short" }),
       revenue: rev,
       orders: ord,
     });
@@ -460,7 +474,7 @@ function buildMonth(rows: Row[]): SalesRange {
         ord++;
       }
     points.push({
-      label: m.toLocaleDateString("es-BO", { month: "short" }),
+      label: m.toLocaleDateString("pt-BR", { month: "short" }),
       revenue: rev,
       orders: ord,
     });
@@ -514,6 +528,7 @@ export async function getSalesDaily(
   days = 365,
   branchId?: string | null
 ): Promise<{ dbConnected: boolean; points: DailyPoint[] }> {
+  if (!dbConfigured) return { dbConnected: false, points: [] };
   try {
     const start = new Date();
     start.setHours(0, 0, 0, 0);
@@ -557,6 +572,14 @@ export type StorePerformance = {
 };
 
 export async function getStorePerformance(branchId?: string | null): Promise<StorePerformance> {
+  if (!dbConfigured) {
+    return {
+      dbConnected: false,
+      fulfillmentPct: 0, delivered: 0, totalOrders: 0,
+      paymentPct: 0, paid: 0,
+      stockPct: 0, inStock: 0, totalProducts: 0,
+    };
+  }
   try {
     const scope = branchId ? { branchId } : {};
     const low = (await getStoreSettings()).inventory.lowStockThreshold;
@@ -590,6 +613,17 @@ export async function getStorePerformance(branchId?: string | null): Promise<Sto
 }
 
 export async function getSalesInsights(branchId?: string | null): Promise<SalesInsights> {
+  if (!dbConfigured) {
+    const empty: SalesRange = {
+      points: [],
+      totalRevenue: 0,
+      totalOrders: 0,
+      avgOrder: 0,
+      changePct: null,
+      peak: 0,
+    };
+    return { dbConnected: false, day: empty, month: empty, year: empty };
+  }
   try {
     const orders = await prisma.order.findMany({
       where: { status: { not: "CANCELLED" }, ...(branchId ? { branchId } : {}) },
@@ -615,8 +649,6 @@ export async function getSalesInsights(branchId?: string | null): Promise<SalesI
   }
 }
 
-/* ─────────────────────  Dashboard breakdowns  ───────────────────── */
-
 export type TopProduct = {
   productId: string;
   name: string;
@@ -632,6 +664,7 @@ export async function getSalesBreakdown(branchId?: string | null): Promise<{
   topProducts: TopProduct[];
   categories: CategorySales[];
 }> {
+  if (!dbConfigured) return { dbConnected: false, topProducts: [], categories: [] };
   try {
     const items = await prisma.orderItem.findMany({
       where: {
@@ -664,7 +697,7 @@ export async function getSalesBreakdown(branchId?: string | null): Promise<{
       cur.units += it.quantity;
       cur.revenue += rev;
       prodMap.set(it.productId, cur);
-      const cat = it.product?.category?.name ?? "Otros";
+      const cat = it.product?.category?.name ?? "Outros";
       catMap.set(cat, (catMap.get(cat) ?? 0) + rev);
     }
     const topProducts = [...prodMap.values()].sort((a, b) => b.revenue - a.revenue).slice(0, 5);
@@ -689,6 +722,7 @@ export async function getOrderStatusBreakdown(branchId?: string | null): Promise
   counts: StatusCount[];
   total: number;
 }> {
+  if (!dbConfigured) return { dbConnected: false, counts: [], total: 0 };
   try {
     const grouped = await prisma.order.groupBy({
       by: ["status"],
@@ -717,6 +751,7 @@ export async function getPaymentBreakdown(branchId?: string | null): Promise<{
   methods: PaymentSlice[];
   total: number;
 }> {
+  if (!dbConfigured) return { dbConnected: false, methods: [], total: 0 };
   try {
     const grouped = await prisma.order.groupBy({
       by: ["paymentMethod"],
@@ -726,8 +761,8 @@ export async function getPaymentBreakdown(branchId?: string | null): Promise<{
     });
     const totalRev = grouped.reduce((s, g) => s + Number(g._sum.total ?? 0), 0);
     const LABELS: Record<string, string> = {
-      COD: "Pago contra entrega",
-      PAYFAST: "Tarjeta (PayFast)",
+      COD: "Pagamento na entrega",
+      PAYFAST: "Cartão (PayFast)",
       SAFEPAY: "Safepay",
     };
     const methods = grouped
@@ -752,6 +787,7 @@ export async function getRecentCustomers(limit = 5, branchId?: string | null): P
   dbConnected: boolean;
   customers: AdminCustomerRow[];
 }> {
+  if (!dbConfigured) return { dbConnected: false, customers: [] };
   try {
     const rows = await prisma.customer.findMany({
       where: branchId ? { orders: { some: { branchId } } } : undefined,
@@ -779,8 +815,6 @@ export async function getRecentCustomers(limit = 5, branchId?: string | null): P
     return { dbConnected: false, customers: [] };
   }
 }
-
-/* ─────────────────────────  Branches  ───────────────────────── */
 
 export type AdminBranchRow = {
   id: string;
@@ -845,6 +879,7 @@ export async function getAdminBranches(): Promise<{
   dbConnected: boolean;
   branches: AdminBranchRow[];
 }> {
+  if (!dbConfigured) return { dbConnected: false, branches: [] };
   try {
     const rows = await prisma.branch.findMany({
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -857,6 +892,7 @@ export async function getAdminBranches(): Promise<{
 }
 
 export async function getAdminBranch(id: string): Promise<AdminBranchRow | null> {
+  if (!dbConfigured) return null;
   try {
     const b = await prisma.branch.findUnique({
       where: { id },

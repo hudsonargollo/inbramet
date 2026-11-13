@@ -65,7 +65,7 @@ async function register(_prev: AuthState, formData: FormData): Promise<AuthState
   try {
     if (await prisma.customer.findUnique({ where: { email: e }, select: { id: true } })) {
       return {
-        error: "Ya existe una cuenta con este correo. Inicia sesión o restablece tu contraseña.",
+        error: "Já existe uma conta com este e-mail. Faça login ou redefina sua senha.",
         fields: ["email"],
       };
     }
@@ -81,9 +81,9 @@ async function register(_prev: AuthState, formData: FormData): Promise<AuthState
   } catch (err) {
     const kind = logDbError("register", err);
     if (kind === "unavailable" || kind === "not-migrated" || kind === "engine") {
-      return { error: "Servicio no disponible. Inténtalo de nuevo en un momento." };
+      return { error: "Serviço indisponível. Tente novamente em instantes." };
     }
-    return { error: "No pudimos iniciar el registro. Inténtalo de nuevo." };
+    return { error: "Não foi possível iniciar o cadastro. Tente novamente." };
   }
 
   await setPending(e, "register");
@@ -92,7 +92,7 @@ async function register(_prev: AuthState, formData: FormData): Promise<AuthState
 
 export type OtpState = { ok?: boolean; error?: string; message?: string; retryAfter?: number };
 
-const CODE_MSG = { expired: "Tu registro expiró. Vuelve a empezar." };
+const CODE_MSG = { expired: "Seu cadastro expirou. Comece novamente." };
 
 // Step 2 of sign-up: confirm the code, then create the (verified) account.
 export async function verifyRegistrationAction(_prev: OtpState, formData: FormData): Promise<OtpState> {
@@ -115,8 +115,8 @@ export async function verifyRegistrationAction(_prev: OtpState, formData: FormDa
   } catch (err) {
     if (isRedirect(err)) throw err;
     const kind = logDbError("register-verify", err);
-    if (kind === "duplicate") return { error: "Ya existe una cuenta con este correo. Inicia sesión." };
-    return { error: "Servicio no disponible. Inténtalo de nuevo en un momento." };
+    if (kind === "duplicate") return { error: "Já existe uma conta com este e-mail. Faça login." };
+    return { error: "Serviço indisponível. Tente novamente em instantes." };
   }
 }
 
@@ -129,9 +129,9 @@ export async function resendRegistrationCode(): Promise<OtpState> {
     if (!r.ok) return { error: r.error, retryAfter: r.retryAfter };
   } catch (err) {
     logDbError("register-resend", err);
-    return { error: "Servicio no disponible. Inténtalo de nuevo en un momento." };
+    return { error: "Serviço indisponível. Tente novamente em instantes." };
   }
-  return { ok: true, message: "Te enviamos un nuevo código.", retryAfter: RESEND_COOLDOWN_S };
+  return { ok: true, message: "Enviamos um novo código para você.", retryAfter: RESEND_COOLDOWN_S };
 }
 
 // ---------- Existing customers: verify email (accounts made before OTP / at checkout) ----------
@@ -159,7 +159,7 @@ export async function verifyEmailAction(_prev: OtpState, formData: FormData): Pr
   const session = await requireCustomer("/account");
   const pending = await getPending("verify");
   if (!pending || pending.email !== session.email.toLowerCase())
-    return { error: "La verificación expiró. Vuelve a empezar desde tu cuenta." };
+    return { error: "A verificação expirou. Comece novamente pela sua conta." };
   try {
     const r = await verifyCode(pending.email, "verify", String(formData.get("code") ?? ""));
     if (!r.ok) return { error: r.error };
@@ -169,7 +169,7 @@ export async function verifyEmailAction(_prev: OtpState, formData: FormData): Pr
   } catch (err) {
     if (isRedirect(err)) throw err;
     logDbError("verify-email", err);
-    return { error: "Servicio no disponible. Inténtalo de nuevo en un momento." };
+    return { error: "Serviço indisponível. Tente novamente em instantes." };
   }
 }
 
@@ -178,15 +178,15 @@ export async function resendEmailVerification(): Promise<OtpState> {
   const session = await requireCustomer("/account");
   const pending = await getPending("verify");
   if (!pending || pending.email !== session.email.toLowerCase())
-    return { error: "La verificación expiró. Vuelve a empezar desde tu cuenta." };
+    return { error: "A verificação expirou. Comece novamente pela sua conta." };
   try {
     const r = await issueCode(pending.email, "verify");
     if (!r.ok) return { error: r.error, retryAfter: r.retryAfter };
   } catch (err) {
     logDbError("verify-resend", err);
-    return { error: "Servicio no disponible. Inténtalo de nuevo en un momento." };
+    return { error: "Serviço indisponível. Tente novamente em instantes." };
   }
-  return { ok: true, message: "Te enviamos un nuevo código.", retryAfter: RESEND_COOLDOWN_S };
+  return { ok: true, message: "Enviamos um novo código para você.", retryAfter: RESEND_COOLDOWN_S };
 }
 
 // next/navigation's redirect() works by throwing — let it through our catch blocks.
@@ -203,7 +203,7 @@ async function login(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   if (!email || !password) {
-    return { error: "Ingresa tu correo y contraseña.", fields: [!email ? "email" : "password"] };
+    return { error: "Informe seu e-mail e senha.", fields: [!email ? "email" : "password"] };
   }
   if (emailError(email)) return { error: emailError(email)!, fields: ["email"] };
 
@@ -217,12 +217,12 @@ async function login(_prev: AuthState, formData: FormData): Promise<AuthState> {
     customer = await prisma.customer.findUnique({ where: { email } });
   } catch (err) {
     logDbError("login", err);
-    return { error: "Servicio no disponible. Inténtalo de nuevo en un momento." };
+    return { error: "Serviço indisponível. Tente novamente em instantes." };
   }
 
   if (!customer || !verifyPassword(password, customer.passwordHash)) {
     // Don't reveal which one was wrong — mark both.
-    return { error: "Correo o contraseña incorrectos. Inténtalo de nuevo.", fields: ["email", "password"] };
+    return { error: "E-mail ou senha incorretos. Tente novamente.", fields: ["email", "password"] };
   }
 
   await startCustomerSession({ id: customer.id, email: customer.email, name: customer.name });
@@ -260,7 +260,7 @@ async function requestReset(_prev: AuthState, formData: FormData): Promise<AuthS
   // Same answer whether or not the account exists (no account enumeration).
   const done: AuthState = {
     ok: true,
-    message: "Si existe una cuenta con ese correo, te enviamos un enlace para restablecer tu contraseña.",
+    message: "Se existir uma conta com este e-mail, enviaremos um link para redefinir sua senha.",
   };
 
   try {
@@ -291,7 +291,7 @@ export async function resetPasswordAction(_prev: AuthState, formData: FormData):
   if (weak) return { error: weak, fields: ["password"] };
 
   const data = readToken<ResetToken>("reset", token);
-  const invalid = { error: "Este enlace no es válido o expiró. Solicita uno nuevo." };
+  const invalid = { error: "Este link é inválido ou expirou. Solicite um novo." };
   if (!data) return invalid;
 
   let customer;
@@ -303,7 +303,7 @@ export async function resetPasswordAction(_prev: AuthState, formData: FormData):
       data: { passwordHash: hashPassword(password) },
     });
   } catch {
-    return { error: "Servicio no disponible. Inténtalo de nuevo en un momento." };
+    return { error: "Serviço indisponível. Tente novamente em instantes." };
   }
 
   await startCustomerSession({ id: customer.id, email: customer.email, name: customer.name });

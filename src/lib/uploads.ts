@@ -37,84 +37,44 @@ export function sniffImage(buf: Buffer): ImageExt | null {
 export const SAFE_UPLOAD_NAME = /^[a-z0-9-]{1,80}\.(jpg|png|webp|avif)$/;
 
 // ---------- Storage backends ----------
-//  - Vercel: Vercel Blob (needs a Blob store connected to the project). Newer
-//    connections authenticate with OIDC (BLOB_STORE_ID + Vercel's OIDC token);
-//    older ones set BLOB_READ_WRITE_TOKEN. @vercel/blob picks whichever exists.
-//    Files get a public CDN URL that is stored as-is.
-//  - Netlify: Netlify Blobs (store "product-uploads"), served by /uploads/products/[file].
-//  - VPS / local: disk (UPLOAD_DIR), served by /uploads/products/[file].
+//  - Local / VPS: disk (UPLOAD_DIR), served by /uploads/<folder>/[file].
+//  - Ephemeral / fallback: in-memory Map when disk is unavailable.
 
-const BLOB_STORE = "product-uploads";
+const memoryUploads = new Map<string, Buffer>();
 
-/** True when a Vercel Blob store is connected (OIDC store id or read-write token). */
+/** Kept for /api/health compatibility. */
 export function vercelBlobConfigured(): boolean {
-  return Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN);
+  return false;
 }
 
-function onNetlify(): boolean {
-  return Boolean(process.env.NETLIFY || process.env.NETLIFY_BLOBS_CONTEXT || process.env.NETLIFY_LOCAL);
-}
-
-async function blobStore() {
-  const { getStore } = await import("@netlify/blobs");
-  return getStore({ name: BLOB_STORE, consistency: "strong" });
-}
-
-// Netlify Blobs keys: product images keep their original bare names.
-const blobKey = (folder: UploadFolder, filename: string) =>
-  folder === "products" ? filename : `${folder}/${filename}`;
+const blobKey = (folder: UploadFolder, filename: string) => `${folder}/${filename}`;
 
 /** Saves an uploaded image and returns its public URL. */
 export async function saveUpload(
   filename: string,
   bytes: Buffer,
-  ext: ImageExt,
+  _ext: ImageExt,
   folder: UploadFolder = "products"
 ): Promise<string> {
-  if (vercelBlobConfigured()) {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(`${folder}/${filename}`, bytes, {
-      access: "public",
-      contentType: IMAGE_TYPES[ext],
-      addRandomSuffix: false,
-    });
-    return blob.url;
+  try {
+    const { mkdir, writeFile } = await import("node:fs/promises");
+    const dir = path.join(UPLOAD_ROOT, folder);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, filename), bytes);
+    return `/uploads/${folder}/${filename}`;
+  } catch (err) {
+    console.warn("[upload] disk write failed, using in-memory store:", err);
+    memoryUploads.set(blobKey(folder, filename), Buffer.from(bytes));
+    return `/uploads/${folder}/${filename}`;
   }
-  if (process.env.VERCEL) {
-    throw new Error("Image uploads on Vercel need a Blob store: Vercel → Storage → Create → Blob, then connect it to this project.");
-  }
-  if (!onNetlify()) {
-    try {
-      const { mkdir, writeFile } = await import("node:fs/promises");
-      const dir = path.join(UPLOAD_ROOT, folder);
-      await mkdir(dir, { recursive: true });
-      await writeFile(path.join(dir, filename), bytes);
-      return `/uploads/${folder}/${filename}`;
-    } catch (err) {
-      console.warn("[upload] disk write failed, trying Netlify Blobs:", err);
-    }
-  }
-  const store = await blobStore();
-  const ab = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
-  await store.set(blobKey(folder, filename), ab);
-  return `/uploads/${folder}/${filename}`;
 }
 
 export async function readUpload(filename: string, folder: UploadFolder = "products"): Promise<Buffer | null> {
-  if (!onNetlify()) {
-    try {
-      const { readFile } = await import("node:fs/promises");
-      return await readFile(path.join(UPLOAD_ROOT, folder, filename));
-    } catch {
-      /* not on disk — maybe stored in Blobs */
-    }
-  }
   try {
-    const store = await blobStore();
-    const data = await store.get(blobKey(folder, filename), { type: "arrayBuffer" });
-    return data ? Buffer.from(data) : null;
+    const { readFile } = await import("node:fs/promises");
+    return await readFile(path.join(UPLOAD_ROOT, folder, filename));
   } catch {
-    return null; // Blobs not available (local dev without Netlify)
+    return memoryUploads.get(blobKey(folder, filename)) ?? null;
   }
 }
 

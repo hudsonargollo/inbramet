@@ -16,7 +16,7 @@ const ADMIN_MIN_PASSWORD = 10;
 // Store-wide settings may only be changed by an ADMIN (not STAFF).
 async function requireOwner() {
   const session = await requireAdmin();
-  if (session.role !== "ADMIN") throw new Error("Solo un administrador puede cambiar los ajustes de la tienda.");
+  if (session.role !== "ADMIN") throw new Error("Apenas administradores podem alterar as configurações da loja.");
   return session;
 }
 
@@ -29,7 +29,7 @@ async function save<K extends keyof StoreSettings>(section: K, value: StoreSetti
     await saveStoreSettings(section, value);
   } catch (err) {
     console.error("[settings] save failed:", err);
-    return { error: "No se pudo guardar: base de datos no disponible." };
+    return { error: "Não foi possível salvar: banco de dados indisponível." };
   }
   // Header, footer, chat, shipping and every page read these settings.
   revalidatePath("/", "layout");
@@ -39,7 +39,7 @@ async function save<K extends keyof StoreSettings>(section: K, value: StoreSetti
 const url = z
   .string()
   .trim()
-  .refine((v) => v === "" || /^https:\/\/[^\s]+$/i.test(v), "Los enlaces deben empezar por https://");
+  .refine((v) => v === "" || /^https:\/\/[^\s]+$/i.test(v), "Os links devem começar com https://");
 
 // ---------- Contact ----------
 export async function saveContactSettings(_p: SettingsState, fd: FormData): Promise<SettingsState> {
@@ -52,12 +52,12 @@ export async function saveContactSettings(_p: SettingsState, fd: FormData): Prom
   const values = form(fd, ["email", "phone", "whatsapp", "city", "hours"]);
   const parsed = z
     .object({
-      email: z.string().refine((v) => v === "" || z.string().email().safeParse(v).success, "Ingresa un correo válido"),
+      email: z.string().refine((v) => v === "" || z.string().email().safeParse(v).success, "Informe um e-mail válido"),
       phone: z.string().max(30),
       whatsapp: z
         .string()
         .transform((v) => v.replace(/[^0-9]/g, ""))
-        .refine((v) => v === "" || (v.length >= 10 && v.length <= 15), "WhatsApp: formato internacional, p. ej. 59171234567"),
+        .refine((v) => v === "" || (v.length >= 10 && v.length <= 15), "WhatsApp: formato internacional, ex.: 5511999999999"),
       city: z.string().max(120),
       hours: z.string().max(120),
     })
@@ -91,9 +91,9 @@ export async function saveShippingSettings(_p: SettingsState, fd: FormData): Pro
   const values = form(fd, ["flatFee", "freeThreshold", "deliveryTime"]);
   const parsed = z
     .object({
-      flatFee: z.coerce.number().int("Solo bolivianos enteros").min(0, "No puede ser negativo").max(100000),
-      freeThreshold: z.coerce.number().int("Solo bolivianos enteros").min(0, "No puede ser negativo").max(10_000_000),
-      deliveryTime: z.string().min(2, "Ingresa una estimación de entrega, no un plazo garantizado").max(60),
+      flatFee: z.coerce.number().int("Somente reais inteiros").min(0, "Não pode ser negativo").max(100000),
+      freeThreshold: z.coerce.number().int("Somente reais inteiros").min(0, "Não pode ser negativo").max(10_000_000),
+      deliveryTime: z.string().min(2, "Informe uma estimativa de entrega").max(60),
     })
     .safeParse(values);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message, values };
@@ -113,8 +113,8 @@ export async function saveAnnouncementSettings(_p: SettingsState, fd: FormData):
     .split(/\r?\n/)
     .map((l) => l.trim())
     .filter(Boolean);
-  if (lines.length > 10) return { error: "Usa 10 líneas como máximo.", values: { announcements: raw } };
-  if (lines.some((l) => l.length > 120)) return { error: "Cada línea debe tener 120 caracteres como máximo.", values: { announcements: raw } };
+  if (lines.length > 10) return { error: "Use no máximo 10 linhas.", values: { announcements: raw } };
+  if (lines.some((l) => l.length > 120)) return { error: "Cada linha deve ter no máximo 120 caracteres.", values: { announcements: raw } };
   return { ...(await save("announcements", lines)), values: { announcements: raw } };
 }
 
@@ -130,7 +130,7 @@ export async function saveAlertSettings(_p: SettingsState, fd: FormData): Promis
   const parsed = z
     .object({
       lowStockThreshold: z.coerce.number().int().min(0).max(1000),
-      orderEmail: z.string().refine((v) => v === "" || z.string().email().safeParse(v).success, "Ingresa un correo válido"),
+      orderEmail: z.string().refine((v) => v === "" || z.string().email().safeParse(v).success, "Informe um e-mail válido"),
     })
     .safeParse(values);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message, values };
@@ -145,15 +145,15 @@ export async function changePassword(_p: SettingsState, fd: FormData): Promise<S
   const current = String(fd.get("current") ?? "");
   const next = String(fd.get("next") ?? "");
   const confirm = String(fd.get("confirm") ?? "");
-  if (next.length < ADMIN_MIN_PASSWORD) return { error: `La nueva contraseña debe tener al menos ${ADMIN_MIN_PASSWORD} caracteres.` };
-  if (next !== confirm) return { error: "Las nuevas contraseñas no coinciden." };
+  if (next.length < ADMIN_MIN_PASSWORD) return { error: `A nova senha deve ter pelo menos ${ADMIN_MIN_PASSWORD} caracteres.` };
+  if (next !== confirm) return { error: "As novas senhas não coincidem." };
   try {
     const user = await prisma.user.findUnique({ where: { email: session.email } });
-    if (!user || !verifyPassword(current, user.passwordHash)) return { error: "La contraseña actual es incorrecta." };
+    if (!user || !verifyPassword(current, user.passwordHash)) return { error: "A senha atual está incorreta." };
     await prisma.user.update({ where: { id: user.id }, data: { passwordHash: hashPassword(next) } });
     await refreshAdminSession(session.email); // other devices are signed out
   } catch {
-    return { error: "No se pudo actualizar: base de datos no disponible." };
+    return { error: "Não foi possível atualizar: banco de dados indisponível." };
   }
   return { ok: true };
 }
@@ -171,24 +171,21 @@ export async function addTeamMember(_p: SettingsState, fd: FormData): Promise<Se
   const parsed = z
     .object({
       name: z.string().max(120),
-      email: z.string().email("Ingresa un correo válido").max(200),
+      email: z.string().email("Informe um e-mail válido").max(200),
       role: z.enum(["ADMIN", "STAFF"]),
       branchId: z.string().optional(),
     })
     .safeParse(values);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message, values };
   if (password.length < ADMIN_MIN_PASSWORD)
-    return { error: `La contraseña debe tener al menos ${ADMIN_MIN_PASSWORD} caracteres.`, values };
+    return { error: `A senha deve ter pelo menos ${ADMIN_MIN_PASSWORD} caracteres.`, values };
 
-  // Staff logins are bound to exactly one store; admins are global.
   let branchId: string | null = null;
   if (parsed.data.role === "STAFF") {
-    if (!parsed.data.branchId) return { error: "Elige la sucursal de este usuario.", values };
     const branch = await prisma.branch
-      .findFirst({ where: { id: parsed.data.branchId, active: true }, select: { id: true } })
+      .findFirst({ where: { active: true }, orderBy: { createdAt: "asc" }, select: { id: true } })
       .catch(() => null);
-    if (!branch) return { error: "La sucursal elegida no existe.", values };
-    branchId = branch.id;
+    branchId = branch?.id ?? null;
   }
 
   try {
@@ -202,14 +199,14 @@ export async function addTeamMember(_p: SettingsState, fd: FormData): Promise<Se
       },
     });
   } catch (err) {
-    if (dbErrorKind(err) === "duplicate") return { error: "Ya existe un miembro del equipo con ese correo.", values };
-    return { error: "No se pudo agregar: base de datos no disponible.", values };
+    if (dbErrorKind(err) === "duplicate") return { error: "Já existe um membro da equipe com este e-mail.", values };
+    return { error: "Não foi possível adicionar: banco de dados indisponível.", values };
   }
   revalidatePath("/admin/settings");
   return { ok: true };
 }
 
-/** Move a staff member to another branch (or make an admin global). */
+/** Legacy helper kept for backward compatibility. */
 export async function setTeamMemberBranch(userId: string, formData: FormData): Promise<void> {
   await requireOwner();
   const branchIdRaw = String(formData.get("branchId") ?? "").trim();
@@ -218,8 +215,7 @@ export async function setTeamMemberBranch(userId: string, formData: FormData): P
 
   if (user.role === "ADMIN") {
     await prisma.user.update({ where: { id: userId }, data: { branchId: null } });
-  } else {
-    if (!branchIdRaw) return;
+  } else if (branchIdRaw) {
     const branch = await prisma.branch
       .findFirst({ where: { id: branchIdRaw, active: true }, select: { id: true } })
       .catch(() => null);

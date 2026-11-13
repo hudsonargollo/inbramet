@@ -1,10 +1,7 @@
-// Store contact details & social links — one place, configured via env (set in
-// `.env`, see `.env.example`). Anything left blank is HIDDEN on the site instead
-// of showing a placeholder number or a generic instagram.com link.
-// NEXT_PUBLIC_* values are inlined at build time, so this is safe in client code.
+// Detalhes de contato da loja & redes sociais.
 
-/** Where the shop is — default address shown in the footer, contact page and chat. */
-export const STORE_LOCATION = "Santa Cruz, Bolivia";
+/** Localização padrão exibida no rodapé, página de contato e chat. */
+export const STORE_LOCATION = "Brasil · Atendimento On-line";
 
 function clean(v: string | undefined): string {
   return (v ?? "").trim();
@@ -14,15 +11,15 @@ const whatsapp = clean(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER).replace(/[^0-9]/
 const phone = clean(process.env.NEXT_PUBLIC_CONTACT_PHONE);
 
 export const CONTACT = {
-  /** International format, digits only (e.g. 59171662586). */
+  /** Formato internacional somente dígitos (ex.: 5511999999999). */
   whatsapp,
   whatsappUrl: whatsapp ? `https://wa.me/${whatsapp}` : "",
-  /** Display format (e.g. "+591 71 662 586"). */
+  /** Formato de exibição (ex.: "(11) 99999-9999"). */
   phone,
   phoneHref: phone ? `tel:${phone.replace(/[^0-9+]/g, "")}` : "",
   email: clean(process.env.NEXT_PUBLIC_CONTACT_EMAIL),
   city: clean(process.env.NEXT_PUBLIC_CONTACT_CITY) || STORE_LOCATION,
-  hours: clean(process.env.NEXT_PUBLIC_CONTACT_HOURS) || "Lunes a domingo · 11:00 a 23:00",
+  hours: clean(process.env.NEXT_PUBLIC_CONTACT_HOURS) || "Segunda a sábado · 09h às 19h",
   instagram: clean(process.env.NEXT_PUBLIC_INSTAGRAM_URL),
   facebook: clean(process.env.NEXT_PUBLIC_FACEBOOK_URL),
   tiktok: clean(process.env.NEXT_PUBLIC_TIKTOK_URL),

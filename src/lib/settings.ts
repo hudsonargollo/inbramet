@@ -1,16 +1,12 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "./prisma";
+import { dbConfigured, prisma } from "./prisma";
 import { SETTINGS_TAG, refreshSettings } from "./cache-tags";
 import { CONTACT } from "./contact";
 import { FLAT_SHIPPING, FREE_SHIPPING_THRESHOLD, DELIVERY_TIME } from "./shipping";
 import type { StoreSettings } from "./settings-shared";
 
 export type { StoreSettings, LoyaltySettings } from "./settings-shared";
-
-// Store settings live in the DB (Setting key "store") and are edited in
-// Admin → Settings. Anything never saved falls back to the env-based defaults
-// below, so a fresh install / an unreachable DB still renders correctly.
 
 const KEY = "store";
 
@@ -33,15 +29,15 @@ export const DEFAULT_SETTINGS: StoreSettings = {
     deliveryTime: DELIVERY_TIME,
   },
   announcements: [
-    "Delivery en moto en Santa Cruz · 13 sucursales",
-    "Pago contra entrega al recibir tu pedido",
-    "Tradición camba desde 1986 · Hecho al momento",
-    "Atención cuidadosa por WhatsApp",
+    "Entrega programada em todo o Brasil · Móveis Inbramet",
+    "Pagamento na entrega ou on-line ao receber seu pedido",
+    "Design funcional em aço, madeira e polímero · Garantia Inbramet",
+    "Atendimento personalizado via WhatsApp",
   ],
   inventory: { lowStockThreshold: 5 },
   loyalty: {
     enabled: true,
-    name: "Club Camba",
+    name: "Clube Inbramet",
     stampsToFree: 10,
     eligible: "all",
     eligibleSlugs: [],
@@ -68,16 +64,15 @@ function merge(saved: Partialish | null | undefined): StoreSettings {
   };
 }
 
-// Shared across requests (every store page reads settings in the layout);
-// refreshed by tag when Admin → Settings is saved.
 const loadStored = unstable_cache(
   async () => (await prisma.setting.findUnique({ where: { key: KEY } }))?.value ?? null,
-  ["store-settings-v1"],
+  ["store-settings-v2"],
   { tags: [SETTINGS_TAG], revalidate: 600 }
 );
 
-/** Current store settings. Never throws. */
+/** Configurações atuais da loja. Nunca lança exceção. */
 export const getStoreSettings = cache(async (): Promise<StoreSettings> => {
+  if (!dbConfigured) return DEFAULT_SETTINGS;
   try {
     return merge((await loadStored()) as Partialish | undefined);
   } catch {
@@ -85,7 +80,7 @@ export const getStoreSettings = cache(async (): Promise<StoreSettings> => {
   }
 });
 
-/** Saves one section of the settings (merged over what's stored). */
+/** Salva uma seção das configurações. */
 export async function saveStoreSettings<K extends keyof StoreSettings>(
   section: K,
   value: StoreSettings[K]
@@ -101,9 +96,16 @@ export async function saveStoreSettings<K extends keyof StoreSettings>(
   refreshSettings();
 }
 
-/** Announcement lines with placeholders filled in ({freeThreshold}, {flatFee}). */
+const brl = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+/** Linhas de anúncio com placeholders preenchidos ({freeThreshold}, {flatFee}). */
 export function renderAnnouncements(s: StoreSettings): string[] {
-  const fmt = (n: number) => `Bs ${new Intl.NumberFormat("es-BO", { maximumFractionDigits: 0 }).format(n)}`;
+  const fmt = (n: number) => brl.format(n);
   return s.announcements
     .map((line) =>
       line

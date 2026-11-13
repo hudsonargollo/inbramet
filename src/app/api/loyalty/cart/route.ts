@@ -47,7 +47,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     parsed = body.parse(await request.json());
   } catch {
-    return NextResponse.json({ ok: false, error: "Cuerpo inválido" }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Dados inválidos" }, { status: 400 });
   }
   const ids = [...new Set(parsed.items.map((i) => i.productId))];
   if (ids.length === 0) return NextResponse.json(empty);

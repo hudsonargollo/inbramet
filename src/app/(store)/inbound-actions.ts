@@ -60,7 +60,7 @@ export async function sendContactMessage(_prev: InboundState, formData: FormData
     });
   } catch (err) {
     console.error("[contact] could not save message:", err);
-    return { error: "We couldn't send your message right now. Please try again shortly.", values };
+    return { error: "Não foi possível enviar sua mensagem agora. Tente novamente em instantes.", values };
   }
 
   // The owner alert goes out after the reply, so the visitor isn't kept waiting on SMTP.
@@ -87,14 +87,14 @@ export async function sendCustomRequest(_prev: InboundState, formData: FormData)
   // Optional reference photos: real type from the bytes, never the client's word.
   const files = formData.getAll("photos").filter((f): f is File => f instanceof File && f.size > 0);
   if (files.length > MAX_REFERENCE_PHOTOS) {
-    return { error: `Please attach up to ${MAX_REFERENCE_PHOTOS} photos.`, values };
+    return { error: `Anexe no máximo ${MAX_REFERENCE_PHOTOS} fotos.`, values };
   }
   const images: { bytes: Buffer; ext: ImageExt }[] = [];
   for (const file of files) {
-    if (file.size > MAX_REFERENCE_BYTES) return { error: "Each photo must be under 3 MB.", values };
+    if (file.size > MAX_REFERENCE_BYTES) return { error: "Cada foto deve ter no máximo 3 MB.", values };
     const bytes = Buffer.from(await file.arrayBuffer());
     const ext = sniffImage(bytes);
-    if (!ext) return { error: "Photos must be JPG, PNG, WEBP or AVIF images.", values };
+    if (!ext) return { error: "As fotos devem ser imagens JPG, PNG, WEBP ou AVIF.", values };
     images.push({ bytes, ext });
   }
   const photoUrls: string[] = [];
@@ -105,15 +105,15 @@ export async function sendCustomRequest(_prev: InboundState, formData: FormData)
     }
   } catch (err) {
     console.error("[custom] could not save reference photos:", err);
-    return { error: "We couldn't upload your photos right now. Please try again, or send them on WhatsApp.", values };
+    return { error: "Não foi possível enviar suas fotos agora. Tente novamente ou envie pelo WhatsApp.", values };
   }
 
-  const subject = `Pedido para evento: ${d.pieceType}`;
+  const subject = `Projeto sob medida: ${d.pieceType}`;
   const message = [
     `Tipo: ${d.pieceType}`,
-    `Formato: ${d.finish}`,
-    `Presupuesto: ${d.budget}`,
-    `Para cuándo: ${d.neededBy || "Flexible"}`,
+    `Acabamento: ${d.finish}`,
+    `Orçamento: ${d.budget}`,
+    `Prazo desejado: ${d.neededBy || "Flexível"}`,
     "",
     d.details,
     ...(photoUrls.length ? ["", REFERENCE_PHOTOS_HEADING, ...photoUrls] : []),
@@ -125,7 +125,7 @@ export async function sendCustomRequest(_prev: InboundState, formData: FormData)
     });
   } catch (err) {
     console.error("[custom] could not save request:", err);
-    return { error: "We couldn't send your request right now. Please try again shortly.", values };
+    return { error: "Não foi possível enviar sua solicitação agora. Tente novamente em instantes.", values };
   }
 
   after(() => sendContactNotification({ name: d.name, email: d.email, phone: d.phone, subject, message, topic: "custom" }));
@@ -152,7 +152,7 @@ export async function subscribe(_prev: InboundState, formData: FormData): Promis
     });
   } catch (err) {
     console.error("[newsletter] could not save subscriber:", err);
-    return { error: "We couldn't sign you up right now. Please try again shortly." };
+    return { error: "Não foi possível concluir sua inscrição agora. Tente novamente em instantes." };
   }
   return { ok: true };
 }

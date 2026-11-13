@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import { getProductsByIds } from "@/lib/catalog";
-import { getSelectedBranch } from "@/lib/branch";
 
 // Returns current name / price / compare-at price / stock for the products in a shopper's cart so
-// the client can refresh its localStorage snapshot. Stock is the selected
-// branch's stock. Inactive or deleted products are simply omitted (the cart
-// drops them).
+// the client can refresh its localStorage snapshot. Inactive or deleted products are omitted.
 export async function POST(request: Request) {
   let ids: string[] = [];
   try {
@@ -19,8 +16,7 @@ export async function POST(request: Request) {
   if (ids.length === 0) return NextResponse.json({ ok: true, products: [] });
 
   try {
-    const branch = await getSelectedBranch();
-    const rows = await getProductsByIds(ids, branch?.id);
+    const rows = await getProductsByIds(ids);
     return NextResponse.json({
       ok: true,
       products: rows.map((p) => ({

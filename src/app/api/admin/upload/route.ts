@@ -10,23 +10,23 @@ export async function POST(request: Request) {
   // Admin only
   const session = await getVerifiedAdmin();
   if (!session) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ ok: false, error: "Não autorizado." }, { status: 401 });
   }
 
   let form: FormData;
   try {
     form = await request.formData();
   } catch {
-    return NextResponse.json({ ok: false, error: "Invalid upload" }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Upload inválido." }, { status: 400 });
   }
 
   const file = form.get("file");
   if (!(file instanceof File)) {
-    return NextResponse.json({ ok: false, error: "No file provided" }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Nenhum arquivo enviado." }, { status: 400 });
   }
   if (file.size > MAX_BYTES) {
     return NextResponse.json(
-      { ok: false, error: "Image is too large (max 5 MB)." },
+      { ok: false, error: "A imagem é muito grande (máx. 5 MB)." },
       { status: 400 }
     );
   }
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   const ext = sniffImage(bytes);
   if (!ext) {
     return NextResponse.json(
-      { ok: false, error: "Only JPG, PNG, WEBP or AVIF images are allowed." },
+      { ok: false, error: "Apenas imagens JPG, PNG, WEBP ou AVIF são permitidas." },
       { status: 400 }
     );
   }
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
-      .slice(0, 40) || "image";
+      .slice(0, 40) || "imagem";
   const filename = `${base}-${Date.now()}.${ext}`;
 
   let url: string;
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     url = await saveUpload(filename, bytes, ext);
   } catch (err) {
     console.error("[upload] failed:", err);
-    const msg = err instanceof Error && /Blob store/.test(err.message) ? err.message : "Could not save the image.";
+    const msg = err instanceof Error && /Blob store/.test(err.message) ? err.message : "Não foi possível salvar a imagem.";
     return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 

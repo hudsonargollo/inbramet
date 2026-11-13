@@ -1,9 +1,8 @@
 import { randomInt } from "node:crypto";
 import { z } from "zod";
-import { prisma } from "./prisma";
+import { dbConfigured, prisma } from "./prisma";
 import { shippingFor } from "./settings-shared";
 import { getStoreSettings } from "./settings";
-import { shippingForBranch } from "./branch";
 import { after } from "next/server";
 import { sendOrderEmails } from "./email";
 import { refreshCatalog } from "./cache-tags";
@@ -11,17 +10,17 @@ import { accrueOrder, getBalances, redeemStamps, refundOrderLoyalty } from "./lo
 import { stampCard, type LoyaltyLine } from "./loyalty-shared";
 
 export const checkoutSchema = z.object({
-  customerName: z.string().trim().min(2, "Ingresa tu nombre completo").max(120),
-  email: z.string().trim().email("Ingresa un correo válido").max(200),
-  phone: z.string().trim().min(7, "Ingresa un teléfono válido").max(30),
-  branchId: z.string().min(1, "Elige la sucursal donde harás tu pedido"),
+  customerName: z.string().trim().min(2, "Informe seu nome completo").max(120),
+  email: z.string().trim().email("Informe um e-mail válido").max(200),
+  phone: z.string().trim().min(7, "Informe um telefone válido").max(30),
+  branchId: z.string().optional().nullable(),
   fulfillment: z.enum(["DELIVERY", "PICKUP"]).default("DELIVERY"),
   address: z.string().trim().max(500).nullish(),
   city: z.string().trim().max(100).nullish(),
   postalCode: z.string().max(20).nullish(),
   notes: z.string().max(1000).nullish(),
   paymentMethod: z.enum(["COD", "PAYFAST", "SAFEPAY"]),
-  /** Product whose full stamp card is being spent on this order (one free unit). */
+  /** Produto cuja cartela completa está sendo usada neste pedido (1 unidade grátis). */
   redeemProductId: z.string().max(100).nullish(),
   items: z
     .array(
@@ -32,7 +31,7 @@ export const checkoutSchema = z.object({
         quantity: z.number().int().positive().max(99),
       })
     )
-    .min(1, "Tu carrito está vacío")
+    .min(1, "Seu carrinho está vazio")
     .max(50),
 });
 
@@ -43,28 +42,23 @@ export type CreateOrderResult =
       ok: true;
       orderNumber: string;
       total: number;
-      /** What Club Camba gave this order (0 when the shopper isn't signed in). */
       loyalty: { stamps: number; points: number; redeemedProduct: string | null };
     }
   | { ok: false; error: string };
 
-// User-facing validation problems (bad cart) vs unexpected server errors.
 class OrderValidationError extends Error {}
 
-// Unambiguous alphabet (no 0/O, 1/I/L). 8 crypto-random chars ≈ 40 bits, so
-// order numbers can't be guessed (they also act as a lookup key with the email).
 const ORDER_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
 
-function generateOrderNumber(branchCode: string): string {
+function generateOrderNumber(prefix = "IN01"): string {
   const stamp = Date.now().toString(36).toUpperCase().slice(-6);
   let rand = "";
   for (let i = 0; i < 8; i++) rand += ORDER_ALPHABET[randomInt(ORDER_ALPHABET.length)];
-  return `${branchCode}-${stamp}-${rand}`;
+  return `${prefix}-${stamp}-${rand}`;
 }
 
-// Cancels an order exactly once and puts its items back into that branch's stock.
-// Safe to call repeatedly — only the call that flips the status restocks.
 export async function cancelOrderAndRestock(orderId: string): Promise<boolean> {
+  if (!dbConfigured) return false;
   const restocked = await prisma.$transaction(async (tx) => {
     const order = await tx.order.findUnique({
       where: { id: orderId },
@@ -90,8 +84,6 @@ export async function cancelOrderAndRestock(orderId: string): Promise<boolean> {
   });
   if (restocked) {
     refreshCatalog();
-    // The stamps/points that order granted (and any card it spent) are
-    // reversed on the ledger, so a cancelled order neither rewards nor costs.
     await refundOrderLoyalty(orderId).catch((err) =>
       console.error("[loyalty] refund entry failed:", err)
     );
@@ -109,33 +101,31 @@ export async function createOrder(
   }
   const data = parsed.data;
 
-  // Delivery needs a real address; pickup happens at the branch.
-  const isPickup = data.fulfillment === "PICKUP";
   const address = data.address?.trim() || null;
   const city = data.city?.trim() || null;
-  if (!isPickup && (!address || address.length < 5)) {
-    return { ok: false, error: "Ingresa tu dirección de entrega" };
+  if (!address || address.length < 5) {
+    return { ok: false, error: "Informe o endereço de entrega" };
   }
-  if (!isPickup && (!city || city.length < 2)) {
-    return { ok: false, error: "Ingresa tu ciudad" };
+  if (!city || city.length < 2) {
+    return { ok: false, error: "Informe sua cidade" };
+  }
+
+  if (!dbConfigured) {
+    return {
+      ok: false,
+      error: "O banco de dados de pedidos ainda não está conectado neste ambiente de demonstração.",
+    };
   }
 
   try {
-    const branch = await prisma.branch.findFirst({
-      where: { id: data.branchId, active: true },
-    });
+    const branch = data.branchId
+      ? await prisma.branch.findFirst({ where: { id: data.branchId, active: true } })
+      : await prisma.branch.findFirst({ where: { active: true }, orderBy: { sortOrder: "asc" } });
+
     if (!branch) {
-      throw new OrderValidationError("La sucursal elegida no está disponible. Elige otra.");
-    }
-    if (isPickup && !branch.pickupEnabled) {
-      throw new OrderValidationError("Esta sucursal no ofrece retiro en tienda. Elige otra modalidad.");
-    }
-    if (!isPickup && !branch.deliveryEnabled) {
-      throw new OrderValidationError("Esta sucursal no ofrece entrega a domicilio. Puedes elegir retiro.");
+      throw new OrderValidationError("Loja indisponível no momento para finalizar o pedido.");
     }
 
-    // Re-price against the database to prevent client-side tampering,
-    // validate branch stock, then create the order and decrement stock atomically.
     const ids = data.items.map((i) => i.productId);
     const stocks = await prisma.branchStock.findMany({
       where: { branchId: branch.id, productId: { in: ids }, active: true, product: { active: true } },
@@ -155,41 +145,32 @@ export async function createOrder(
     });
     const byId = new Map(stocks.map((s) => [s.productId, s]));
 
-    // Merge duplicate lines for the same product so stock checks are per product.
     const qtyById = new Map<string, number>();
     for (const i of data.items) qtyById.set(i.productId, (qtyById.get(i.productId) ?? 0) + i.quantity);
 
     const lineItems = [...qtyById].map(([productId, quantity]) => {
       const s = byId.get(productId);
-      const name = data.items.find((i) => i.productId === productId)?.name ?? "Un producto";
+      const name = data.items.find((i) => i.productId === productId)?.name ?? "Produto";
       if (!s)
         throw new OrderValidationError(
-          `"${name}" ya no está disponible en esta sucursal. Quítalo de tu carrito e inténtalo de nuevo.`
+          `"${name}" não está mais disponível. Remova-o do carrinho e tente novamente.`
         );
       if (s.stock < quantity)
         throw new OrderValidationError(
           s.stock <= 0
-            ? `"${s.product.name}" está agotado en esta sucursal. Quítalo de tu carrito.`
-            : `Solo quedan ${s.stock} de "${s.product.name}" en esta sucursal. Baja la cantidad.`
+            ? `"${s.product.name}" está esgotado. Remova-o do carrinho.`
+            : `Restam apenas ${s.stock} unidades de "${s.product.name}". Ajuste a quantidade.`
         );
       return { productId: s.product.id, name: s.product.name, price: Number(s.product.price), quantity };
     });
 
     let subtotal = lineItems.reduce((s, i) => s + i.price * i.quantity, 0);
-    // Shipping rules come from the branch (falling back to store-wide settings).
     const settings = await getStoreSettings();
-    const branchView = {
-      flatFee: branch.flatFee == null ? null : Number(branch.flatFee),
-      freeThreshold: branch.freeThreshold == null ? null : Number(branch.freeThreshold),
-    };
-    const calcShipping = (base: number) =>
-      isPickup ? 0 : shippingFor(base, shippingForBranch(branchView, settings));
+    const calcShipping = (base: number) => shippingFor(base, settings.shipping);
     let shipping = calcShipping(subtotal);
     let total = subtotal + shipping;
     const email = data.email.trim().toLowerCase();
 
-    // Only attach a customerId that actually exists — a stale session cookie
-    // pointing at a deleted account would otherwise cause a foreign-key error.
     let safeCustomerId: string | null = null;
     if (customerId) {
       const customer = await prisma.customer.findUnique({
@@ -199,23 +180,19 @@ export async function createOrder(
       safeCustomerId = customer?.id ?? null;
     }
 
-    // ---- Club Camba -------------------------------------------------------
-    // A full stamp card makes one unit of *that same product* free. The free
-    // unit is priced at 0 as its own line instead of discounting the total, so
-    // stock, the receipt and the confirmation email all agree.
     const rules = settings.loyalty;
     let ownedStamps: Record<string, number> = {};
     let redeemed: { productId: string; name: string } | null = null;
     if (rules.enabled && safeCustomerId && data.redeemProductId) {
       const target = lineItems.find((i) => i.productId === data.redeemProductId);
       if (!target)
-        throw new OrderValidationError("Elige un producto de tu carrito para usar tus sellos.");
+        throw new OrderValidationError("Escolha um produto do carrinho para resgatar seus selos.");
       const balances = await getBalances(safeCustomerId, rules);
       ownedStamps = balances.stampsByProduct;
       const card = stampCard(ownedStamps[target.productId] ?? 0, rules);
       if (!card.full)
         throw new OrderValidationError(
-          `Aún te faltan ${card.remaining} sellos de "${target.name}" para canjearla gratis.`
+          `Ainda faltam ${card.remaining} selos de "${target.name}" para resgatar gratuitamente.`
         );
       redeemed = { productId: target.productId, name: target.name };
       ownedStamps[target.productId] = Math.max(0, (ownedStamps[target.productId] ?? 0) - rules.stampsToFree);
@@ -227,7 +204,6 @@ export async function createOrder(
       total = subtotal + shipping;
     }
 
-    // Free units never earn stamps, hence the price filter.
     const loyaltyLines: LoyaltyLine[] = lineItems
       .filter((i) => i.price > 0)
       .map((i) => {
@@ -242,13 +218,10 @@ export async function createOrder(
     const noLoyalty = { stamps: 0, points: 0, redeemedProduct: null as string | null };
     let earned = noLoyalty;
 
-    // Decrement stock *conditionally* inside the transaction so two concurrent
-    // checkouts can never oversell: the update only matches while enough stock
-    // remains at that branch, otherwise the whole order rolls back.
     let orderNumber = "";
     let createdOrder: { id: string; createdAt: Date } | null = null;
     for (let attempt = 0; attempt < 3 && !createdOrder; attempt++) {
-      orderNumber = generateOrderNumber(branch.code);
+      orderNumber = generateOrderNumber(branch.code || "IN01");
       try {
         createdOrder = await prisma.$transaction(async (tx) => {
           for (const i of lineItems) {
@@ -263,14 +236,14 @@ export async function createOrder(
             });
             if (res.count !== 1)
               throw new OrderValidationError(
-                `"${i.name}" se agotó o quedan menos unidades en esta sucursal. Actualiza tu carrito.`
+                `"${i.name}" esgotou ou há menos unidades disponíveis. Atualize seu carrinho.`
               );
           }
           const created = await tx.order.create({
             data: {
               orderNumber,
               branchId: branch.id,
-              fulfillment: data.fulfillment,
+              fulfillment: "DELIVERY",
               customerName: data.customerName.trim(),
               email,
               phone: data.phone.trim(),
@@ -288,8 +261,6 @@ export async function createOrder(
             select: { id: true, createdAt: true },
           });
 
-          // Rewards ride on the same transaction: if the order doesn't commit,
-          // neither do its stamps, and a spend can't be half-applied.
           if (safeCustomerId) {
             if (redeemed)
               await redeemStamps(tx, {
@@ -311,20 +282,14 @@ export async function createOrder(
           return created;
         });
       } catch (err) {
-        // Retry only on an (astronomically unlikely) order-number collision.
         const msg = err instanceof Error ? err.message : "";
         if (!(err instanceof OrderValidationError) && /P2002|Unique constraint/i.test(msg) && /orderNumber/.test(msg)) continue;
         throw err;
       }
     }
     if (!createdOrder) throw new Error("Could not allocate an order number");
-    refreshCatalog(); // stock changed
+    refreshCatalog();
 
-    // (Admins see new orders via the dashboard bell, which polls /api/admin/orders/latest.)
-
-    // Order is safely saved. Email is best-effort — never fail a saved order
-    // just because SMTP is unavailable — and it goes out after the reply, so
-    // the shopper reaches the confirmation page without waiting on SMTP.
     after(async () => {
       try {
         await sendOrderEmails({
@@ -332,10 +297,9 @@ export async function createOrder(
           customerName: data.customerName,
           email,
           phone: data.phone,
-          address: address ?? `Retiro en ${branch.name}`,
-          city: city ?? branch.city,
-          branchName: branch.name,
-          fulfillment: data.fulfillment,
+          address,
+          city,
+          fulfillment: "DELIVERY",
           paymentMethod: data.paymentMethod,
           items: lineItems.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
           subtotal,
@@ -349,17 +313,13 @@ export async function createOrder(
 
     return { ok: true, orderNumber, total, loyalty: earned };
   } catch (err) {
-    // Cart/stock problems are safe to show to the customer verbatim.
     if (err instanceof OrderValidationError) {
       return { ok: false, error: err.message };
     }
-    // Anything else is an unexpected server/database error. Log the real
-    // cause for us, show the customer a clear (non-fake) failure — never a
-    // fake success that silently loses the order.
     console.error("[order] failed to create order:", err);
     return {
       ok: false,
-      error: "Lo sentimos, no pudimos registrar tu pedido ahora. Inténtalo de nuevo en un momento.",
+      error: "Desculpe, não foi possível registrar seu pedido agora. Tente novamente em instantes.",
     };
   }
 }
