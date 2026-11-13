@@ -30,9 +30,9 @@ export function QuickAdd({ product }: { product: ProductView }) {
   }
 
   return (
-    <div className="mt-3 flex items-center justify-between gap-2">
+    <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div
-        className="flex h-10 shrink-0 items-center rounded-full border border-[var(--line-strong)] bg-surface"
+        className="flex h-10 shrink-0 items-center justify-between rounded-full border border-[var(--line-strong)] bg-surface"
         role="group"
         aria-label={`Quantidade de ${product.name}`}
       >
@@ -77,25 +77,25 @@ export function QuickAdd({ product }: { product: ProductView }) {
         }}
         aria-label={`Adicionar ${qty} ${product.name} ao carrinho`}
         title="Adicionar ao carrinho"
-        className={`flex h-10 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-xs font-semibold uppercase tracking-[0.08em] transition duration-200 active:scale-[0.98] ${
+        className={`flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-xs font-semibold uppercase tracking-[0.08em] transition duration-200 active:scale-[0.98] ${
           added
             ? "bg-accent text-brand-deep shadow-[0_12px_26px_-14px_rgba(15,23,42,0.4)]"
             : "bg-brand text-light shadow-[0_12px_26px_-14px_rgba(15,23,42,0.55)] hover:bg-brand-deep"
         }`}
       >
         {added ? (
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true" className="shrink-0">
             <path d="M5 12.5l4.5 4.5L19 6.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         ) : (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="shrink-0">
             <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6" strokeLinecap="round" strokeLinejoin="round" />
             <circle cx="10" cy="20" r="1.4" fill="currentColor" stroke="none" />
             <circle cx="18" cy="20" r="1.4" fill="currentColor" stroke="none" />
             <path d="M14 9v5M11.5 11.5h5" strokeLinecap="round" />
           </svg>
         )}
-        <span>{added ? "Adicionado" : "Adicionar"}</span>
+        <span className="truncate">{added ? "Adicionado" : "Adicionar"}</span>
       </button>
     </div>
   );

@@ -303,13 +303,13 @@ export function AuthSubmit({ pending, label, pendingLabel }: { pending: boolean;
     <button
       type="submit"
       disabled={pending}
-      className="group relative w-full overflow-hidden rounded-full bg-gradient-to-r from-accent-soft via-accent to-accent-strong px-6 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-brand-deep shadow-[0_16px_36px_-14px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_20px_44px_-14px_rgba(15,23,42,0.45)] disabled:cursor-wait disabled:opacity-80"
+      className="group relative w-full overflow-hidden rounded-full bg-accent px-6 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-brand-deep shadow-[0_16px_36px_-14px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft hover:shadow-[0_20px_44px_-14px_rgba(15,23,42,0.45)] disabled:cursor-wait disabled:opacity-80"
     >
       <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-[rgba(236,208,140,0.35)] to-transparent opacity-0 transition-all duration-700 group-hover:left-[110%] group-hover:opacity-100" />
       <span className="relative inline-flex items-center justify-center gap-2.5">
-        {pending && <span className="h-4 w-4 animate-spin rounded-full border-2 border-light/30 border-t-accent-soft" />}
+        {pending && <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand-deep/30 border-t-brand-deep" />}
         {pending ? pendingLabel : label}
-        {!pending && <span className="text-accent-soft transition-transform group-hover:translate-x-0.5">→</span>}
+        {!pending && <span className="text-brand-deep transition-transform group-hover:translate-x-0.5">→</span>}
       </span>
     </button>
   );

@@ -13,8 +13,8 @@ export function RevealToggle({ shown, onToggle }: { shown: boolean; onToggle: ()
       aria-label={shown ? "Ocultar senha" : "Mostrar senha"}
       className={`group/reveal mr-2 inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-full border px-2.5 text-[0.6rem] font-bold uppercase leading-none tracking-[0.16em] transition-[color,background-color,border-color,box-shadow] duration-300 ${
         shown
-          ? "border-accent bg-gradient-to-r from-accent-soft via-accent to-accent-strong text-brand shadow-[0_6px_16px_-8px_rgba(15,23,42,0.35)]"
-          : "border-accent/45 bg-transparent text-accent-strong hover:border-accent hover:bg-accent/10"
+          ? "border-accent bg-accent text-brand-deep shadow-[0_6px_16px_-8px_rgba(15,23,42,0.35)]"
+          : "border-[var(--line-strong)] bg-transparent text-accent-strong hover:border-accent hover:bg-accent/10"
       }`}
     >
       <svg

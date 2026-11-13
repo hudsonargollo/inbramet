@@ -45,7 +45,7 @@ export function HeroSlider() {
           <h1 className="mt-3 max-w-[19ch] font-display text-4xl font-extrabold leading-[1.04] tracking-tight text-balance sm:text-5xl lg:text-[4rem]">
             <SplitText text="Espaços pensados" delay={80} />{" "}
             <RotatingWord
-              words={["para durar", "com conforto real", "para compartilhar"]}
+              words={["para viver bem", "com conforto real", "para compartilhar"]}
               className="text-accent"
             />
           </h1>

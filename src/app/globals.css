@@ -24,7 +24,7 @@
   --color-cream: #F8FAF6;
   --color-cream-soft: #F8FAF6;
   --color-sand: #E2E8F0;         /* subtle card alt */
-  --color-surface: #1e293b;      /* dark surface (flips in dark mode) */
+  --color-surface: #FFFFFF;      /* light card / input surface (flips dark in dark mode) */
   --color-light: #F8FAF6;        /* fixed light — text on dark surfaces (never flips) */
   --color-muted: #475569;        /* muted text on light */
   --color-muted-dark: #94a3b8;   /* muted text on dark */

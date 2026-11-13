@@ -36,7 +36,7 @@ export function AuthShell({
       {/* Faint brand watermark */}
       <SunMark
         size={520}
-        className="pointer-events-none absolute -bottom-40 left-1/2 -translate-x-1/2 text-accent/[0.06]"
+        className="pointer-events-none absolute -bottom-40 left-1/2 -translate-x-1/2 opacity-[0.06]"
       />
 
       {/* Thin accent frame around the whole stage */}

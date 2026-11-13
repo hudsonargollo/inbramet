@@ -66,7 +66,7 @@ const trustBadges = (freeThreshold: number) => [
         ? `Em pedidos a partir de ${formatPrice(freeThreshold)}.`
         : "Em todos os pedidos da Inbramet.",
   },
-  { title: "Acabamento sólido", body: "Móveis criados para durar e acompanhar seus ambientes." },
+  { title: "Acabamento sólido", body: "Estruturas firmes e acabamentos que resistem ao uso diário." },
 ];
 
 const COVER_BY_SLUG: Record<string, string> = {

@@ -27,10 +27,12 @@ export function Commitments() {
   return (
     <section className="bg-brand py-20 text-light">
       <div className="mx-auto max-w-6xl px-5 text-center">
-        <Emblem size={40} className="mx-auto text-accent" />
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-cream shadow-[0_14px_30px_-16px_rgba(0,0,0,0.6)]">
+          <Emblem size={30} />
+        </span>
         <span className="eyebrow mt-4 block text-accent">Nosso compromisso</span>
         <h2 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
-          Móveis feitos para durar
+          Por que escolher a Inbramet
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-light/75">
           A Inbramet une design contemporâneo, materiais selecionados e atendimento dedicado para
