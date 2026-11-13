@@ -24,8 +24,8 @@ credenciales.
 2. **Configurar la base de datos**
    Copia `.env.example` a `.env` y ajusta las conexiones:
    ```env
-   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/casadelcamba?schema=public"
-   DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/casadelcamba?schema=public"
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/inbramet?schema=public"
+   DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/inbramet?schema=public"
    ```
 
 3. **Aplicar el esquema y cargar datos**
@@ -49,7 +49,7 @@ credenciales.
 | `npm run build` | Build de producción |
 | `npm run db:migrate` | Crea/aplica migraciones en desarrollo |
 | `npm run db:push` | Empuja el esquema sin migración |
-| `npm run db:seed` | colección (58 piezas), 13 sucursales, ajustes y Club Camba |
+| `npm run db:seed` | colección (58 piezas), 13 sucursales, ajustes y Clube Inbramet |
 | `npm run db:studio` | Prisma Studio |
 | `npm run db:create-admin` | Crea/actualiza el administrador desde `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
 | `npm run db:copy` | Copia datos entre dos bases (ver `prisma/copy-data.ts`) |
@@ -80,7 +80,7 @@ credenciales.
 | `/cart` | Carrito |
 | `/checkout` | Entrega o retiro + método de pago |
 | `/checkout/success` | Confirmación |
-| `/club-camba` | Club Camba — sellos, puntos y recompensas |
+| `/clube-inbramet` | Clube Inbramet — sellos, puntos y recompensas |
 
 La sucursal elegida se guarda en la cookie `cc_branch` (180 días). Sin sucursal
 se puede navegar, pero al iniciar el pago la tienda pide elegir una.
@@ -112,13 +112,13 @@ de intentos.
 
 **VPS (systemd + nginx):** el build genera un servidor standalone
 (`output: "standalone"`). `scripts/deploy.sh` compila, sincroniza a
-`/var/www/casadelcamba` y reinicia `casadelcamba.service`. Usa **una sola instancia**
+`/var/www/inbramet` y reinicia `inbramet.service`. Usa **una sola instancia**
 de larga duración (las alertas de pedidos y el rate limit son en memoria).
 
 **Docker:**
 ```bash
-docker build -t casadelcamba .
-docker run -p 3000:3000 --env-file .env -v casadelcamba-uploads:/app/uploads casadelcamba
+docker build -t inbramet .
+docker run -p 3000:3000 --env-file .env -v inbramet-uploads:/app/uploads inbramet
 ```
 
 En una base nueva:

@@ -1,22 +1,25 @@
-# inbramet rebrand — task tracker
+# Inbramet rebrand — status
 
-## Goal
-Rebrand the Casa del Camba food store (casadelcamba.clubemkt.digital) into the Inbramet
-furniture brand. Completed so far (partial, in working tree):
-- src/app/layout.tsx — title/desc/keywords/icons → Inbramet furniture ✓
-- src/lib/sample-data.ts — sample catalog → furniture ✓
+Updated 2026-11-13. Branch `pivot-furniture` (base: AI Studio commit `c9c2d40`).
 
-## Remaining scope (from audit of src/ + public/ + docs)
-- [ ] CSS theme: replace Casa-del-Camba green theme → Inbramet slate + gold
-- [ ] Brand mark: site-header/footer/emblem/logo images, favicon (food logo → Inbramet icon)
-- [ ] Copy: replace food/restaurant copy (menu, 1986, Santa Cruz,Bolivia, criollo) with furniture copy
-- [ ] Pages: shop, product, about, club-camba, cart, checkout, account, search, shipping, sucursal, success, custom, faq, contact, newsletter, commitments, delivery-band, hero-slider, promo-overlay/slider, category-art, mobile-menu, etc.
-- [ ] Admin: dashboard, products, settings, orders, invoices, auth, branch, inventory, loyalty, messages, performance, insights, analytics
-- [ ] Docs: DEPLOY.md, README.md, design-system.md (update status), catalogo-pil.md
-- [ ] Images: remove food photos, keep furniture
+## Done
+- [x] Furniture pivot (AI Studio `c9c2d40`): catalog, theme, metadata, pt-BR copy
+- [x] CSS theme → Inbramet slate + gold (`src/app/globals.css`)
+- [x] Brand mark → `public/products/inbramet-icon.png` (favicon + layout icons)
+- [x] All `casadelcamba` / `Casa del Camba` references removed from code, config, docs
+  - cookies (`inbramet_admin`, `inbramet_customer`, `inbramet_verify`), `proxy.ts`
+  - session-token HMAC label, deploy scripts, Dockerfile, README, package-lock
+- [x] Loyalty route `/club-camba` → `/clube-inbramet` (dir renamed, all links updated)
+- [x] Chairs consolidated: 9 → 3 products, each with 3 images
+  (`src/lib/sample-data.ts`, `prisma/seed.ts`)
+- [x] Build passes
 
-## Design tokens (Inbramet)
-- Slate: #0f172a bg / #1e293b cards / #334155 elevated
-- Gold: #E6FF57 accent (single per page), gold-soft #F6F9E0, paper #F8FAF6
-- Ink: #0F172A text (dark) / #F8FAF6 (light)
-- Serif display (headings), sans body. Mobile-first, bento, rounded-3xl.
+## Catalog (current)
+3 chairs (Amarela / Preta / Vermelha, 3 photos each), 2 mesas, 2 bancos,
+3 conjuntos = 10 products. Images in `public/products/`.
+
+## Remaining
+- [ ] Seed the live DB: create `.env` (DATABASE_URL etc.), run migration + `npm run db:seed`
+- [ ] Remove leftover food photos in `public/imgs/menu/` (51 files, now unreferenced)
+- [ ] Deploy `pivot-furniture` to Cloudflare (build + `opennextjs-cloudflare deploy`)
+- [ ] Verify products render from DB (not sample fallback) after seed

@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `${loyalty.name}: acumule selos e ganhe`,
     description: `${loyalty.name} da Inbramet — ${stampRuleLabel(loyalty)} e ${pointRuleLabel(loyalty)} resgatáveis por brindes.`,
-    alternates: { canonical: "/club-camba" },
+    alternates: { canonical: "/clube-inbramet" },
   };
 }
 
@@ -154,7 +154,7 @@ export default async function ClubCambaPage() {
         {!session && (
           <p className="mt-4 text-sm text-muted">
             Já tem conta?{" "}
-            <Link href="/login?next=%2Fclub-camba" className="text-accent-strong hover:underline">
+            <Link href="/login?next=%2Fclube-inbramet" className="text-accent-strong hover:underline">
               Entre aqui
             </Link>{" "}
             para acompanhar seus selos.
@@ -197,7 +197,7 @@ export default async function ClubCambaPage() {
                       />
                     ) : (
                       <Link
-                        href="/login?next=%2Fclub-camba"
+                        href="/login?next=%2Fclube-inbramet"
                         className="mt-3 w-full rounded-full border border-[var(--line-strong)] px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.1em] text-ink transition hover:border-accent hover:text-accent-strong"
                       >
                         Entre para resgatar

@@ -37,7 +37,7 @@ export function MobileMenu({
   const { count, ready } = useCart();
 
   const nav = clubName
-    ? [...NAV.slice(0, 2), { label: clubName, href: "/club-camba" }, ...NAV.slice(2)]
+    ? [...NAV.slice(0, 2), { label: clubName, href: "/clube-inbramet" }, ...NAV.slice(2)]
     : NAV;
 
   useEffect(() => {

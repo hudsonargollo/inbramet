@@ -373,7 +373,7 @@ export function CheckoutForm({
                 {loyalty.stamps > 0 && loyalty.points > 0 && " e "}
                 {loyalty.points > 0 && <span className="text-ink">{loyalty.points} pontos</span>}
                 {" · "}
-                <Link href="/club-camba" className="underline underline-offset-2 hover:text-ink">
+                <Link href="/clube-inbramet" className="underline underline-offset-2 hover:text-ink">
                   {loyalty.name}
                 </Link>
               </p>

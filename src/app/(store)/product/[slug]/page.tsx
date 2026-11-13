@@ -192,7 +192,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
                 settings.loyalty
               ) && (
                 <Assure icon="gift">
-                  <Link href="/club-camba" className="font-medium text-accent-strong hover:underline">
+                  <Link href="/clube-inbramet" className="font-medium text-accent-strong hover:underline">
                     {settings.loyalty.name}
                   </Link>
                   : {stampRuleLabel(settings.loyalty)} e {pointRuleLabel(settings.loyalty)}.

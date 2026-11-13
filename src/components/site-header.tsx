@@ -22,7 +22,7 @@ export function SiteHeader({
   const pathname = usePathname();
 
   const nav = clubName
-    ? [...NAV.slice(0, 2), { label: clubName, href: "/club-camba" }, ...NAV.slice(2)]
+    ? [...NAV.slice(0, 2), { label: clubName, href: "/clube-inbramet" }, ...NAV.slice(2)]
     : NAV;
 
   const isActive = (href: string) =>

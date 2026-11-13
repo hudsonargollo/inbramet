@@ -141,7 +141,7 @@ export default async function SuccessPage({
             )}
           </p>
           <Link
-            href="/club-camba"
+            href="/clube-inbramet"
             className="mt-3 inline-block rounded-full border border-[var(--line-strong)] px-6 py-2 text-xs font-medium uppercase tracking-[0.12em] text-ink transition hover:border-accent hover:text-accent-strong"
           >
             Ver minha cartela

@@ -32,7 +32,7 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
     phoneHref: phoneHref(settings),
   };
   const help = settings.loyalty.enabled
-    ? [{ label: settings.loyalty.name, href: "/club-camba" }, ...HELP]
+    ? [{ label: settings.loyalty.name, href: "/clube-inbramet" }, ...HELP]
     : HELP;
   return (
     <footer

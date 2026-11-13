@@ -27,7 +27,7 @@ export function ClubBand({ rules }: { rules: LoyaltySettings }) {
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/club-camba"
+              href="/clube-inbramet"
               className="rounded-full bg-gradient-to-r from-accent-soft to-accent px-8 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-brand transition hover:opacity-90"
             >
               Conhecer o clube
