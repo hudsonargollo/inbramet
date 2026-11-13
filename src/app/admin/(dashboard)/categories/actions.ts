@@ -11,7 +11,7 @@ import { dbErrorKind } from "@/lib/db-errors";
 export type CategoryState = { error?: string; ok?: boolean };
 
 const schema = z.object({
-  name: z.string().min(2, "Ingresa un nombre de categoría"),
+  name: z.string().min(2, "Informe um nome para a categoria"),
   slug: z.string().optional(),
   description: z.string().optional(),
 });
@@ -39,10 +39,10 @@ export async function createCategory(
     });
   } catch (err) {
     const kind = dbErrorKind(err);
-    if (kind === "duplicate") return { error: "Ya existe una categoría con ese nombre o slug." };
+    if (kind === "duplicate") return { error: "Já existe uma categoria com esse nome ou slug." };
     if (kind === "unavailable")
-      return { error: "Base de datos no disponible. Inténtalo de nuevo." };
-    return { error: "No se pudo crear la categoría." };
+      return { error: "Banco de dados indisponível. Tente novamente." };
+    return { error: "Não foi possível criar a categoria." };
   }
   refreshStorefront();
   return { ok: true };

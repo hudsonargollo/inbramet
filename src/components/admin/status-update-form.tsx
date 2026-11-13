@@ -7,14 +7,14 @@ import { useToast } from "@/components/ui/toast";
 type Action = (prev: StatusState, formData: FormData) => Promise<StatusState>;
 
 const STATUS_LABELS: Record<string, string> = {
-  PENDING: "Pendiente",
+  PENDING: "Pendente",
   CONFIRMED: "Confirmado",
-  PROCESSING: "En preparación",
+  PROCESSING: "Em preparação",
   SHIPPED: "Enviado",
-  DELIVERED: "Entregado",
+  DELIVERED: "Entregue",
   CANCELLED: "Cancelado",
-  PAID: "Pagado",
-  FAILED: "Fallido",
+  PAID: "Pago",
+  FAILED: "Falhou",
   REFUNDED: "Reembolsado",
 };
 
@@ -41,7 +41,7 @@ export function StatusUpdateForm({
   const toast = useToast();
 
   useEffect(() => {
-    if (state.ok) toast.success(successMessage, { title: "Guardado" });
+    if (state.ok) toast.success(successMessage, { title: "Salvo" });
     else if (state.error) toast.error(state.error);
   }, [state, toast, successMessage]);
 
@@ -54,8 +54,8 @@ export function StatusUpdateForm({
           </option>
         ))}
       </select>
-      <button disabled={pending || options.length <= 1} className={saveBtn} title={options.length <= 1 ? "Este estado es definitivo" : undefined}>
-        {pending ? "Guardando…" : "Guardar"}
+      <button disabled={pending || options.length <= 1} className={saveBtn} title={options.length <= 1 ? "Este status é definitivo" : undefined}>
+        {pending ? "Salvando…" : "Salvar"}
       </button>
     </form>
   );

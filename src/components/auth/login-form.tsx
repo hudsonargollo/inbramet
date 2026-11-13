@@ -11,7 +11,7 @@ const initial: AuthState = {};
 
 const VALIDATE = {
   email: emailError,
-  password: (v: string) => (v ? null : "Ingresa tu contraseña"),
+  password: (v: string) => (v ? null : "Informe sua senha"),
 };
 
 export function LoginForm({ next }: { next?: string }) {
@@ -23,13 +23,13 @@ export function LoginForm({ next }: { next?: string }) {
   return (
     <AuthShell>
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold text-ink">Hola de nuevo</h1>
-        <p className="mt-1 text-sm text-muted">Inicia sesión para seguir comprando.</p>
+        <h1 className="font-display text-3xl font-bold text-ink">Bem-vindo de volta</h1>
+        <p className="mt-1 text-sm text-muted">Entre na sua conta para continuar comprando.</p>
       </div>
 
       {next?.startsWith("/checkout") && (
         <p className="mt-5 rounded-xl border border-accent/50 bg-accent/10 px-3.5 py-3 text-center text-sm text-ink">
-          Inicia sesión o crea una cuenta gratis para realizar tu pedido — tu carrito se guarda.
+          Entre ou crie uma conta gratuita para finalizar seu pedido — seu carrinho fica salvo.
         </p>
       )}
 
@@ -37,25 +37,25 @@ export function LoginForm({ next }: { next?: string }) {
         {next && <input type="hidden" name="next" value={next} />}
         <AuthField
           name="email"
-          label="Correo electrónico"
+          label="E-mail"
           icon="mail"
           type="email"
           autoComplete="email"
-          placeholder="tu@ejemplo.com"
+          placeholder="voce@email.com.br"
           {...f.bind("email")}
           {...email}
         />
         <AuthField
           name="password"
-          label="Contraseña"
+          label="Senha"
           icon="lock"
           password
           autoComplete="current-password"
-          placeholder="Tu contraseña"
+          placeholder="Sua senha"
           {...f.bind("password")}
           labelAside={
             <Link href="/forgot-password" className="text-xs font-medium text-accent-strong hover:underline">
-              ¿Olvidaste tu contraseña?
+              Esqueceu a senha?
             </Link>
           }
           {...password}
@@ -64,21 +64,21 @@ export function LoginForm({ next }: { next?: string }) {
         {state.error && <AuthAlert>{state.error}</AuthAlert>}
 
         <div>
-          <AuthSubmit pending={pending} label="Iniciar sesión" pendingLabel="Iniciando sesión…" />
+          <AuthSubmit pending={pending} label="Entrar" pendingLabel="Entrando…" />
           <SecureNote />
         </div>
       </form>
 
       <div className="mt-6 flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.2em] text-muted">
         <span className="h-px flex-1 bg-[var(--line)]" />
-        ¿Primera vez en Inbramet?
+        Primeira vez na Inbramet?
         <span className="h-px flex-1 bg-[var(--line)]" />
       </div>
       <Link
         href={next ? `/register?next=${encodeURIComponent(next)}` : "/register"}
         className="mt-4 block rounded-full border border-accent/60 py-3 text-center text-sm font-semibold uppercase tracking-[0.14em] text-accent-strong transition hover:border-accent hover:bg-accent/10"
       >
-        Crear una cuenta
+        Criar uma conta
       </Link>
     </AuthShell>
   );

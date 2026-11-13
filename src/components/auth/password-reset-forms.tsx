@@ -18,38 +18,38 @@ export function ForgotPasswordForm() {
   const [formRef, f] = useAuthForm(formAction, state, { email: emailError });
 
   return (
-    <AuthShell backHref="/login" backLabel="Volver a iniciar sesión">
+    <AuthShell backHref="/login" backLabel="Voltar para o login">
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold text-ink">Olvidé mi contraseña</h1>
-        <p className="mt-1 text-sm text-muted">Te enviaremos un enlace por correo para que elijas una nueva.</p>
+        <h1 className="font-display text-3xl font-bold text-ink">Esqueci minha senha</h1>
+        <p className="mt-1 text-sm text-muted">Enviaremos um link por e-mail para você criar uma nova.</p>
       </div>
 
       {state.ok ? (
         <div className="mt-7 rounded-xl border border-ok/40 bg-ok/[0.07] px-4 py-4 text-center text-sm text-ink">
-          <p className="font-display text-lg font-semibold text-ok">Revisa tu correo</p>
+          <p className="font-display text-lg font-semibold text-ok">Verifique seu e-mail</p>
           <p className="mt-1">{state.message}</p>
         </div>
       ) : (
         <form ref={formRef} action={formAction} onSubmit={f.onSubmit} noValidate className="mt-7 space-y-5">
           <AuthField
             name="email"
-            label="Correo electrónico"
+            label="E-mail"
             icon="mail"
             type="email"
             autoComplete="email"
-            placeholder="tu@ejemplo.com"
+            placeholder="voce@email.com.br"
             {...f.bind("email")}
             {...f.field("email")}
           />
           {state.error && <AuthAlert>{state.error}</AuthAlert>}
-          <AuthSubmit pending={pending} label="Enviar enlace" pendingLabel="Enviando…" />
+          <AuthSubmit pending={pending} label="Enviar link" pendingLabel="Enviando…" />
         </form>
       )}
 
       <p className="mt-6 text-center text-sm text-muted">
-        ¿La recordaste?{" "}
+        Lembrou a senha?{" "}
         <Link href="/login" className="font-semibold text-accent-strong hover:underline">
-          Iniciar sesión
+          Entrar
         </Link>
       </p>
     </AuthShell>
@@ -62,10 +62,10 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const password = f.field("password");
 
   return (
-    <AuthShell backHref="/login" backLabel="Volver a iniciar sesión">
+    <AuthShell backHref="/login" backLabel="Voltar para o login">
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold text-ink">Elige una nueva contraseña</h1>
-        <p className="mt-1 text-sm text-muted">Iniciarás sesión justo después.</p>
+        <h1 className="font-display text-3xl font-bold text-ink">Escolha uma nova senha</h1>
+        <p className="mt-1 text-sm text-muted">Você entrará na sua conta logo em seguida.</p>
       </div>
 
       {token ? (
@@ -73,25 +73,25 @@ export function ResetPasswordForm({ token }: { token: string }) {
           <input type="hidden" name="token" value={token} />
           <AuthField
             name="password"
-            label="Nueva contraseña"
+            label="Nova senha"
             icon="lock"
             password
             autoComplete="new-password"
-            placeholder="Crea una contraseña"
+            placeholder="Crie uma senha"
             {...f.bind("password")}
             {...password}
           >
             <PasswordStrength value={f.value("password")} highlight={password.status === "invalid"} />
           </AuthField>
           {state.error && <AuthAlert>{state.error}</AuthAlert>}
-          <AuthSubmit pending={pending} label="Actualizar contraseña" pendingLabel="Guardando…" />
+          <AuthSubmit pending={pending} label="Atualizar senha" pendingLabel="Salvando…" />
         </form>
       ) : (
         <div className="mt-7">
           <AuthAlert>
-            Este enlace de recuperación está incompleto.{" "}
+            Este link de recuperação está incompleto.{" "}
             <Link href="/forgot-password" className="font-semibold underline">
-              Solicitar uno nuevo
+              Solicitar um novo
             </Link>
             .
           </AuthAlert>

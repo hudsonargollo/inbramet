@@ -12,10 +12,10 @@ const LOW_STOCK = 5;
 function Availability({ stock }: { stock: number }) {
   const [dot, text, label] =
     stock <= 0
-      ? ["bg-muted/60", "text-muted", "Agotado"]
+      ? ["bg-muted/60", "text-muted", "Esgotado"]
       : stock <= LOW_STOCK
-        ? ["bg-bad animate-pulse", "text-bad", `Quedan ${stock}`]
-        : ["bg-ok", "text-ok", "En stock"];
+        ? ["bg-bad animate-pulse", "text-bad", `Restam ${stock}`]
+        : ["bg-ok", "text-ok", "Em estoque"];
   return (
     <p className={`mt-1 flex items-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] ${text}`}>
       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot}`} />
@@ -31,7 +31,7 @@ export function ProductCard({ product }: { product: ProductView }) {
 
   return (
     <div
-      className={`group flex h-full flex-col overflow-hidden rounded-xl border transition hover:border-accent hover:shadow-[0_18px_40px_-24px_rgba(29,58,14,0.5)] ${
+      className={`group flex h-full flex-col overflow-hidden rounded-xl border transition hover:border-accent hover:shadow-[0_18px_40px_-24px_rgba(15,23,42,0.45)] ${
         off ? "border-accent/55 bg-surface/70" : "border-[var(--line)] bg-gradient-to-b from-surface/80 to-cream-soft/60"
       }`}
     >
@@ -42,12 +42,12 @@ export function ProductCard({ product }: { product: ProductView }) {
         {/* keeps packshots on white while the card around them stays brand-warm */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_70%_at_50%_42%,transparent_58%,rgba(29,58,14,0.06)_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_70%_at_50%_42%,transparent_58%,rgba(15,23,42,0.06)_100%)]"
         />
         {off ? <SaleRibbon percent={off} /> : null}
         {soldOut && (
           <span className="absolute right-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-[0.65rem] font-medium tracking-wide text-white">
-            Agotado
+            Esgotado
           </span>
         )}
       </Link>

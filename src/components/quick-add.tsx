@@ -8,7 +8,6 @@ import { toCartLine } from "@/lib/cart";
 
 const MAX_QTY = 20;
 
-// Quantity stepper + add button used on product cards.
 export function QuickAdd({ product }: { product: ProductView }) {
   const { add } = useCart();
   const toast = useToast();
@@ -25,7 +24,7 @@ export function QuickAdd({ product }: { product: ProductView }) {
   if (soldOut) {
     return (
       <p className="mt-3 text-center text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-muted">
-        Agotado
+        Esgotado
       </p>
     );
   }
@@ -35,13 +34,13 @@ export function QuickAdd({ product }: { product: ProductView }) {
       <div
         className="flex h-10 shrink-0 items-center rounded-full border border-[var(--line-strong)] bg-surface"
         role="group"
-        aria-label={`Cantidad de ${product.name}`}
+        aria-label={`Quantidade de ${product.name}`}
       >
         <button
           type="button"
           onClick={() => setQty((value) => Math.max(1, value - 1))}
           disabled={qty <= 1}
-          aria-label="Quitar una unidad"
+          aria-label="Remover uma unidade"
           className="flex h-10 w-8 items-center justify-center rounded-l-full text-base text-muted transition hover:text-brand disabled:cursor-not-allowed disabled:opacity-40 dark:hover:text-accent-soft"
         >
           −
@@ -56,7 +55,7 @@ export function QuickAdd({ product }: { product: ProductView }) {
           type="button"
           onClick={() => setQty((value) => Math.min(max, value + 1))}
           disabled={qty >= max}
-          aria-label="Agregar una unidad"
+          aria-label="Adicionar uma unidade"
           className="flex h-10 w-8 items-center justify-center rounded-r-full text-base text-muted transition hover:text-brand disabled:cursor-not-allowed disabled:opacity-40 dark:hover:text-accent-soft"
         >
           +
@@ -72,16 +71,16 @@ export function QuickAdd({ product }: { product: ProductView }) {
           if (addedTimer.current) window.clearTimeout(addedTimer.current);
           addedTimer.current = window.setTimeout(() => setAdded(false), 1500);
           toast.success(
-            `${qty} × ${product.name} al carrito`,
-            { title: "Agregado al carrito" }
+            `${qty} × ${product.name} no carrinho`,
+            { title: "Adicionado ao carrinho" }
           );
         }}
-        aria-label={`Agregar ${qty} ${product.name} al carrito`}
-        title="Agregar al carrito"
+        aria-label={`Adicionar ${qty} ${product.name} ao carrinho`}
+        title="Adicionar ao carrinho"
         className={`flex h-10 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-xs font-semibold uppercase tracking-[0.08em] transition duration-200 active:scale-[0.98] ${
           added
-            ? "bg-accent text-brand-deep shadow-[0_12px_26px_-14px_rgba(255,204,4,0.95)]"
-            : "bg-brand text-light shadow-[0_12px_26px_-14px_rgba(76,138,35,0.8)] hover:bg-brand-deep"
+            ? "bg-accent text-brand-deep shadow-[0_12px_26px_-14px_rgba(15,23,42,0.4)]"
+            : "bg-brand text-light shadow-[0_12px_26px_-14px_rgba(15,23,42,0.55)] hover:bg-brand-deep"
         }`}
       >
         {added ? (
@@ -96,7 +95,7 @@ export function QuickAdd({ product }: { product: ProductView }) {
             <path d="M14 9v5M11.5 11.5h5" strokeLinecap="round" />
           </svg>
         )}
-        <span>{added ? "Agregado" : "Agregar"}</span>
+        <span>{added ? "Adicionado" : "Adicionar"}</span>
       </button>
     </div>
   );

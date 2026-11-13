@@ -6,7 +6,7 @@ import {
 } from "@/components/admin/dashboard-insights";
 import { requireAdmin, scopeBranchId } from "@/lib/admin";
 
-export const metadata = { title: "Tendencias" };
+export const metadata = { title: "Tendências" };
 
 export const dynamic = "force-dynamic";
 
@@ -20,9 +20,9 @@ export default async function InsightsPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-ink">Tendencias</h1>
+      <h1 className="font-display text-3xl font-bold text-ink">Tendências</h1>
       <p className="mt-1 text-sm text-muted">
-        Más vendidos, composición por categoría y tus clientes más recientes.
+        Mais vendidos, participação por categoria e seus clientes mais recentes.
       </p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">

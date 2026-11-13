@@ -33,36 +33,36 @@ export function ProductForm({
 
   return (
     <form action={formAction} className="max-w-2xl space-y-5">
-      <Row label="Nombre" required>
+      <Row label="Nome" required>
         <input name="name" required defaultValue={v?.name ?? product?.name} className={input} />
       </Row>
-      <Row label="Slug" hint="Déjalo en blanco para generarlo automáticamente a partir del nombre">
+      <Row label="Slug" hint="Deixe em branco para gerar automaticamente a partir do nome">
         <input name="slug" defaultValue={v?.slug ?? product?.slug} className={input} placeholder="automático" />
       </Row>
-      <Row label={isCombo ? "Qué incluye el combo" : "Descripción"} required={isCombo}>
-        <textarea name="description" rows={4} required={isCombo} defaultValue={v?.description ?? product?.description ?? ""} className={input} placeholder={isCombo ? "Ej. 2 empanadas de keperí + majao + 2 bebidas de 500 ml" : undefined} />
+      <Row label={isCombo ? "O que inclui o conjunto" : "Descrição"} required={isCombo}>
+        <textarea name="description" rows={4} required={isCombo} defaultValue={v?.description ?? product?.description ?? ""} className={input} placeholder={isCombo ? "Ex. Mesa central + 4 cadeiras estofadas em tecido azul" : undefined} />
       </Row>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <Row label="Precio (Bs)" required>
+        <Row label="Preço (R$)" required>
           <input name="price" type="number" min="0" step="1" required defaultValue={v?.price ?? product?.price} className={input} />
         </Row>
-        <Row label="Precio anterior (Bs)" hint="Opcional: se muestra tachado">
+        <Row label="Preço anterior (R$)" hint="Opcional: exibido riscado">
           <input name="compareAtPrice" type="number" min="0" step="1" defaultValue={v?.compareAtPrice ?? product?.compareAtPrice ?? ""} className={input} />
         </Row>
         <Row label="SKU">
           <input name="sku" defaultValue={v?.sku ?? product?.sku ?? ""} className={input} />
         </Row>
-        <Row label="Presentación">
-          <input name="material" defaultValue={v?.material ?? product?.material ?? ""} className={input} placeholder="Ej. 500 ml · Para 2 personas" />
+        <Row label="Acabamento / cor">
+          <input name="material" defaultValue={v?.material ?? product?.material ?? ""} className={input} placeholder="Ex. Tecido estampado · Azul" />
         </Row>
         {isCombo ? (
           <input type="hidden" name="categoryId" value={product?.categoryId ?? "combos"} />
         ) : (
-          <Row label="Categoría" required>
+          <Row label="Categoria" required>
             <select key={v?.categoryId ?? "init"} name="categoryId" required defaultValue={v?.categoryId ?? product?.categoryId ?? ""} className={input}>
               <option value="" disabled>
-                Elige una categoría
+                Escolha uma categoria
               </option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -75,39 +75,39 @@ export function ProductForm({
       </div>
 
       <Row
-        label="Especificaciones"
-        hint={'Una por línea con el formato «Etiqueta: Valor». Se muestran en la tabla de destacados y especificaciones de la página del producto.'}
+        label="Especificações"
+        hint={'Uma por linha no formato «Rótulo: Valor». Exibidas na tabela de destaques e especificações da página do produto.'}
       >
         <textarea
           name="specs"
           rows={6}
           defaultValue={v?.specs ?? product?.specs ?? ""}
           className={input}
-          placeholder={`Presentación: Plato individual\nIngredientes: Arroz, pato y urucú\nAcompañamiento: Yuca frita y plátano\nBebida: 500 ml`}
+          placeholder={`Material: Tecido de estofaria e aço\nMedidas: 78 × 46 × 48 cm\nCor: Amarelo\nUso: Sala de jantar / Escritório`}
         />
       </Row>
 
-      <Row label="Imágenes del producto" hint="Sube desde tu dispositivo: la primera imagen es la principal.">
+      <Row label="Imagens do produto" hint="Envie do seu dispositivo: a primeira imagem é a principal.">
         <ImageUploader initial={product?.images ?? []} />
       </Row>
 
       {isCombo && !product && (
-        <Row label="Stock inicial por sucursal" hint="Unidades del combo completo en cada sucursal activa. Luego puedes ajustarlas por sucursal en Inventario; no se descuenta stock de sus componentes.">
+        <Row label="Estoque inicial" hint="Unidades disponíveis do conjunto na loja online. Você pode ajustar depois em Estoque.">
           <input name="initialStock" type="number" min="0" max="100000" step="1" defaultValue={v?.initialStock ?? 0} className={input} />
         </Row>
       )}
       {isCombo && product && (
-        <p className="text-sm text-muted">Gestiona las unidades del combo por sucursal desde <Link href="/admin/inventory" className="underline">Inventario</Link>.</p>
+        <p className="text-sm text-muted">Gerencie as unidades do conjunto em <Link href="/admin/inventory" className="underline">Estoque</Link>.</p>
       )}
 
       <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm text-ink">
           <input type="checkbox" name="featured" defaultChecked={v ? v.featured === "on" : product?.featured} className="accent-[var(--color-accent-strong)]" />
-          Destacado
+          Destaque
         </label>
         <label className="flex items-center gap-2 text-sm text-ink">
           <input type="checkbox" name="active" defaultChecked={v ? v.active === "on" : product?.active ?? !isCombo} className="accent-[var(--color-accent-strong)]" />
-          {isCombo ? "Publicar en el menú" : "Activo (visible en la tienda)"}
+          {isCombo ? "Publicar na coleção" : "Ativo (visível na loja)"}
         </label>
       </div>
 
@@ -119,9 +119,9 @@ export function ProductForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-brand-deep shadow-[0_14px_32px_-16px_rgba(255,204,4,0.9)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft disabled:opacity-60"
+          className="rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-brand-deep shadow-[0_14px_32px_-16px_rgba(230,255,87,0.75)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft disabled:opacity-60"
         >
-          {pending ? "Guardando…" : submitLabel}
+          {pending ? "Salvando…" : submitLabel}
         </button>
         <Link href="/admin/products" className="text-sm text-muted hover:text-ink">
           Cancelar
@@ -132,7 +132,7 @@ export function ProductForm({
 }
 
 const input =
-  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-[rgba(255,204,4,0.2)]";
+  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25";
 
 function ImageUploader({ initial }: { initial: string[] }) {
   const [urls, setUrls] = useState<string[]>(initial);
@@ -152,10 +152,10 @@ function ImageUploader({ initial }: { initial: string[] }) {
         fd.append("file", f);
         const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
         const d = await r.json();
-        if (!r.ok || !d.ok) throw new Error(d.error || "Error al subir");
+        if (!r.ok || !d.ok) throw new Error(d.error || "Erro ao enviar");
         setUrls((prev) => [...prev, d.url]);
       } catch (e) {
-        setErr(e instanceof Error ? e.message : "Error al subir");
+        setErr(e instanceof Error ? e.message : "Erro ao enviar");
       }
     }
     setBusy(false);
@@ -193,10 +193,10 @@ function ImageUploader({ initial }: { initial: string[] }) {
               )}
               <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-black/45 px-1.5 py-1 opacity-0 transition-opacity group-hover:opacity-100">
                 <div className="flex gap-1">
-                  <button type="button" onClick={() => move(u, -1)} disabled={i === 0} className="text-light disabled:opacity-30" aria-label="Mover a la izquierda">‹</button>
-                  <button type="button" onClick={() => move(u, 1)} disabled={i === urls.length - 1} className="text-light disabled:opacity-30" aria-label="Mover a la derecha">›</button>
+                  <button type="button" onClick={() => move(u, -1)} disabled={i === 0} className="text-light disabled:opacity-30" aria-label="Mover para a esquerda">‹</button>
+                  <button type="button" onClick={() => move(u, 1)} disabled={i === urls.length - 1} className="text-light disabled:opacity-30" aria-label="Mover para a direita">›</button>
                 </div>
-                <button type="button" onClick={() => remove(u)} className="text-light hover:text-red-300" aria-label="Quitar">✕</button>
+                <button type="button" onClick={() => remove(u)} className="text-light hover:text-red-300" aria-label="Remover">✕</button>
               </div>
             </div>
           ))}
@@ -217,9 +217,9 @@ function ImageUploader({ initial }: { initial: string[] }) {
           <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
         </svg>
         <p className="text-sm text-ink">
-          {busy ? "Subiendo…" : "Haz clic para subir o arrastra las imágenes"}
+          {busy ? "Enviando…" : "Clique para enviar ou arraste as imagens"}
         </p>
-        <p className="text-xs text-muted">JPG, PNG, WEBP · hasta 5 MB cada una</p>
+        <p className="text-xs text-muted">JPG, PNG, WEBP · até 5 MB cada</p>
         <input
           ref={fileRef}
           type="file"

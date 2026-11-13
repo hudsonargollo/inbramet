@@ -9,7 +9,7 @@ export function HeaderCart({ className = "" }: { className?: string }) {
   return (
     <Link
       href="/cart"
-      aria-label={`Carrito${ready && count ? `, ${count} productos` : ""}`}
+      aria-label={`Carrinho${ready && count ? `, ${count} produto${count === 1 ? "" : "s"}` : ""}`}
       className={className || "relative transition-colors hover:text-accent"}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">

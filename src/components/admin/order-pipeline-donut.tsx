@@ -4,11 +4,11 @@ import { useState } from "react";
 import type { StatusCount } from "@/lib/admin-data";
 
 const STATUS_META: Record<string, { label: string; color: string }> = {
-  PENDING: { label: "Pendiente", color: "#d99a2b" },
+  PENDING: { label: "Pendente", color: "#d99a2b" },
   CONFIRMED: { label: "Confirmado", color: "#6366f1" },
-  PROCESSING: { label: "En preparación", color: "#0ea5e9" },
+  PROCESSING: { label: "Em preparação", color: "#0ea5e9" },
   SHIPPED: { label: "Enviado", color: "#8b5cf6" },
-  DELIVERED: { label: "Entregado", color: "#10b981" },
+  DELIVERED: { label: "Entregue", color: "#10b981" },
   CANCELLED: { label: "Cancelado", color: "#e11d48" },
 };
 
@@ -49,18 +49,18 @@ export function OrderPipelineDonut({ counts, total }: { counts: StatusCount[]; t
   });
 
   const activeData = active ? counts.find((c) => c.status === active) : null;
-  const centerLabel = activeData ? meta(activeData.status).label : "Pedidos totales";
+  const centerLabel = activeData ? meta(activeData.status).label : "Total de pedidos";
   const centerValue = activeData ? activeData.count : total;
   const centerShare = activeData && total > 0 ? Math.round((activeData.count / total) * 100) : null;
 
   return (
-    <section className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6">
-      <span className="eyebrow">Cumplimiento</span>
-      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Flujo de pedidos</h2>
+    <section className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6">
+      <span className="eyebrow">Operação</span>
+      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Fluxo de pedidos</h2>
 
       {total === 0 ? (
         <p className="mt-5 rounded-lg border border-dashed border-[var(--line)] py-10 text-center text-sm text-muted">
-          Aún no hay pedidos: el flujo se completará a medida que lleguen.
+          Ainda não há pedidos: o fluxo aparecerá conforme forem recebidos.
         </p>
       ) : (
         <div className="mt-4 flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-8">
@@ -133,7 +133,7 @@ export function OrderPipelineDonut({ counts, total }: { counts: StatusCount[]; t
             {/* Tooltip near cursor */}
             {activeData && cursor && (
               <div
-                className="pointer-events-none absolute z-10 rounded-lg border border-[var(--line)] bg-surface px-3 py-2 shadow-[0_14px_34px_-16px_rgba(29,58,14,0.5)]"
+                className="pointer-events-none absolute z-10 rounded-lg border border-[var(--line)] bg-surface px-3 py-2 shadow-[0_14px_34px_-16px_rgba(15,23,42,0.45)]"
                 style={{
                   left: Math.min(Math.max(cursor.x, 60), 220 - 60),
                   top: Math.max(cursor.y - 12, 4),

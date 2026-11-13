@@ -7,13 +7,13 @@ import { formatDate } from "@/lib/format";
 import { AdjustForm, LoyaltyRulesForm, RewardForm, type RewardRow } from "@/components/admin/loyalty-forms";
 import { setRedemptionStatus, setRewardActive } from "./actions";
 
-export const metadata = { title: "Club" };
+export const metadata = { title: "Clube" };
 export const dynamic = "force-dynamic";
 
 const STATUS_LABEL: Record<string, string> = {
-  PENDING: "Pedido",
-  READY: "Listo en caja",
-  COLLECTED: "Entregado",
+  PENDING: "Solicitado",
+  READY: "Pronto para envio",
+  COLLECTED: "Entregue",
   CANCELLED: "Cancelado",
 };
 
@@ -111,14 +111,14 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
     <div>
       <h1 className="font-display text-3xl font-bold text-ink">{rules.name}</h1>
       <p className="mt-1 text-sm text-muted">
-        Sellos, puntos y regalos canjeables. {stampRuleLabel(rules)} · {pointRuleLabel(rules)}.
+        Selos, pontos e prêmios resgatáveis. {stampRuleLabel(rules)} · {pointRuleLabel(rules)}.
       </p>
 
-      <nav className="mt-5 flex flex-wrap gap-2" aria-label="Secciones del club">
+      <nav className="mt-5 flex flex-wrap gap-2" aria-label="Seções do clube">
         {[
-          { id: "reglas", label: "Reglas" },
-          { id: "regalos", label: "Regalos" },
-          { id: "canjes", label: `Canjes (${pendingCount})` },
+          { id: "reglas", label: "Regras" },
+          { id: "regalos", label: "Prêmios" },
+          { id: "canjes", label: `Resgates (${pendingCount})` },
           { id: "clientes", label: "Clientes" },
         ].map((s) => (
           <a
@@ -134,8 +134,8 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
       <div className="mt-6 space-y-6">
         {!canEdit && (
           <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            Has iniciado sesión como <strong>personal</strong>: puedes preparar y entregar canjes, pero
-            solo un administrador cambia las reglas, los regalos y los saldos.
+            Você entrou como <strong>equipe</strong>: pode preparar e entregar resgates, mas
+            apenas administradores alteram regras, prêmios e saldos.
           </p>
         )}
 
@@ -149,12 +149,12 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
         {/* Rewards catalogue */}
         <section
           id="regalos"
-          className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6"
+          className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6"
         >
-          <h2 className="font-display text-xl font-semibold text-ink">Regalos canjeables</h2>
+          <h2 className="font-display text-xl font-semibold text-ink">Prêmios resgatáveis</h2>
           <p className="mt-1 text-sm text-muted">
-            {members} cliente{members === 1 ? "" : "s"} con saldos. Un regalo sin stock aparece como
-            «Agotado» en la tienda y nadie puede canjearlo.
+            {members} cliente{members === 1 ? "" : "s"} com saldo. Um prêmio sem estoque aparece como
+            «Esgotado» na loja e não pode ser resgatado.
           </p>
           <div className="mt-4 space-y-3">
             {rewards.map((r) => (
@@ -164,7 +164,7 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
                     <RewardForm reward={r} canEdit={canEdit} />
                   ) : (
                     <p className="text-sm text-ink">
-                      {r.name} · {r.costPoints} pts · {r.stock} en stock
+                      {r.name} · {r.costPoints} pts · {r.stock} em estoque
                       {!r.active && <span className="text-muted"> · oculto</span>}
                     </p>
                   )}
@@ -175,7 +175,7 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
                       type="submit"
                       className="rounded-lg border border-[var(--line-strong)] px-3 py-1.5 text-xs font-medium text-ink transition hover:border-accent hover:text-accent-strong"
                     >
-                      {r.active ? "Ocultar de la tienda" : "Volver a mostrar"}
+                      {r.active ? "Ocultar da loja" : "Mostrar novamente"}
                     </button>
                   </form>
                 )}
@@ -183,8 +183,8 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
             ))}
             {rewards.length === 0 && (
               <p className="rounded-xl border border-dashed border-[var(--line)] px-4 py-8 text-center text-sm text-muted">
-                Todavía no hay regalos.{" "}
-                {canEdit ? "Añade el primero abajo." : "Un administrador puede añadirlos."}
+                Ainda não há prêmios.{" "}
+                {canEdit ? "Adicione o primeiro abaixo." : "Um administrador pode adicioná-los."}
               </p>
             )}
             {canEdit && <RewardForm canEdit={canEdit} />}
@@ -194,16 +194,16 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
         {/* Redemption counter */}
         <section
           id="canjes"
-          className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6"
+          className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6"
         >
-          <h2 className="font-display text-xl font-semibold text-ink">Canjes para entregar</h2>
+          <h2 className="font-display text-xl font-semibold text-ink">Resgates para entrega</h2>
           <p className="mt-1 text-sm text-muted">
-            El cliente muestra el código en caja. «Cancelar» devuelve el regalo al stock y los puntos al
+            O cliente apresenta o código no atendimento. «Cancelar» devolve o prêmio ao estoque e os pontos ao
             cliente.
           </p>
           {redemptions.length === 0 ? (
             <p className="mt-4 rounded-xl border border-dashed border-[var(--line)] px-4 py-10 text-center text-sm text-muted">
-              Todavía nadie canjeó un regalo.
+              Ainda ninguém resgatou um prêmio.
             </p>
           ) : (
             <ul className="mt-4 space-y-3">
@@ -219,7 +219,7 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
                     </p>
                     <p className="text-xs text-muted">
                       {r.customer.name} · {r.customer.email} · {r.costPoints} pts ·{" "}
-                      {r.branch?.name ?? "sin sucursal"} · {formatDate(r.createdAt)}
+                      {formatDate(r.createdAt)}
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -250,18 +250,18 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
         {/* Customers */}
         <section
           id="clientes"
-          className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6"
+          className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6"
         >
           <h2 className="font-display text-xl font-semibold text-ink">Saldos por cliente</h2>
           <p className="mt-1 text-sm text-muted">
-            Busca por nombre o correo y elige a alguien para ver sus tarjetas o corregir su saldo.
+            Busque por nome ou e-mail e escolha um cliente para ver seus cartões ou ajustar o saldo.
           </p>
           <form className="mt-4 flex flex-wrap gap-2" action="/admin/loyalty">
             {picked && <input type="hidden" name="cliente" value={picked.id} />}
             <input
               name="q"
               defaultValue={q}
-              placeholder="Nombre o correo…"
+              placeholder="Nome ou e-mail…"
               className="w-full max-w-xs rounded-lg border border-[var(--line-strong)] bg-surface px-3.5 py-2.5 text-sm text-ink outline-none focus:border-accent"
             />
             <button
@@ -274,7 +274,7 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
 
           {customerRows.length === 0 ? (
             <p className="mt-4 rounded-xl border border-dashed border-[var(--line)] px-4 py-10 text-center text-sm text-muted">
-              {q ? "Ningún cliente coincide con la búsqueda." : "Aún no hay clientes con sellos o puntos."}
+              {q ? "Nenhum cliente corresponde à sua busca." : "Ainda não há clientes com selos ou pontos."}
             </p>
           ) : (
             <ul className="mt-4 divide-y divide-[var(--line)]">
@@ -288,13 +288,13 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-xs text-muted">
-                        {b?.stamps ?? 0} sellos · {b?.points ?? 0} pts
+                        {b?.stamps ?? 0} selos · {b?.points ?? 0} pts
                       </span>
                       <a
                         href={`/admin/loyalty?cliente=${c.id}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                         className="rounded-lg border border-[var(--line-strong)] px-3 py-1.5 text-xs font-medium text-ink transition hover:border-accent hover:text-accent-strong"
                       >
-                        Ver y ajustar
+                        Ver e ajustar
                       </a>
                     </div>
                   </li>
@@ -324,13 +324,13 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
                               : "border-[var(--line-strong)] text-muted"
                           }`}
                         >
-                          {p?.name ?? "Producto"}: {card.filled}/{card.size}
-                          {card.full && " · lista"}
+                          {p?.name ?? "Produto"}: {card.filled}/{card.size}
+                          {card.full && " · completo"}
                         </span>
                       );
                     })}
                   {Object.values(pickedBalances.stampsByProduct).filter((n) => n > 0).length === 0 && (
-                    <span className="text-muted">Sin sellos activos.</span>
+                    <span className="text-muted">Sem selos ativos.</span>
                   )}
                 </div>
               </div>
@@ -343,7 +343,7 @@ export default async function AdminLoyaltyPage({ searchParams }: PageProps<"/adm
                         {movementLabel(h)}
                       </span>
                       <span className="shrink-0 tabular-nums">
-                        {h.stamps !== 0 && `${h.stamps > 0 ? "+" : ""}${h.stamps} sellos`}
+                        {h.stamps !== 0 && `${h.stamps > 0 ? "+" : ""}${h.stamps} selos`}
                         {h.stamps !== 0 && h.points !== 0 && " · "}
                         {h.points !== 0 && `${h.points > 0 ? "+" : ""}${h.points} pts`}
                       </span>

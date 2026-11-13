@@ -1,4 +1,3 @@
-// Plain constants (safe to import anywhere — not a "use server" module).
 export const ORDER_STATUSES = [
   "PENDING",
   "CONFIRMED",
@@ -13,8 +12,6 @@ export const PAYMENT_STATUSES = ["PENDING", "PAID", "FAILED", "REFUNDED"] as con
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
-// Allowed order-status moves. DELIVERED and CANCELLED are final (cancelling
-// restores stock, so un-cancelling would double-count inventory).
 export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
   PENDING: ["CONFIRMED", "PROCESSING", "SHIPPED", "CANCELLED"],
   CONFIRMED: ["PENDING", "PROCESSING", "SHIPPED", "CANCELLED"],
@@ -40,23 +37,23 @@ export function canMovePayment(from: PaymentStatus, to: PaymentStatus): boolean 
 }
 
 export const PAYMENT_METHOD_LABEL: Record<string, string> = {
-  COD: "Pago contra entrega",
-  PAYFAST: "Tarjeta (PayFast)",
-  SAFEPAY: "Tarjeta / billetera (Safepay)",
+  COD: "Pagamento na entrega",
+  PAYFAST: "Cartão (PayFast)",
+  SAFEPAY: "Cartão / carteira (Safepay)",
 };
 
 export const ORDER_STATUS_LABEL: Record<string, string> = {
-  PENDING: "Pendiente",
+  PENDING: "Pendente",
   CONFIRMED: "Confirmado",
-  PROCESSING: "En preparación",
+  PROCESSING: "Em preparo",
   SHIPPED: "Enviado",
-  DELIVERED: "Entregado",
+  DELIVERED: "Entregue",
   CANCELLED: "Cancelado",
 };
 
 export const PAYMENT_STATUS_LABEL: Record<string, string> = {
-  PENDING: "Pendiente",
-  PAID: "Pagado",
-  FAILED: "Fallido",
+  PENDING: "Pendente",
+  PAID: "Pago",
+  FAILED: "Falhou",
   REFUNDED: "Reembolsado",
 };

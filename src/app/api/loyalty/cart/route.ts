@@ -22,7 +22,7 @@ const body = z.object({
   redeemProductId: z.string().max(100).nullish(),
 });
 
-// What the cart on screen means for Club Camba. The same pure rules run at
+// What the cart on screen means for Clube Inbramet. The same pure rules run at
 // submit time inside the order transaction, so the preview is never a promise
 // the checkout can't keep.
 export async function POST(request: Request): Promise<NextResponse> {
@@ -47,7 +47,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     parsed = body.parse(await request.json());
   } catch {
-    return NextResponse.json({ ok: false, error: "Cuerpo inválido" }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Dados inválidos" }, { status: 400 });
   }
   const ids = [...new Set(parsed.items.map((i) => i.productId))];
   if (ids.length === 0) return NextResponse.json(empty);

@@ -2,23 +2,23 @@ import { Emblem } from "./brand/emblem";
 
 const COMMITMENTS = [
   {
-    title: "Hecho al momento",
-    body: "Cocina criolla preparada al momento, con el sabor de siempre.",
-    icon: <PlateIcon />,
+    title: "Design e resistência",
+    body: "Estruturas em aço, madeira maciça e polímero projetadas para o uso diário.",
+    icon: <CraftIcon />,
   },
   {
-    title: "Delivery y retiro",
-    body: "Pide en línea y recíbelo en tu puerta o retíralo en tu sucursal Inbramet.",
-    icon: <ScooterIcon />,
+    title: "Entrega programada",
+    body: "Compre on-line com embalagem protegida e transporte especializado até o seu endereço.",
+    icon: <TruckIcon />,
   },
   {
-    title: "Precios claros",
-    body: "Precios claros en bolivianos y porciones generosas, sin sorpresas al pagar.",
+    title: "Preços transparentes",
+    body: "Valores claros em R$ (Reais) e especificações completas, sem surpresas no fechamento.",
     icon: <TagIcon />,
   },
   {
-    title: "Cerca de ti",
-    body: "13 sucursales en Santa Cruz y atención directa por WhatsApp.",
+    title: "Atendimento direto",
+    body: "Suporte próximo pelo WhatsApp para ajudar na escolha das medidas e acabamentos ideais.",
     icon: <ChatIcon />,
   },
 ];
@@ -27,14 +27,14 @@ export function Commitments() {
   return (
     <section className="bg-brand py-20 text-light">
       <div className="mx-auto max-w-6xl px-5 text-center">
-        <Emblem size={40} className="mx-auto text-accent-soft" />
-        <span className="eyebrow mt-4 block text-accent-soft">Nuestro compromiso</span>
+        <Emblem size={40} className="mx-auto text-accent" />
+        <span className="eyebrow mt-4 block text-accent">Nosso compromisso</span>
         <h2 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
-          Tradición camba, bien servida
+          Móveis feitos para durar
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-light/75">
-          Inbramet: tradición camba desde 1986, hecha al momento y servida en 13 sucursales
-          de Santa Cruz.
+          A Inbramet une design contemporâneo, materiais selecionados e atendimento dedicado para
+          equipar sua sala de jantar, cozinha ou escritório.
         </p>
       </div>
 
@@ -42,9 +42,9 @@ export function Commitments() {
         {COMMITMENTS.map((c) => (
           <div
             key={c.title}
-            className="flex items-start gap-4 rounded-2xl border border-[rgba(255,204,4,0.25)] bg-[rgba(255,255,255,0.05)] p-6 text-left transition hover:border-accent-soft/60 hover:bg-[rgba(255,255,255,0.08)]"
+            className="flex items-start gap-4 rounded-2xl border border-[rgba(230,255,87,0.22)] bg-[rgba(255,255,255,0.04)] p-6 text-left transition hover:border-accent/60 hover:bg-[rgba(255,255,255,0.08)]"
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent-soft">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
               {c.icon}
             </span>
             <span>
@@ -58,26 +58,21 @@ export function Commitments() {
   );
 }
 
-function PlateIcon() {
+function CraftIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 17h16" />
-      <path d="M5 17a7 7 0 0 1 14 0" />
-      <path d="M12 10V8" />
-      <path d="M10.5 8h3" />
-      <path d="M3 20h18" />
+      <path d="M5 10h14l-1.2 8.5a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 10z" />
+      <path d="M7 10V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4" />
     </svg>
   );
 }
-function ScooterIcon() {
+function TruckIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="5.5" cy="17.5" r="2.5" />
-      <circle cx="18.5" cy="17.5" r="2.5" />
-      <path d="M8 17.5h5.5l2-5h3" />
-      <path d="M14 12.5 12.8 8H10" />
-      <path d="M15.5 8.5h3" />
-      <path d="M6 12h3" />
+      <path d="M3 7h11v9H3z" />
+      <path d="M14 10h4l3 3v3h-7v-6z" />
+      <circle cx="7.5" cy="18" r="2" />
+      <circle cx="17.5" cy="18" r="2" />
     </svg>
   );
 }

@@ -14,22 +14,22 @@ type Gauge = {
 export function PerformanceRings({ data }: { data: StorePerformance }) {
   const gauges: Gauge[] = [
     {
-      label: "Pedidos entregados",
-      sub: `${data.delivered} de ${data.totalOrders} entregados`,
+      label: "Pedidos entregues",
+      sub: `${data.delivered} de ${data.totalOrders} entregues`,
       pct: data.fulfillmentPct,
       from: "#ffa25c",
       to: "#ce5f10",
     },
     {
-      label: "Pagos cobrados",
-      sub: `${data.paid} de ${data.totalOrders} pagados`,
+      label: "Pagamentos recebidos",
+      sub: `${data.paid} de ${data.totalOrders} pagos`,
       pct: data.paymentPct,
       from: "#34d399",
       to: "#059669",
     },
     {
-      label: "Catálogo con stock",
-      sub: `${data.inStock} de ${data.totalProducts} productos`,
+      label: "Catálogo em estoque",
+      sub: `${data.inStock} de ${data.totalProducts} produtos`,
       pct: data.stockPct,
       from: "#5eead4",
       to: "#0d9488",
@@ -37,9 +37,9 @@ export function PerformanceRings({ data }: { data: StorePerformance }) {
   ];
 
   return (
-    <section className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6">
-      <span className="eyebrow">Rendimiento</span>
-      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Salud de la tienda</h2>
+    <section className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6">
+      <span className="eyebrow">Desempenho</span>
+      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Saúde da loja</h2>
 
       <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {gauges.map((g, i) => (

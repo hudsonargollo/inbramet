@@ -17,7 +17,7 @@ import {
 type Action = (prev: SettingsState, fd: FormData) => Promise<SettingsState>;
 
 const input =
-  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-[rgba(255,204,4,0.2)] disabled:opacity-60";
+  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 disabled:opacity-60";
 const labelCls = "mb-1.5 block text-xs font-medium uppercase tracking-[0.1em] text-muted";
 const saveBtn =
   "rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-brand-deep transition hover:bg-accent-soft disabled:opacity-60";
@@ -48,13 +48,13 @@ function Card({
 
   useEffect(() => {
     if (state.ok) {
-      toast.success(success, { title: "Guardado" });
+      toast.success(success, { title: "Salvo" });
       if (resetOnSuccess) formRef.current?.reset();
     } else if (state.error) toast.error(state.error);
   }, [state, toast, success, resetOnSuccess]);
 
   return (
-    <section id={id} className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6">
+    <section id={id} className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6">
       <h2 className="font-display text-xl font-semibold text-ink">{title}</h2>
       <p className="mt-1 text-sm text-muted">{description}</p>
       <form ref={formRef} action={formAction} className="mt-5 space-y-4">
@@ -67,7 +67,7 @@ function Card({
         {!disabled && (
           <div className="flex justify-end">
             <button type="submit" disabled={pending} className={saveBtn}>
-              {pending ? "Guardando…" : "Guardar"}
+              {pending ? "Salvando…" : "Salvar"}
             </button>
           </div>
         )}
@@ -124,26 +124,26 @@ export function StoreSettingsForms({ settings, canEdit }: { settings: StoreSetti
     <>
       <Card
         id="contact"
-        title="Contacto de la tienda"
-        description="Se muestra en el pie de página, la página de contacto y el chat de soporte. Deja un campo vacío para ocultarlo."
+        title="Contato da loja"
+        description="Exibido no rodapé, na página de contato e no chat de atendimento. Deixe um campo vazio para ocultá-lo."
         action={saveContactSettings}
-        success="Datos de contacto actualizados"
+        success="Dados de contato atualizados"
         disabled={lock}
       >
         {(s) => (
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field name="email" label="Correo electrónico" type="email" defaultValue={v(s, "email", settings.contact.email)} placeholder="eventos@inbramet.com" />
-            <Field name="phone" label="Teléfono" defaultValue={v(s, "phone", settings.contact.phone)} placeholder="+591 700 00000" />
+            <Field name="email" label="E-mail" type="email" defaultValue={v(s, "email", settings.contact.email)} placeholder="contato@inbramet.com.br" />
+            <Field name="phone" label="Telefone" defaultValue={v(s, "phone", settings.contact.phone)} placeholder="+55 11 99999-9999" />
             <Field
               name="whatsapp"
               label="Número de WhatsApp"
               defaultValue={v(s, "whatsapp", settings.contact.whatsapp)}
-              placeholder="59170000000"
-              hint="Formato internacional, solo dígitos. Activa el icono de WhatsApp y el botón de chat."
+              placeholder="5511999999999"
+              hint="Formato internacional, somente dígitos. Ativa o ícone de WhatsApp e o botão de chat."
             />
-            <Field name="city" label="Ciudad / dirección" defaultValue={v(s, "city", settings.contact.city)} placeholder="Santa Cruz, Bolivia" />
+            <Field name="city" label="Cidade / região" defaultValue={v(s, "city", settings.contact.city)} placeholder="São Paulo, SP" />
             <div className="sm:col-span-2">
-              <Field name="hours" label="Horario de atención" defaultValue={v(s, "hours", settings.contact.hours)} placeholder="Lunes a domingo · 11:00 a 23:00" />
+              <Field name="hours" label="Horário de atendimento" defaultValue={v(s, "hours", settings.contact.hours)} placeholder="Segunda a sábado · 09:00 às 19:00" />
             </div>
           </div>
         )}
@@ -151,10 +151,10 @@ export function StoreSettingsForms({ settings, canEdit }: { settings: StoreSetti
 
       <Card
         id="social"
-        title="Redes sociales"
-        description="Iconos del pie de página y el botón «Síguenos» de la página de inicio. Usa el enlace completo con https://; vacío = oculto."
+        title="Redes sociais"
+        description="Ícones do rodapé e botão «Siga-nos» da página inicial. Use o link completo com https://; vazio = oculto."
         action={saveSocialSettings}
-        success="Redes sociales actualizadas"
+        success="Redes sociais atualizadas"
         disabled={lock}
       >
         {(s) => (
@@ -168,40 +168,40 @@ export function StoreSettingsForms({ settings, canEdit }: { settings: StoreSetti
 
       <Card
         id="shipping"
-        title="Envío y entrega"
-        description="Se usa al pagar (el total del pedido se calcula con estos) y en las páginas de envío, FAQ y producto."
+        title="Frete e entrega"
+        description="Usado no checkout (o total do pedido é calculado com estes valores) e nas páginas de frete, FAQ e produto."
         action={saveShippingSettings}
-        success="Ajustes de envío actualizados"
+        success="Configurações de frete atualizadas"
         disabled={lock}
       >
         {(s) => (
           <div className="grid gap-4 sm:grid-cols-3">
-            <Field name="flatFee" label="Costo de envío (Bs)" type="number" defaultValue={v(s, "flatFee", settings.shipping.flatFee)} required />
+            <Field name="flatFee" label="Valor do frete (R$)" type="number" defaultValue={v(s, "flatFee", settings.shipping.flatFee)} required />
             <Field
               name="freeThreshold"
-              label="Envío gratis desde (Bs)"
+              label="Frete grátis a partir de (R$)"
               type="number"
               defaultValue={v(s, "freeThreshold", settings.shipping.freeThreshold)}
               required
-              hint="Usa 0 para envío gratis en todos los pedidos."
+              hint="Use 0 para frete grátis em todos os pedidos."
             />
-            <Field name="deliveryTime" label="Estimación de entrega" hint="Texto orientativo, no una garantía. Depende de la preparación y la distancia; evita plazos fijos (máx. 60 caracteres)." defaultValue={v(s, "deliveryTime", settings.shipping.deliveryTime)} required />
+            <Field name="deliveryTime" label="Estimativa de entrega" hint="Texto orientativo (máx. 60 caracteres)." defaultValue={v(s, "deliveryTime", settings.shipping.deliveryTime)} required />
           </div>
         )}
       </Card>
 
       <Card
         id="announcements"
-        title="Barra de anuncios"
-        description="La franja que se desplaza en la parte superior de la tienda. Un mensaje por línea (máx. 10). {freeThreshold} y {flatFee} insertan los importes actuales. Vacío = barra oculta."
+        title="Barra de avisos"
+        description="A faixa que passa no topo da loja. Uma mensagem por linha (máx. 10). {freeThreshold} e {flatFee} inserem os valores atuais. Vazio = oculta."
         action={saveAnnouncementSettings}
-        success="Barra de anuncios actualizada"
+        success="Barra de avisos atualizada"
         disabled={lock}
       >
         {(s) => (
           <div>
             <label htmlFor="set-announcements" className={labelCls}>
-              Mensajes
+              Mensagens
             </label>
             <textarea
               id="set-announcements"
@@ -216,28 +216,28 @@ export function StoreSettingsForms({ settings, canEdit }: { settings: StoreSetti
 
       <Card
         id="alerts"
-        title="Inventario y notificaciones"
-        description="Cuándo se considera que un producto tiene «stock bajo» y a dónde llegan los correos de nuevos pedidos y del formulario de contacto (requiere SMTP)."
+        title="Estoque e notificações"
+        description="Define quando um produto está com «estoque baixo» e para onde vão os e-mails de novos pedidos e contato (requer SMTP)."
         action={saveAlertSettings}
-        success="Ajustes de alertas actualizados"
+        success="Configurações de alertas atualizadas"
         disabled={lock}
       >
         {(s) => (
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
               name="lowStockThreshold"
-              label="Alerta de stock bajo en"
+              label="Alerta de estoque baixo em"
               type="number"
               defaultValue={v(s, "lowStockThreshold", settings.inventory.lowStockThreshold)}
-              hint="Se marcan los productos con esta cantidad o menos disponibles."
+              hint="Produtos com esta quantidade ou menos são sinalizados."
               required
             />
             <Field
               name="orderEmail"
-              label="Enviar alertas de pedidos a"
+              label="Enviar alertas de pedidos para"
               type="email"
               defaultValue={v(s, "orderEmail", settings.notifications.orderEmail)}
-              placeholder="propietario@ejemplo.com"
+              placeholder="proprietario@exemplo.com.br"
             />
           </div>
         )}
@@ -250,79 +250,54 @@ export function PasswordForm() {
   return (
     <Card
       id="account"
-      title="Mi cuenta"
-      description="Cambia la contraseña que usas para iniciar sesión en este panel."
+      title="Minha conta"
+      description="Altere a senha que você usa para entrar neste painel."
       action={changePassword}
-      success="Contraseña actualizada"
+      success="Senha atualizada"
       resetOnSuccess
     >
       {() => (
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field name="current" label="Contraseña actual" type="password" required autoComplete="current-password" />
-          <Field name="next" label="Nueva contraseña" type="password" required autoComplete="new-password" hint="Al menos 10 caracteres." />
-          <Field name="confirm" label="Repite la nueva contraseña" type="password" required autoComplete="new-password" />
+          <Field name="current" label="Senha atual" type="password" required autoComplete="current-password" />
+          <Field name="next" label="Nova senha" type="password" required autoComplete="new-password" hint="Pelo menos 10 caracteres." />
+          <Field name="confirm" label="Repita a nova senha" type="password" required autoComplete="new-password" />
         </div>
       )}
     </Card>
   );
 }
 
-export function AddTeamMemberForm({ branches }: { branches: { id: string; name: string }[] }) {
+export function AddTeamMemberForm() {
   const [role, setRole] = useState<"STAFF" | "ADMIN">("STAFF");
   return (
     <Card
       id="team-add"
-      title="Agregar miembro del equipo"
-      description="El personal entra solo a su sucursal y gestiona pedidos, inventario y productos. Solo los administradores ven todas las sucursales y cambian los ajustes."
+      title="Adicionar membro da equipe"
+      description="A equipe operacional gerencia pedidos, estoque e produtos. Apenas administradores alteram configurações e membros da equipe."
       action={addTeamMember}
-      success="Miembro del equipo agregado"
+      success="Membro da equipe adicionado"
       resetOnSuccess
     >
       {(s) => (
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field name="name" label="Nombre" defaultValue={s.ok ? "" : s.values?.name} />
-          <Field name="email" label="Correo electrónico" type="email" required defaultValue={s.ok ? "" : s.values?.email} />
-          <Field name="password" label="Contraseña temporal" type="password" required autoComplete="new-password" hint="Al menos 10 caracteres: podrá cambiarla en Mi cuenta." />
+          <Field name="name" label="Nome" defaultValue={s.ok ? "" : s.values?.name} />
+          <Field name="email" label="E-mail" type="email" required defaultValue={s.ok ? "" : s.values?.email} />
+          <Field name="password" label="Senha temporária" type="password" required autoComplete="new-password" hint="Pelo menos 10 caracteres: poderá alterar em Minha conta." />
           <div>
             <label htmlFor="set-role" className={labelCls}>
-              Rol
+              Função
             </label>
             <select
               key={s.ok ? "reset" : s.values?.role ?? "STAFF"}
               id="set-role"
               name="role"
-              defaultValue={s.ok ? "STAFF" : s.values?.role ?? "STAFF"}
+              value={role}
               onChange={(e) => setRole(e.target.value === "ADMIN" ? "ADMIN" : "STAFF")}
               className={input}
             >
-              <option value="STAFF">Personal</option>
+              <option value="STAFF">Equipe operacional</option>
               <option value="ADMIN">Administrador</option>
             </select>
-          </div>
-          <div className="sm:col-span-2">
-            <label htmlFor="set-branchId" className={labelCls}>
-              Sucursal {role === "STAFF" ? "" : "(los administradores ven todas)"}
-            </label>
-            <select
-              id="set-branchId"
-              name="branchId"
-              defaultValue={s.ok ? "" : s.values?.branchId ?? ""}
-              required={role === "STAFF"}
-              disabled={role === "ADMIN"}
-              className={input}
-            >
-              <option value="">{role === "ADMIN" ? "Todas las sucursales" : "Elige una sucursal…"}</option>
-              {branches.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
-            {branches.length === 0 && (
-              <p className="mt-1 text-xs text-amber-700">
-                Todavía no hay sucursales activas. Créalas en Sucursales antes de agregar personal.
-              </p>
-            )}
           </div>
         </div>
       )}

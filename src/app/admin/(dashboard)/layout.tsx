@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { AdminShell } from "@/components/admin/admin-shell";
 
 export const metadata: Metadata = {
-  title: { default: "Panel", template: "%s · Inbramet" },
+  title: { default: "Painel", template: "%s · Inbramet" },
   robots: { index: false, follow: false },
 };
 

@@ -17,7 +17,7 @@ async function login(_prev: LoginState, formData: FormData): Promise<LoginState>
   const password = String(formData.get("password") ?? "");
 
   if (!email || !password) {
-    return { error: "Ingresa tu correo y contraseña." };
+    return { error: "Informe seu e-mail e senha." };
   }
 
   const key = email.trim().toLowerCase();
@@ -30,8 +30,8 @@ async function login(_prev: LoginState, formData: FormData): Promise<LoginState>
     return {
       error:
         res.reason === "db"
-          ? "No puedo acceder a la base de datos ahora, no puedes iniciar sesión. Intenta de nuevo en un minuto."
-          : "Correo o contraseña incorrectos.",
+          ? "Banco de dados indisponível no momento. Tente novamente em instantes."
+          : "E-mail ou senha incorretos.",
     };
   }
 

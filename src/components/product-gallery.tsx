@@ -50,8 +50,8 @@ export function ProductGallery({
     <div>
       <div
         role="group"
-        aria-label={`Galería de ${name}`}
-        className="group relative aspect-square overflow-hidden rounded-[1.75rem] border border-[var(--line)] bg-white shadow-[0_34px_80px_-48px_rgba(29,58,14,0.55)]"
+        aria-label={`Galeria de ${name}`}
+        className="group relative aspect-square overflow-hidden rounded-[1.75rem] border border-[var(--line)] bg-white shadow-[0_34px_80px_-48px_rgba(15,23,42,0.45)]"
         onMouseEnter={() => {
           if (window.matchMedia("(hover: hover)").matches) setHovered(true);
         }}
@@ -75,12 +75,12 @@ export function ProductGallery({
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(78% 66% at 50% 40%, #ffffff 0%, #ffffff 60%, #f4f7ee 100%)",
+              "radial-gradient(78% 66% at 50% 40%, #ffffff 0%, #ffffff 60%, #f8faf6 100%)",
           }}
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-[72%] h-14 w-[58%] -translate-x-1/2 rounded-[50%] bg-[rgba(29,58,14,0.13)] blur-2xl"
+          className="pointer-events-none absolute left-1/2 top-[72%] h-14 w-[58%] -translate-x-1/2 rounded-[50%] bg-[rgba(15,23,42,0.12)] blur-2xl"
         />
         <div
           aria-hidden="true"
@@ -117,16 +117,16 @@ export function ProductGallery({
         {/* Inner hairline frame */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-3 rounded-[1.3rem] border border-[rgba(28,43,32,0.06)]"
+          className="pointer-events-none absolute inset-3 rounded-[1.3rem] border border-[rgba(15,23,42,0.06)]"
         />
 
         {/* Counter + play/pause */}
         {count > 1 && (
           <div className="absolute inset-x-4 top-4 z-20 flex items-center justify-between gap-2">
-            <span className="rounded-full border border-[rgba(28,43,32,0.08)] bg-white/80 px-3 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-ink/60 backdrop-blur-sm">
-              Producto
+            <span className="rounded-full border border-[rgba(15,23,42,0.08)] bg-white/80 px-3 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-ink/60 backdrop-blur-sm">
+              Produto
             </span>
-            <div className="flex items-center gap-1 rounded-full border border-[rgba(28,43,32,0.1)] bg-white/85 py-1 pl-3 pr-1 backdrop-blur-sm">
+            <div className="flex items-center gap-1 rounded-full border border-[rgba(15,23,42,0.1)] bg-white/85 py-1 pl-3 pr-1 backdrop-blur-sm">
               <span className="font-display text-[0.72rem] font-semibold tracking-[0.1em] text-ink/70 [font-variant-numeric:tabular-nums]">
                 <span className="text-accent-strong">{String(active + 1).padStart(2, "0")}</span>
                 <span className="mx-1 text-ink/30">/</span>
@@ -135,7 +135,7 @@ export function ProductGallery({
               <button
                 type="button"
                 onClick={() => setPlaying((p) => !p)}
-                aria-label={playing ? "Pausar la galería" : "Reproducir la galería"}
+                aria-label={playing ? "Pausar galeria" : "Reproduzir galeria"}
                 aria-pressed={!playing}
                 className="flex h-6 w-6 items-center justify-center rounded-full text-ink/60 transition hover:bg-accent/10 hover:text-accent-strong"
               >
@@ -180,7 +180,7 @@ export function ProductGallery({
                 onClick={() => setActive(i)}
                 aria-label={`Ver imagen ${i + 1} de ${count}`}
                 aria-current={i === active}
-                className="h-1.5 flex-1 overflow-hidden rounded-full bg-[rgba(28,43,32,0.14)] transition hover:bg-[rgba(28,43,32,0.26)]"
+                className="h-1.5 flex-1 overflow-hidden rounded-full bg-[rgba(15,23,42,0.14)] transition hover:bg-[rgba(15,23,42,0.26)]"
               >
                 <span
                   className={`block h-full rounded-full bg-accent ${
@@ -246,8 +246,8 @@ function Arrow({
     <button
       type="button"
       onClick={onClick}
-      aria-label={dir === "prev" ? "Imagen anterior" : "Imagen siguiente"}
-      className={`absolute top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(28,43,32,0.1)] bg-white/85 text-ink/70 shadow-[0_8px_22px_-12px_rgba(29,58,14,0.6)] backdrop-blur-sm transition hover:bg-accent hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${className}`}
+      aria-label={dir === "prev" ? "Imagem anterior" : "Próxima imagem"}
+      className={`absolute top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(15,23,42,0.1)] bg-white/85 text-ink/70 shadow-[0_8px_22px_-12px_rgba(15,23,42,0.5)] backdrop-blur-sm transition hover:bg-accent hover:text-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${className}`}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d={dir === "prev" ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"} strokeLinecap="round" strokeLinejoin="round" />

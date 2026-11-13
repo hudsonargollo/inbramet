@@ -14,30 +14,30 @@ export default async function AdminCustomersPage() {
   return (
     <div>
       <h1 className="font-display text-3xl font-bold text-ink">Clientes</h1>
-      <p className="mt-1 text-sm text-muted">Clientes registrados y su historial de pedidos.</p>
+      <p className="mt-1 text-sm text-muted">Clientes cadastrados e histórico de pedidos.</p>
 
       <div className="mt-6">
         {!dbConnected && <DbBanner />}
 
         {customers.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-[var(--line)] bg-surface py-16 text-center">
-            <p className="font-display text-xl text-ink">Aún no hay clientes</p>
+            <p className="font-display text-xl text-ink">Ainda não há clientes</p>
             <p className="mt-1 text-sm text-muted">
-              Las cuentas creadas al pagar o al registrarse aparecerán aquí.
+              As contas criadas no checkout ou no cadastro aparecerão aqui.
             </p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)]">
+          <div className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)]">
             {/* Desktop table */}
             <div className="hidden overflow-x-auto sm:block">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--line)] text-left text-[0.68rem] uppercase tracking-wider text-muted">
                     <th className="px-4 py-3 font-medium">Cliente</th>
-                    <th className="px-4 py-3 font-medium">Teléfono</th>
+                    <th className="px-4 py-3 font-medium">Telefone</th>
                     <th className="px-4 py-3 font-medium">Pedidos</th>
-                    <th className="px-4 py-3 text-right font-medium">Gastado</th>
-                    <th className="px-4 py-3 font-medium">Se unió</th>
+                    <th className="px-4 py-3 text-right font-medium">Total gasto</th>
+                    <th className="px-4 py-3 font-medium">Cadastro</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -69,7 +69,7 @@ export default async function AdminCustomersPage() {
                   </div>
                   <p className="mt-0.5 truncate text-xs text-muted">{c.email}</p>
                   <p className="mt-1 text-xs text-muted">
-                    {c.orders} pedido{c.orders === 1 ? "" : "s"} · {c.phone || "sin teléfono"} · se unió el {formatDate(c.createdAt)}
+                    {c.orders} pedido{c.orders === 1 ? "" : "s"} · {c.phone || "sem telefone"} · cadastro em {formatDate(c.createdAt)}
                   </p>
                 </div>
               ))}

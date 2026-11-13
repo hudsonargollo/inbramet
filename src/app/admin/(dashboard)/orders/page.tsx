@@ -22,7 +22,7 @@ export default async function AdminOrdersPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-bold text-ink">Pedidos</h1>
-          <p className="mt-1 text-sm text-muted">Sigue, revisa y actualiza los pedidos de tus clientes.</p>
+          <p className="mt-1 text-sm text-muted">Acompanhe, revise e atualize os pedidos dos seus clientes.</p>
         </div>
         {orders.length > 0 && (
           // Plain link (not next/link): it downloads a file.
@@ -33,7 +33,7 @@ export default async function AdminOrdersPage() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
             </svg>
-            Exportar a Excel (CSV)
+            Exportar para Excel (CSV)
           </a>
         )}
       </div>
@@ -43,20 +43,20 @@ export default async function AdminOrdersPage() {
 
         {orders.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-[var(--line)] bg-surface py-16 text-center">
-            <p className="font-display text-xl text-ink">Aún no hay pedidos</p>
+            <p className="font-display text-xl text-ink">Ainda não há pedidos</p>
             <p className="mt-1 text-sm text-muted">
               {dbConnected
-                ? "Los pedidos realizados en la tienda aparecerán aquí."
-                : "Conecta la base de datos para ver los pedidos reales."}
+                ? "Os pedidos feitos na loja aparecerão aqui."
+                : "Conecte o banco de dados para ver os pedidos reais."}
             </p>
           </div>
         ) : (
           <>
             {/* Quick stats */}
             <div className="mb-5 grid gap-4 sm:grid-cols-3">
-              <MiniStat label="Pedidos totales" value={String(orders.length)} />
-              <MiniStat label="Pendientes" value={String(pending)} accent />
-              <MiniStat label="Ingresos" value={formatPrice(revenue)} />
+              <MiniStat label="Pedidos totais" value={String(orders.length)} />
+              <MiniStat label="Pendentes" value={String(pending)} accent />
+              <MiniStat label="Receita" value={formatPrice(revenue)} />
             </div>
 
             <OrdersTable orders={orders} />
@@ -69,7 +69,7 @@ export default async function AdminOrdersPage() {
 
 function MiniStat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="rounded-xl border border-[var(--line)] bg-surface p-4 shadow-[0_10px_30px_-24px_rgba(29,58,14,0.4)]">
+    <div className="rounded-xl border border-[var(--line)] bg-surface p-4 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.35)]">
       <p className="text-[0.62rem] font-medium uppercase tracking-[0.18em] text-muted">{label}</p>
       <p className={`mt-1.5 font-display text-2xl font-bold ${accent ? "text-accent-strong" : "text-ink"}`}>
         {value}

@@ -54,12 +54,12 @@ export function ZoomImage({
         className="h-full w-full select-none object-contain mix-blend-multiply transition-transform duration-300 ease-out"
         style={{ transform: active ? `scale(${zoom})` : "scale(1)", transformOrigin: origin }}
       />
-      <span className="pointer-events-none absolute bottom-4 right-4 hidden items-center gap-1.5 rounded-full border border-[rgba(28,43,32,0.12)] bg-white/80 px-3 py-1.5 text-[0.68rem] font-medium text-ink/70 backdrop-blur-sm transition-opacity duration-200 group-hover/zoom:opacity-0 md:flex">
+      <span className="pointer-events-none absolute bottom-4 right-4 hidden items-center gap-1.5 rounded-full border border-[rgba(15,23,42,0.12)] bg-white/80 px-3 py-1.5 text-[0.68rem] font-medium text-ink/70 backdrop-blur-sm transition-opacity duration-200 group-hover/zoom:opacity-0 md:flex">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="7" />
           <path d="M21 21l-4.3-4.3M11 8v6M8 11h6" strokeLinecap="round" />
         </svg>
-        Acerca para ampliar
+        Passe o mouse para ampliar
       </span>
     </div>
   );

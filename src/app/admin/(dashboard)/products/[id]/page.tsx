@@ -5,7 +5,7 @@ import { ProductForm } from "@/components/admin/product-form";
 import { updateProduct } from "../actions";
 import { requireAdmin } from "@/lib/admin";
 
-export const metadata = { title: "Editar producto" };
+export const metadata = { title: "Editar produto" };
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +24,9 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
   return (
     <div>
       <Link href="/admin/products" className="text-sm text-muted hover:text-ink">
-        ← Volver a productos
+        ← Voltar para produtos
       </Link>
-      <h1 className="mt-2 font-display text-3xl font-semibold text-ink">{isCombo ? "Editar combo" : "Editar producto"}</h1>
+      <h1 className="mt-2 font-display text-3xl font-semibold text-ink">{isCombo ? "Editar combo" : "Editar produto"}</h1>
 
       <div className="mt-6">
         <ProductForm
@@ -34,7 +34,7 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
           categories={categories}
           product={product}
           isCombo={isCombo}
-          submitLabel="Guardar cambios"
+          submitLabel="Salvar alterações"
         />
       </div>
     </div>

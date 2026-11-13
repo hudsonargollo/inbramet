@@ -1,23 +1,13 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "./prisma";
+import { dbConfigured, prisma } from "./prisma";
 import { sampleCategories, sampleProducts } from "./sample-data";
 import { searchCatalog, type SearchCategory, type SearchResult } from "./search-engine";
 import { CATALOG_TAG } from "./cache-tags";
 import type { CategoryView, ProductView, ProductFilters, ShopFacets } from "./types";
 
-// The storefront reads through these functions. The active catalog is one
-// cached snapshot (product + per-branch stock rows, shared across requests and
-// refreshed whenever the admin edits a product, a branch's stock, or an order
-// changes stock — see lib/cache-tags). Filters, facets and search are worked out
-// in memory. Availability is resolved for the branch the shopper picked; with
-// no branch selected it shows the chain-wide total so browsing still works.
-// Without a database the bundled sample data is served so the UI stays previewable.
-
 let warned = false;
 function warnFallback(err: unknown) {
-  // In production this means the live DB is unreachable — log every time so it
-  // shows up in the host's function logs instead of silently serving samples.
   if (process.env.NODE_ENV === "production") {
     console.error("[catalog] DATABASE UNAVAILABLE — serving sample data:", err);
     return;
@@ -25,7 +15,7 @@ function warnFallback(err: unknown) {
   if (!warned) {
     warned = true;
     console.warn(
-      "[catalog] Database unavailable — serving sample data. Connect DATABASE_URL and run `npx prisma migrate dev` + `npm run db:seed` to go live.",
+      "[catalog] Database unavailable — serving sample data.",
       err instanceof Error ? err.message : err
     );
   }
@@ -38,7 +28,6 @@ type SnapshotProduct = Omit<ProductView, "stock"> & {
 
 type Snapshot = { products: SnapshotProduct[]; categories: CategoryView[] };
 
-// Cross-request cache (5 min safety net; normally refreshed by tag).
 const loadSnapshot = unstable_cache(
   async (): Promise<Snapshot> => {
     const [products, categories] = await Promise.all([
@@ -84,28 +73,32 @@ const loadSnapshot = unstable_cache(
       categories: categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug, description: c.description })),
     };
   },
-  ["catalog-snapshot-v2"],
+  ["catalog-snapshot-v3"],
   { tags: [CATALOG_TAG], revalidate: 300 }
 );
 
+function sampleSnapshot(): Snapshot {
+  return {
+    products: sampleProducts.map((p) => ({
+      ...p,
+      stockByBranch: {},
+      totalStock: p.stock,
+    })),
+    categories: sampleCategories,
+  };
+}
+
 /** Per request: one snapshot, however many catalog calls the page makes. */
 const getSnapshot = cache(async (): Promise<Snapshot> => {
+  if (!dbConfigured) return sampleSnapshot();
   try {
     return await loadSnapshot();
   } catch (err) {
     warnFallback(err);
-    return {
-      products: sampleProducts.map((p) => ({
-        ...p,
-        stockByBranch: {},
-        totalStock: p.stock,
-      })),
-      categories: sampleCategories,
-    };
+    return sampleSnapshot();
   }
 });
 
-/** Resolve availability for a branch (or the chain-wide total when null). */
 function toView(p: SnapshotProduct, branchId?: string | null): ProductView {
   return {
     ...p,
@@ -132,7 +125,6 @@ export async function getCategoryBySlug(slug: string): Promise<CategoryView | nu
 
 const onSaleNow = (p: ProductView) => p.compareAtPrice != null && p.compareAtPrice > p.price;
 
-/** Newest first unless a price sort is picked; `q` ranks by relevance. */
 export async function getProducts(
   filters: ProductFilters = {},
   branchId?: string | null
@@ -155,13 +147,11 @@ export async function getProducts(
   return list;
 }
 
-/** Products by id (cart refresh / buy-now), with availability for one branch. */
 export async function getProductsByIds(ids: string[], branchId?: string | null): Promise<ProductView[]> {
   const wanted = new Set(ids);
   return (await listFor(branchId)).filter((p) => wanted.has(p.id));
 }
 
-/** The shop's `?q=` text filter: same typo-tolerant matching as /search. */
 function applyQuery(list: ProductView[], q: string): ProductView[] {
   const cats = new Map<string, SearchCategory>();
   for (const p of list) {
@@ -176,7 +166,6 @@ export async function getProductBySlug(slug: string, branchId?: string | null): 
   return (await listFor(branchId)).find((p) => p.slug === slug) ?? null;
 }
 
-/** Featured pieces, newest first; the newest pieces when none are featured. */
 export async function getFeaturedProducts(limit = 4, branchId?: string | null): Promise<ProductView[]> {
   const products = await listFor(branchId);
   const featured = products.filter((p) => p.featured);
@@ -194,8 +183,6 @@ export async function getRelatedProducts(
 
 // ---------- Search ----------
 
-/** Full /search answer: ranked pieces plus how the query was read. All
- *  categories are passed (even empty ones) so an empty category can say "coming soon". */
 export async function searchStore(
   q: string,
   branchId?: string | null
@@ -211,8 +198,6 @@ export async function searchStore(
 
 // ---------- Shop sidebar facets ----------
 
-/** Category counts (whole store) + price bounds, materials, sale and stock counts
- *  for the current category scope. */
 export async function getShopFacets(
   categorySlug?: string,
   branchId?: string | null

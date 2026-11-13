@@ -6,38 +6,38 @@ import { AccordionItem } from "@/components/ui/accordion-item";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
-  title: "Preguntas frecuentes",
-  description: "Respuestas sobre pedidos, platos, delivery, retiro y pagos en Inbramet, Santa Cruz, Bolivia.",
+  title: "Perguntas frequentes",
+  description: "Respostas sobre móveis, entregas, prazos e formas de pagamento na Inbramet.",
 };
 
 const faqs = (DELIVERY_TIME: string) => [
   {
-    q: "¿Cómo hago un pedido?",
-    a: "Elige tu sucursal, arma tu pedido desde el menú y confirma el pedido. Puedes pagar contra entrega o de forma segura en línea.",
+    q: "Como faço um pedido?",
+    a: "Escolha os móveis da coleção que você precisa, adicione ao carrinho e finalize seu pedido. Você pode pagar na entrega ou on-line com segurança.",
   },
   {
-    q: "¿Qué métodos de pago aceptan?",
-    a: "Pago contra entrega en tu sucursal Inbramet, y pagos en línea con tarjeta o billetera a través de nuestras pasarelas.",
+    q: "Quais formas de pagamento vocês aceitam?",
+    a: "Pagamento na entrega ao receber seus móveis, além de cartões de crédito/débito e carteiras digitais nos meios on-line disponíveis.",
   },
   {
-    q: "¿Cuánto tarda el delivery?",
-    a: `Hacemos delivery en Santa Cruz. Entrega estimada: ${DELIVERY_TIME}. El tiempo puede variar según la preparación, la demanda y la distancia. Cuidamos tu pedido desde la cocina hasta tu puerta. Si necesitas coordinar la entrega, escríbenos por WhatsApp.`,
+    q: "Quanto tempo leva a entrega?",
+    a: `Coordenamos os envios da nossa loja on-line com prazo estimado de ${DELIVERY_TIME}. O tempo pode variar conforme estoque, volume do pedido e região de entrega.`,
   },
   {
-    q: "¿Puedo retirar en tienda?",
-    a: "Sí. Al finalizar el pedido elige retiro en sucursal y te avisamos por WhatsApp cuando esté listo, sin costo adicional.",
+    q: "Vocês atendem pedidos em todo o Brasil?",
+    a: "Sim. Realizamos entregas para diversas regiões do Brasil. Caso tenha dúvidas sobre cobertura ou prazos específicos para o seu CEP, fale conosco pelo WhatsApp.",
   },
   {
-    q: "¿Tienen opciones para compartir?",
-    a: "Sí. Los buffets y parrillas para 2 o 4 personas están pensados para compartir. Mira los platos típicos y la parrilla del menú.",
+    q: "Vocês vendem conjuntos ou pedidos em volume?",
+    a: "Sim. Temos conjuntos de mesa com quatro cadeiras e também fazemos orçamentos para escritórios, cafés, restaurantes e projetos na seção Pedidos sob medida.",
   },
   {
-    q: "¿Cuál es la política de devoluciones?",
-    a: "Nos importa que disfrutes tu comida. Si tu pedido llega incompleto o en mal estado, contáctanos con tu número de pedido y cuéntanos qué pasó. Lo revisamos con cuidado y lo más rápido posible para coordinar contigo la solución más adecuada. Consulta Delivery y devoluciones.",
+    q: "Qual é a política de trocas e devoluções?",
+    a: "Se alguma peça chegar com avaria de transporte ou item faltante, entre em contato em até 48 horas informando o número do pedido. Analisamos com prioridade para realizar a troca ou reposição.",
   },
   {
-    q: "¿Entregan en mi zona?",
-    a: "Entregamos en Santa Cruz desde nuestras 13 sucursales. Si tienes dudas sobre tu dirección, consúltanos por WhatsApp antes de pedir.",
+    q: "Como sei se o produto tem estoque disponível?",
+    a: "Cada produto exibe a disponibilidade atualizada em tempo real na página da coleção e nos detalhes do item.",
   },
 ];
 
@@ -47,9 +47,9 @@ export default async function FaqPage() {
     <div className="mx-auto max-w-3xl px-5 py-16">
       <div className="text-center">
         <Emblem size={40} className="mx-auto text-brand" accent="var(--color-accent)" />
-        <span className="eyebrow mt-3 block">Ayuda</span>
+        <span className="eyebrow mt-3 block">Ajuda</span>
         <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink">
-          Preguntas frecuentes
+          Perguntas frequentes
         </h1>
       </div>
 
@@ -76,9 +76,9 @@ export default async function FaqPage() {
       </div>
 
       <p className="mt-10 text-center text-sm text-muted">
-        ¿Sigues con dudas?{" "}
+        Ainda tem dúvidas?{" "}
         <Link href="/contact" className="text-accent-strong hover:underline">
-          Contáctanos
+          Fale conosco
         </Link>
         .
       </p>

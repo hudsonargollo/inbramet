@@ -49,7 +49,7 @@ credenciales.
 | `npm run build` | Build de producción |
 | `npm run db:migrate` | Crea/aplica migraciones en desarrollo |
 | `npm run db:push` | Empuja el esquema sin migración |
-| `npm run db:seed` | colección (58 piezas), 13 sucursales, ajustes y Club Camba |
+| `npm run db:seed` | colección (58 piezas), 13 sucursales, ajustes y Clube Inbramet |
 | `npm run db:studio` | Prisma Studio |
 | `npm run db:create-admin` | Crea/actualiza el administrador desde `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
 | `npm run db:copy` | Copia datos entre dos bases (ver `prisma/copy-data.ts`) |
@@ -80,7 +80,7 @@ credenciales.
 | `/cart` | Carrito |
 | `/checkout` | Entrega o retiro + método de pago |
 | `/checkout/success` | Confirmación |
-| `/club-camba` | Club Camba — sellos, puntos y recompensas |
+| `/clube-inbramet` | Clube Inbramet — sellos, puntos y recompensas |
 
 La sucursal elegida se guarda en la cookie `cc_branch` (180 días). Sin sucursal
 se puede navegar, pero al iniciar el pago la tienda pide elegir una.

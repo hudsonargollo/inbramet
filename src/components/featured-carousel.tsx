@@ -60,7 +60,7 @@ export function FeaturedCarousel({ products }: { products: ProductView[] }) {
       </button>
       <button
         onClick={() => step(1)}
-        aria-label="Siguiente"
+        aria-label="Próximo"
         className="absolute -right-3 top-[38%] hidden h-10 w-10 items-center justify-center rounded-full border border-[var(--line-strong)] bg-cream text-brand dark:text-ink shadow-sm transition hover:border-accent hover:bg-accent hover:text-brand-deep md:flex"
       >
         ›

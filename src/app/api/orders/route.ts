@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ ok: false, error: "Invalid request body" }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Requisição inválida" }, { status: 400 });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   // confirmed to the shopper while no payment is ever collected.
   if ((method === "PAYFAST" || method === "SAFEPAY") && !isOnlineConfigured(method)) {
     return NextResponse.json(
-      { ok: false, error: "Online payment isn't available yet. Please choose Cash on Delivery." },
+      { ok: false, error: "Pagamento online indisponível no momento. Escolha pagamento na entrega." },
       { status: 400 }
     );
   }
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     : null;
   if (!customer) {
     return NextResponse.json(
-      { ok: false, error: "Please sign in to place your order.", signIn: true },
+      { ok: false, error: "Faça login para finalizar seu pedido.", signIn: true },
       { status: 401 }
     );
   }
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         ok: false,
-        error: "We couldn't connect to the payment provider. Please try again or choose Cash on Delivery.",
+        error: "Não foi possível conectar ao provedor de pagamento. Tente novamente ou escolha pagamento na entrega.",
       },
       { status: 502 }
     );

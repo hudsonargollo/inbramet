@@ -12,7 +12,7 @@ export function OrnateFrame({
   className?: string;
   tone?: "light" | "dark";
 }) {
-  const border = tone === "dark" ? "border-[rgba(163,212,120,0.5)]" : "border-[var(--frame)]";
+  const border = tone === "dark" ? "border-[rgba(230,255,87,0.45)]" : "border-[var(--frame)]";
   const corner = tone === "dark" ? "border-accent" : "border-brand";
 
   return (

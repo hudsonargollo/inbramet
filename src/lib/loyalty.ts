@@ -1,28 +1,18 @@
 import { randomInt } from "node:crypto";
 import type { Prisma } from "@prisma/client";
-import { prisma } from "./prisma";
+import { dbConfigured, prisma } from "./prisma";
 import type { LoyaltySettings } from "./settings-shared";
 import { previewLoyalty, stampCard, type LoyaltyLine } from "./loyalty-shared";
 
-// Server side of Club Camba. The ledger (LoyaltyEntry) is append-only and holds
-// signed deltas, so a balance is always the sum of its rows: earning, spending,
-// refunds and manual corrections are all just new rows. Nothing is ever
-// rewritten, which keeps customer disputes answerable.
-
 export type LoyaltyBalances = {
-  /** Pooled points available for the rewards shop. */
   points: number;
-  /** Stamps per product id — each product carries its own card. */
   stampsByProduct: Record<string, number>;
-  /** Products whose card is currently full. */
   readyForRedemption: string[];
   totalStamps: number;
 };
 
-/** A spend the customer isn't entitled to — safe to show verbatim. */
 class LoyaltySpendError extends Error {}
 
-/** Rows older than the expiry window are ignored (never deleted). */
 function withinWindow(createdAt: Date, expiryDays: number, now: number): boolean {
   if (!expiryDays || expiryDays <= 0) return true;
   return now - createdAt.getTime() <= expiryDays * 86_400_000;
@@ -32,6 +22,9 @@ export async function getBalances(
   customerId: string,
   rules: LoyaltySettings
 ): Promise<LoyaltyBalances> {
+  if (!dbConfigured) {
+    return { points: 0, stampsByProduct: {}, readyForRedemption: [], totalStamps: 0 };
+  }
   const rows = await prisma.loyaltyEntry.findMany({
     where: { customerId },
     select: { stamps: true, points: true, productId: true, createdAt: true },
@@ -56,7 +49,6 @@ export async function getBalances(
   return { points, stampsByProduct, readyForRedemption, totalStamps };
 }
 
-/** The signed sum of a customer's rows for one kind — used to guard spends. */
 async function balanceOf(
   tx: Prisma.TransactionClient,
   customerId: string,
@@ -70,10 +62,6 @@ async function balanceOf(
   return res._sum[field] ?? 0;
 }
 
-/**
- * Adds the stamps + points one order earned. Called inside the checkout
- * transaction, after the order row exists, so a rolled back order never pays out.
- */
 export async function accrueOrder(
   tx: Prisma.TransactionClient,
   input: {
@@ -110,10 +98,6 @@ export async function accrueOrder(
   return { stamps: preview.stamps, points: preview.points };
 }
 
-/**
- * Spends a full card for one product. Throws if the card isn't full — the
- * caller must also make the matching unit free on the order.
- */
 export async function redeemStamps(
   tx: Prisma.TransactionClient,
   input: { customerId: string; productId: string; orderId?: string; rules: LoyaltySettings }
@@ -122,7 +106,7 @@ export async function redeemStamps(
   const card = stampCard(owned, input.rules);
   if (!card.full)
     throw new LoyaltySpendError(
-      `Te faltan ${card.remaining} sellos para canjear este producto.`
+      `Faltam ${card.remaining} selos para resgatar este produto.`
     );
   await tx.loyaltyEntry.create({
     data: {
@@ -135,8 +119,6 @@ export async function redeemStamps(
   });
 }
 
-// Redemption codes are handed to the branch at pickup, so they stay short and
-// unreadable-by-accident (same no-0/O/1/I/L alphabet as order numbers).
 const REDEEM_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
 
 function generateRedemptionCode(): string {
@@ -147,14 +129,14 @@ function generateRedemptionCode(): string {
 
 export type RedeemResult = { ok: true; code: string } | { ok: false; error: string };
 
-/** Buys a rewards-shop prize with points. One unit per call. */
 export async function redeemReward(input: {
   customerId: string;
   rewardId: string;
   branchId?: string | null;
   rules: LoyaltySettings;
 }): Promise<RedeemResult> {
-  if (!input.rules.enabled) return { ok: false, error: "El programa de puntos está pausado." };
+  if (!input.rules.enabled) return { ok: false, error: "O programa de pontos está pausado." };
+  if (!dbConfigured) return { ok: false, error: "Programa indisponível sem conexão com o banco." };
   for (let attempt = 0; attempt < 4; attempt++) {
     const code = generateRedemptionCode();
     try {
@@ -163,12 +145,10 @@ export async function redeemReward(input: {
           where: { id: input.rewardId, active: true },
           select: { id: true, name: true, costPoints: true, stock: true },
         });
-        if (!reward) return { ok: false, error: "Este regalo ya no está disponible." };
+        if (!reward) return { ok: false, error: "Este brinde não está mais disponível." };
         if (reward.stock <= 0)
-          return { ok: false, error: `"${reward.name}" está agotado por ahora.` };
+          return { ok: false, error: `"${reward.name}" está esgotado no momento.` };
 
-        // Conditional decrement, same trick as branch stock: two taps can't
-        // spend the same points twice.
         await tx.loyaltyEntry.create({
           data: {
             customerId: input.customerId,
@@ -178,12 +158,12 @@ export async function redeemReward(input: {
           },
         });
         const balance = await balanceOf(tx, input.customerId, "points");
-        if (balance < 0) throw new LoyaltySpendError("No te alcanzan los puntos para este regalo.");
+        if (balance < 0) throw new LoyaltySpendError("Seus pontos não são suficientes para este brinde.");
         const stock = await tx.reward.updateMany({
           where: { id: reward.id, stock: { gt: 0 } },
           data: { stock: { decrement: 1 } },
         });
-        if (stock.count !== 1) throw new LoyaltySpendError(`"${reward.name}" está agotado por ahora.`);
+        if (stock.count !== 1) throw new LoyaltySpendError(`"${reward.name}" está esgotado no momento.`);
 
         await tx.redemption.create({
           data: {
@@ -200,25 +180,16 @@ export async function redeemReward(input: {
     } catch (err) {
       if (err instanceof LoyaltySpendError) return { ok: false, error: err.message };
       const msg = err instanceof Error ? err.message : "";
-      // Only a code collision is worth retrying; anything else is a real failure.
       if (/P2002|Unique constraint/i.test(msg) && /code/.test(msg)) continue;
       console.error("[loyalty] reward redemption failed:", err);
-      return { ok: false, error: "No pudimos registrar el canje. Inténtalo de nuevo." };
+      return { ok: false, error: "Não foi possível registrar o resgate. Tente novamente." };
     }
   }
-  return { ok: false, error: "No pudimos registrar el canje. Inténtalo de nuevo." };
+  return { ok: false, error: "Não foi possível registrar o resgate. Tente novamente." };
 }
 
-/**
- * Reverses everything an order earned (cancelled/refunded orders). Idempotent:
- * a second call for the same order writes nothing. A card spent on that order's
- * free product comes back too.
- *
- * A reversal never takes away stamps or points the customer already spent: the
- * ledger can end at zero, never below, so cancelling an old order cannot leave a
- * negative balance behind.
- */
 export async function refundOrderLoyalty(orderId: string): Promise<boolean> {
+  if (!dbConfigured) return false;
   return prisma.$transaction(async (tx) => {
     const earned = await tx.loyaltyEntry.findMany({
       where: { orderId, kind: { in: ["STAMP", "POINT", "REDEEM_STAMP"] } },
@@ -230,8 +201,6 @@ export async function refundOrderLoyalty(orderId: string): Promise<boolean> {
     for (const e of earned) {
       let stamps = -e.stamps;
       let points = -e.points;
-      // Only the debits need a floor: a refund may not push a spent balance
-      // further down than what the customer still has.
       if (e.stamps > 0) {
         const left = await balanceOf(tx, e.customerId, "stamps", e.productId ?? undefined);
         stamps = -Math.min(e.stamps, Math.max(0, left));
@@ -251,7 +220,7 @@ export async function refundOrderLoyalty(orderId: string): Promise<boolean> {
           note:
             stamps === -e.stamps && points === -e.points
               ? null
-              : "Reverso parcial: parte del saldo ya estaba canjeada.",
+              : "Estorno parcial: parte do saldo já havia sido resgatada.",
         },
       });
     }
@@ -259,7 +228,6 @@ export async function refundOrderLoyalty(orderId: string): Promise<boolean> {
   });
 }
 
-/** Admin correction: credit or debit either currency with a note. */
 export async function adjustBalance(input: {
   customerId: string;
   stamps?: number;
@@ -282,10 +250,10 @@ export async function adjustBalance(input: {
   });
 }
 
-/** What one order moved on the ledger, for the confirmation screen. */
 export async function orderLoyalty(
   orderId: string
 ): Promise<{ stamps: number; points: number; redeemed: boolean }> {
+  if (!dbConfigured) return { stamps: 0, points: 0, redeemed: false };
   try {
     const rows = await prisma.loyaltyEntry.findMany({
       where: { orderId },
@@ -305,8 +273,8 @@ export async function orderLoyalty(
   }
 }
 
-/** Ledger newest-first, with the names the customer needs to recognise rows. */
 export async function getHistory(customerId: string, take = 30) {
+  if (!dbConfigured) return [];
   return prisma.loyaltyEntry.findMany({
     where: { customerId },
     orderBy: { createdAt: "desc" },

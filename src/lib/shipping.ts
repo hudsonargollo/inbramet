@@ -1,7 +1,5 @@
-// Default shipping policy — the starting values for Admin → Settings
-// (the live rules come from getStoreSettings; see settings-shared.ts).
-// Local delivery: free from the threshold, otherwise a flat fee in Bs.
-// Override via NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD / NEXT_PUBLIC_FLAT_SHIPPING.
+// Política padrão de frete — valores iniciais em Admin → Configurações.
+// Frete em Reais (BRL): gratuito a partir do valor mínimo ou taxa fixa.
 function num(v: string | undefined, fallback: number): number {
   const n = Number(v);
   return v && Number.isFinite(n) && n >= 0 ? n : fallback;
@@ -10,5 +8,5 @@ function num(v: string | undefined, fallback: number): number {
 export const FREE_SHIPPING_THRESHOLD = num(process.env.NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD, 0);
 export const FLAT_SHIPPING = num(process.env.NEXT_PUBLIC_FLAT_SHIPPING, 15);
 
-/** Delivery estimate, not a guarantee, shown across the site (product page, FAQ, shipping, chat). */
-export const DELIVERY_TIME = "lo antes posible, según preparación y distancia";
+/** Estimativa de entrega exibida na loja (produto, FAQ, entregas, chat). */
+export const DELIVERY_TIME = "o mais rápido possível, conforme preparo e distância";

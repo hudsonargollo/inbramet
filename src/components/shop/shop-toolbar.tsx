@@ -6,13 +6,11 @@ import { formatPrice } from "@/lib/format";
 import { FILTER_KEYS, ShopFilters, useShopQuery } from "./shop-filters";
 
 const SORTS = [
-  { value: "newest", label: "Más recientes" },
-  { value: "price-asc", label: "Precio: menor a mayor" },
-  { value: "price-desc", label: "Precio: mayor a menor" },
+  { value: "newest", label: "Mais recentes" },
+  { value: "price-asc", label: "Preço: menor para maior" },
+  { value: "price-desc", label: "Preço: maior para menor" },
 ];
 
-/** Results bar above the grid: count, Sort, active-filter chips, and the mobile
- *  "Filters" drawer (the sidebar is hidden below lg). */
 export function ShopToolbar({ count, facets }: { count: number; facets: ShopFacets }) {
   const { params, setParams, num } = useShopQuery();
   const [open, setOpen] = useState(false);
@@ -28,17 +26,16 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
       minPrice != null && maxPrice != null
         ? `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`
         : minPrice != null
-          ? `Desde ${formatPrice(minPrice)}`
-          : `Hasta ${formatPrice(maxPrice!)}`;
+          ? `A partir de ${formatPrice(minPrice)}`
+          : `Até ${formatPrice(maxPrice!)}`;
     chips.push({ label, clear: { minPrice: null, maxPrice: null } });
   }
-  if (params.get("sale") === "1") chips.push({ label: "En oferta", clear: { sale: null } });
-  if (params.get("stock") === "1") chips.push({ label: "Solo disponibles", clear: { stock: null } });
+  if (params.get("sale") === "1") chips.push({ label: "Em oferta", clear: { sale: null } });
+  if (params.get("stock") === "1") chips.push({ label: "Apenas disponíveis", clear: { stock: null } });
   if (material) chips.push({ label: material, clear: { material: null } });
 
   const clearAll = () => setParams(Object.fromEntries(FILTER_KEYS.map((k) => [k, null])));
 
-  // Drawer: lock page scroll and close on Escape while open.
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -74,7 +71,7 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
             )}
           </button>
           <p className="hidden text-sm text-muted sm:block">
-            <span className="font-medium text-ink">{count}</span> {count === 1 ? "producto" : "productos"}
+            <span className="font-medium text-ink">{count}</span> {count === 1 ? "produto" : "produtos"}
           </p>
         </div>
 
@@ -100,7 +97,7 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
       </div>
 
       <p className="-mt-1 mb-4 text-sm text-muted sm:hidden">
-        <span className="font-medium text-ink">{count}</span> {count === 1 ? "producto" : "productos"}
+        <span className="font-medium text-ink">{count}</span> {count === 1 ? "produto" : "produtos"}
       </p>
 
       {chips.length > 0 && (
@@ -110,7 +107,7 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
               key={c.label}
               type="button"
               onClick={() => setParams(c.clear)}
-              aria-label={`Quitar filtro: ${c.label}`}
+              aria-label={`Remover filtro: ${c.label}`}
               className="inline-flex items-center gap-1.5 rounded-full border border-accent/60 bg-accent/10 py-1.5 pl-3 pr-2 text-xs font-medium text-ink transition hover:border-accent hover:bg-accent hover:text-brand-deep"
             >
               {c.label}
@@ -122,14 +119,12 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
             onClick={clearAll}
             className="ml-1 text-xs font-medium uppercase tracking-[0.12em] text-accent-strong underline-offset-4 hover:underline"
           >
-            Limpiar todo
+            Limpar tudo
           </button>
         </div>
       )}
 
-      {/* Mobile filter drawer */}
       <div
-        // above the support-chat launcher (z-70); toasts (z-9999) still show on top
         className={`fixed inset-0 z-[80] lg:hidden ${open ? "" : "pointer-events-none"}`}
         aria-hidden={!open}
         inert={!open}
@@ -151,7 +146,7 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label="Cerrar filtros"
+              aria-label="Fechar filtros"
               className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line-strong)] text-lg text-ink transition hover:border-accent"
             >
               ×
@@ -167,7 +162,7 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
                 onClick={clearAll}
                 className="rounded-full border border-[var(--line-strong)] px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-ink"
               >
-                Limpiar
+                Limpar
               </button>
             )}
             <button
@@ -175,7 +170,7 @@ export function ShopToolbar({ count, facets }: { count: number; facets: ShopFace
               onClick={() => setOpen(false)}
               className="flex-1 rounded-full bg-gradient-to-r from-accent-soft to-accent px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-brand"
             >
-              Ver {count} {count === 1 ? "producto" : "productos"}
+              Ver {count} {count === 1 ? "produto" : "produtos"}
             </button>
           </div>
         </div>

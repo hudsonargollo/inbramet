@@ -4,15 +4,15 @@ import { getVerifiedAdmin } from "@/lib/admin";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 
 export const metadata: Metadata = {
-  title: "Acceso al panel",
+  title: "Acesso ao painel",
   robots: { index: false },
 };
 
 export const dynamic = "force-dynamic";
 
 const SIGNED_OUT: Record<string, string> = {
-  replaced: "Tu sesión se cerró porque esta cuenta de administrador inició sesión en otro dispositivo.",
-  db: "Tu sesión se cerró porque no se pudo acceder a la base de datos. Inicia sesión de nuevo.",
+  replaced: "Sua sessão foi encerrada porque esta conta de administrador entrou em outro dispositivo.",
+  db: "Sua sessão foi encerrada porque não foi possível acessar o banco de dados. Entre novamente.",
 };
 
 export default async function AdminLoginPage({ searchParams }: PageProps<"/admin/login">) {

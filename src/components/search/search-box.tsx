@@ -6,10 +6,6 @@ import { useEffect, useId, useRef, useState } from "react";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { ProductImage } from "@/components/product-image";
 
-// Large search field with instant suggestions (debounced /api/search): matching
-// category, the top pieces with photo + price, and "see all". Arrow keys move,
-// Enter opens, Esc closes. Without JS it is a plain GET form to /search.
-
 type Suggest = {
   total: number;
   partial: boolean;
@@ -27,7 +23,7 @@ type Suggest = {
   }[];
 };
 
-const EXAMPLES = ["majao", "empanadas", "silpancho", "postre", "coca-cola", "parrilla"];
+const EXAMPLES = ["cadeira", "mesa", "banco", "banqueta", "conjunto", "preto"];
 
 export function BuscarBox({ initial = "", autoFocus = false }: { initial?: string; autoFocus?: boolean }) {
   const router = useRouter();
@@ -43,13 +39,11 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
 
   const term = q.trim();
 
-  // Rotating example in the placeholder.
   useEffect(() => {
     const t = setInterval(() => setHint((h) => (h + 1) % EXAMPLES.length), 2600);
     return () => clearInterval(t);
   }, []);
 
-  // Debounced suggestions.
   useEffect(() => {
     if (!term) return;
     const ctrl = new AbortController();
@@ -62,7 +56,7 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
           setActive(-1);
         }
       } catch {
-        /* aborted or offline — keep the last suggestions */
+        /* abortado */
       } finally {
         if (!ctrl.signal.aborted) setLoading(false);
       }
@@ -73,7 +67,6 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
     };
   }, [term]);
 
-  // Close when clicking outside.
   useEffect(() => {
     const onDown = (e: PointerEvent) => {
       if (!boxRef.current?.contains(e.target as Node)) setOpen(false);
@@ -83,7 +76,6 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
   }, []);
 
   const shown = term && data ? data : null;
-  // Keyboard targets: category row (if any), each product, then "see all".
   const links: string[] = shown
     ? [
         ...(shown.category && shown.category.count > 0 ? [`/shop/${shown.category.slug}`] : []),
@@ -117,7 +109,6 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
     }
   }
 
-  // Keep the highlighted row visible while arrowing through a long list.
   useEffect(() => {
     if (active < 0) return;
     document.getElementById(listId)?.querySelectorAll('[role="option"]')[active]?.scrollIntoView({ block: "nearest" });
@@ -137,7 +128,7 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
           if (term) go(`/search?q=${encodeURIComponent(term)}`);
           else inputRef.current?.focus();
         }}
-        className="group relative flex items-center rounded-full border border-[var(--line-strong)] bg-surface p-1.5 pl-5 shadow-[0_18px_44px_-28px_rgba(29,58,14,0.55)] transition focus-within:border-accent focus-within:ring-4 focus-within:ring-[rgba(255,204,4,0.18)]"
+        className="group relative flex items-center rounded-full border border-[var(--line-strong)] bg-surface p-1.5 pl-5 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.5)] transition focus-within:border-accent focus-within:ring-4 focus-within:ring-accent/20"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" className="h-5 w-5 shrink-0 text-accent-strong" aria-hidden="true">
           <circle cx="11" cy="11" r="7" />
@@ -159,8 +150,8 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
           autoComplete="off"
           spellCheck={false}
           enterKeyHint="search"
-          placeholder={`Prueba “${EXAMPLES[hint]}”`}
-          aria-label="Buscar en el menú"
+          placeholder={`Experimente “${EXAMPLES[hint]}”`}
+          aria-label="Buscar na coleção"
           role="combobox"
           aria-expanded={open && !!shown}
           aria-controls={listId}
@@ -176,7 +167,7 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
               setData(null);
               inputRef.current?.focus();
             }}
-            aria-label="Borrar búsqueda"
+            aria-label="Limpar busca"
             className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition hover:bg-accent/10 hover:text-ink"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="h-4 w-4" aria-hidden="true">
@@ -186,7 +177,7 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
         )}
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-gradient-to-r from-accent-soft via-accent to-accent-strong px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.14em] text-brand shadow-[0_10px_24px_-12px_rgba(255,204,4,0.9)] transition hover:brightness-105 sm:px-7"
+          className="shrink-0 rounded-full bg-gradient-to-r from-accent-soft via-accent to-accent-strong px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.14em] text-brand shadow-[0_10px_24px_-12px_rgba(230,255,87,0.75)] transition hover:brightness-105 sm:px-7"
         >
           Buscar
         </button>
@@ -196,7 +187,7 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
         <div
           id={listId}
           role="listbox"
-          className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border border-[var(--line-strong)] bg-surface text-left shadow-[0_30px_60px_-30px_rgba(29,58,14,0.7)] animate-chatin [transform-origin:top_center]"
+          className="absolute inset-x-0 top-full z-40 mt-2 overflow-hidden rounded-2xl border border-[var(--line-strong)] bg-surface text-left shadow-[0_30px_60px_-30px_rgba(15,23,42,0.6)] animate-chatin [transform-origin:top_center]"
         >
           {shown.correction && (
             <p className="border-b border-[var(--line)] px-4 py-2.5 text-xs text-muted">
@@ -214,9 +205,9 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
                   </svg>
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold text-ink">Ver todo en {shown.category.name}</span>
+                  <span className="block text-sm font-semibold text-ink">Ver tudo em {shown.category.name}</span>
                   <span className="block text-xs text-muted">
-                    {shown.category.count} producto{shown.category.count === 1 ? "" : "s"} en el menú
+                    {shown.category.count} produto{shown.category.count === 1 ? "" : "s"} na coleção
                   </span>
                 </span>
                 <span className="text-accent-strong">→</span>
@@ -227,15 +218,15 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
               <Link href={`/shop/${shown.category.slug}`} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-3 hover:bg-accent/10">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-dashed border-accent/60 text-lg text-accent-strong">✦</span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold text-ink">{shown.category.name} llega pronto</span>
-                  <span className="block text-xs text-muted">Toca para avisarte cuando llegue</span>
+                  <span className="block text-sm font-semibold text-ink">{shown.category.name} em breve</span>
+                  <span className="block text-xs text-muted">Toque para ser avisado quando chegar</span>
                 </span>
               </Link>
             )}
 
             {shown.products.length > 0 && (
               <p className="px-3 pb-1 pt-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">
-                {shown.partial ? "Coincidencias cercanas" : "Del menú"}
+                {shown.partial ? "Resultados aproximados" : "Da coleção"}
               </p>
             )}
             {shown.products.map((p, i) => {
@@ -250,7 +241,7 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
                     <span className="block truncate text-sm font-medium text-ink">{p.name}</span>
                     <span className="block text-xs text-muted">
                       {p.category}
-                      {p.soldOut && <span className="ml-1.5 text-bad">· Agotado</span>}
+                      {p.soldOut && <span className="ml-1.5 text-bad">· Esgotado</span>}
                     </span>
                   </span>
                   <span className="shrink-0 text-right">
@@ -263,8 +254,8 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
 
             {shown.total === 0 && !shown.category && (
               <div className="px-3 py-5 text-center">
-                <p className="font-display text-lg text-ink">Todavía no hay nada para “{term}”</p>
-                <p className="mt-1 text-xs text-muted">Escribe el nombre de un producto, una categoría o una promo.</p>
+                <p className="font-display text-lg text-ink">Ainda não encontramos nada para “{term}”</p>
+                <p className="mt-1 text-xs text-muted">Digite o nome de um produto, categoria ou oferta.</p>
               </div>
             )}
           </div>
@@ -279,7 +270,7 @@ export function BuscarBox({ initial = "", autoFocus = false }: { initial?: strin
                 active === links.length - 1 ? "bg-brand text-light" : "text-brand hover:bg-accent/10 dark:text-accent-soft"
               }`}
             >
-              Ver los {shown.total} resultado{shown.total === 1 ? "" : "s"}
+              Ver os {shown.total} resultado{shown.total === 1 ? "" : "s"}
               <span>→</span>
             </Link>
           )}

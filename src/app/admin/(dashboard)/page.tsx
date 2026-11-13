@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { requireAdmin, scopeBranchId } from "@/lib/admin";
 import { TagIcon } from "@/components/icons";
 
-export const metadata = { title: { absolute: "Panel · Inbramet" } };
+export const metadata = { title: { absolute: "Painel · Inbramet" } };
 
 export const dynamic = "force-dynamic";
 
@@ -28,14 +28,14 @@ export default async function AdminDashboard() {
     .slice(0, 6);
 
   const cards = [
-    { label: "Ingresos", value: formatPrice(stats.revenue), icon: <CoinIcon />, hint: "Todos los pedidos confirmados" },
-    { label: "Este mes", value: formatPrice(stats.monthRevenue), icon: <TrendIcon />, hint: "Ingresos de este mes" },
+    { label: "Receita", value: formatPrice(stats.revenue), icon: <CoinIcon />, hint: "Todos os pedidos confirmados" },
+    { label: "Este mês", value: formatPrice(stats.monthRevenue), icon: <TrendIcon />, hint: "Receita deste mês" },
     { label: "Pedidos", value: String(stats.orders), icon: <BagIcon />, hint: "Histórico" },
-    { label: "Pedidos del mes", value: String(stats.monthOrders), icon: <CalendarIcon />, hint: "Realizados este mes" },
-    { label: "Pendientes", value: String(stats.pendingOrders), icon: <ClockIcon />, hint: "En espera de gestión" },
-    { label: "Productos", value: String(stats.products), icon: <TagIcon />, hint: "En el catálogo" },
-    { label: "Clientes", value: String(stats.customers), icon: <UsersIcon />, hint: "Clientes registrados" },
-    { label: "Stock bajo", value: String(stats.lowStock), icon: <AlertIcon />, hint: `${LOW} o menos disponibles` },
+    { label: "Pedidos do mês", value: String(stats.monthOrders), icon: <CalendarIcon />, hint: "Realizados este mês" },
+    { label: "Pendentes", value: String(stats.pendingOrders), icon: <ClockIcon />, hint: "Aguardando processamento" },
+    { label: "Produtos", value: String(stats.products), icon: <TagIcon />, hint: "No catálogo" },
+    { label: "Clientes", value: String(stats.customers), icon: <UsersIcon />, hint: "Clientes cadastrados" },
+    { label: "Estoque baixo", value: String(stats.lowStock), icon: <AlertIcon />, hint: `${LOW} ou menos disponíveis` },
   ];
 
   return (
@@ -43,21 +43,21 @@ export default async function AdminDashboard() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-ink">Panel</h1>
-          <p className="mt-1 text-sm text-muted">Bienvenido de nuevo al panel de gestión de Inbramet.</p>
+          <h1 className="font-display text-3xl font-bold text-ink">Painel</h1>
+          <p className="mt-1 text-sm text-muted">Boas-vindas ao painel de gestão da Inbramet.</p>
         </div>
         <div className="flex gap-3">
           <Link
             href="/admin/products/new"
             className="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-light transition hover:bg-brand-dark"
           >
-            + Agregar producto
+            + Adicionar produto
           </Link>
           <Link
             href="/"
             className="rounded-full border border-[var(--line-strong)] px-5 py-2.5 text-sm text-ink transition hover:border-accent hover:text-accent-strong"
           >
-            Ver tienda
+            Ver loja
           </Link>
         </div>
       </div>
@@ -71,7 +71,7 @@ export default async function AdminDashboard() {
           {cards.map((c) => (
             <div
               key={c.label}
-              className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_44px_-26px_rgba(29,58,14,0.55)]"
+              className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_44px_-26px_rgba(15,23,42,0.45)]"
             >
               {/* accent top accent */}
               <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent-soft via-accent to-accent-strong" />
@@ -92,19 +92,19 @@ export default async function AdminDashboard() {
         {/* Recent orders + quick actions */}
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]">
           {/* Recent orders */}
-          <section className="min-w-0 rounded-2xl border border-[var(--line)] bg-surface p-6 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)]">
+          <section className="min-w-0 rounded-2xl border border-[var(--line)] bg-surface p-6 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)]">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-xl font-semibold text-ink">Pedidos recientes</h2>
+              <h2 className="font-display text-xl font-semibold text-ink">Pedidos recentes</h2>
               <Link href="/admin/orders" className="text-sm text-accent-strong hover:underline">
-                Ver todo →
+                Ver tudo →
               </Link>
             </div>
 
             {recentOrders.length === 0 ? (
               <p className="mt-6 rounded-lg border border-dashed border-[var(--line)] py-10 text-center text-sm text-muted">
                 {stats.dbConnected
-                  ? "Aún no hay pedidos. Aparecerán aquí a medida que lleguen."
-                  : "Conecta la base de datos para ver los pedidos."}
+                  ? "Ainda não há pedidos. Eles aparecerão aqui conforme chegarem."
+                  : "Conecte o banco de dados para visualizar os pedidos."}
               </p>
             ) : (
               <div className="mt-4 overflow-x-auto">
@@ -114,8 +114,8 @@ export default async function AdminDashboard() {
                       <th className="py-2 pr-3">Pedido</th>
                       <th className="py-2 pr-3">Cliente</th>
                       <th className="py-2 pr-3">Total</th>
-                      <th className="py-2 pr-3">Estado</th>
-                      <th className="py-2">Fecha</th>
+                      <th className="py-2 pr-3">Status</th>
+                      <th className="py-2">Data</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -140,37 +140,37 @@ export default async function AdminDashboard() {
 
           {/* Quick actions */}
           <aside className="space-y-3">
-            <h2 className="eyebrow mb-1">Acciones rápidas</h2>
-            <QuickAction href="/admin/analytics" title="Analíticas" desc="Gráfico de ventas y tendencias" icon={<TrendIcon />} />
-            <QuickAction href="/admin/insights" title="Tendencias" desc="Más vendidos y composición" icon={<CoinIcon />} />
-            <QuickAction href="/admin/performance" title="Rendimiento" desc="Salud y flujo" icon={<ClockIcon />} />
-            <QuickAction href="/admin/products/new" title="Agregar un producto" desc="Crea un producto nuevo" icon={<TagIcon />} />
-            <QuickAction href="/admin/orders" title="Gestionar pedidos" desc="Actualiza y envía pedidos" icon={<BagIcon />} />
+            <h2 className="eyebrow mb-1">Ações rápidas</h2>
+            <QuickAction href="/admin/analytics" title="Análises" desc="Gráfico de vendas e tendências" icon={<TrendIcon />} />
+            <QuickAction href="/admin/insights" title="Tendências" desc="Mais vendidos e composição" icon={<CoinIcon />} />
+            <QuickAction href="/admin/performance" title="Desempenho" desc="Saúde e fluxo" icon={<ClockIcon />} />
+            <QuickAction href="/admin/products/new" title="Adicionar produto" desc="Cadastre um novo produto" icon={<TagIcon />} />
+            <QuickAction href="/admin/orders" title="Gerenciar pedidos" desc="Atualize e envie pedidos" icon={<BagIcon />} />
           </aside>
         </div>
 
         {/* Low stock */}
-        <section className="mt-8 rounded-2xl border border-[var(--line)] bg-surface p-6 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)]">
+        <section className="mt-8 rounded-2xl border border-[var(--line)] bg-surface p-6 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-500/15">
                 <AlertIcon />
               </span>
               <div>
-                <h2 className="font-display text-xl font-semibold text-ink">Alerta de stock bajo</h2>
-                <p className="text-xs text-muted">Productos con {LOW} o menos disponibles: repón pronto.</p>
+                <h2 className="font-display text-xl font-semibold text-ink">Alerta de estoque baixo</h2>
+                <p className="text-xs text-muted">Produtos com {LOW} ou menos unidades disponíveis.</p>
               </div>
             </div>
             <Link href="/admin/products" className="shrink-0 text-sm text-accent-strong hover:underline">
-              Todos los productos →
+              Todos os produtos →
             </Link>
           </div>
 
           {lowStockProducts.length === 0 ? (
             <p className="mt-6 rounded-lg border border-dashed border-[var(--line)] py-8 text-center text-sm text-muted">
               {stats.dbConnected
-                ? "Todo bien: todos los productos tienen stock suficiente. ✓"
-                : "Conecta la base de datos para ver los niveles de stock."}
+                ? "Tudo certo: todos os produtos estão com estoque suficiente. ✓"
+                : "Conecte o banco de dados para visualizar os níveis de estoque."}
             </p>
           ) : (
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -193,7 +193,7 @@ export default async function AdminDashboard() {
                         : "bg-amber-100 text-amber-700 dark:bg-amber-500/15"
                     }`}
                   >
-                    {p.stock === 0 ? "Agotado" : `${p.stock} disponibles`}
+                    {p.stock === 0 ? "Esgotado" : `${p.stock} disponíveis`}
                   </span>
                 </Link>
               ))}
@@ -219,7 +219,7 @@ function QuickAction({
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3 rounded-xl border border-[var(--line)] bg-surface p-4 shadow-[0_10px_30px_-24px_rgba(29,58,14,0.4)] transition hover:border-accent hover:shadow-[0_16px_36px_-26px_rgba(29,58,14,0.5)]"
+      className="group flex items-center gap-3 rounded-xl border border-[var(--line)] bg-surface p-4 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.35)] transition hover:border-accent hover:shadow-[0_16px_36px_-26px_rgba(15,23,42,0.45)]"
     >
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/8 text-accent-strong transition group-hover:bg-brand group-hover:text-accent">
         {icon}

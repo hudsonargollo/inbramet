@@ -8,7 +8,7 @@ export function MenuSection({
   title,
   description,
   href,
-  linkLabel = "Ver todo",
+  linkLabel = "Ver tudo",
   products,
 }: {
   id: string;

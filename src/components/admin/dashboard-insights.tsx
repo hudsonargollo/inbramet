@@ -10,7 +10,7 @@ import type {
 } from "@/lib/admin-data";
 
 const card =
-  "rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6";
+  "rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6";
 
 function emptyNote(text: string) {
   return (
@@ -27,15 +27,15 @@ export function TopProductsPanel({ products }: { products: TopProduct[] }) {
     <section className={card}>
       <div className="flex items-center justify-between">
         <div>
-          <span className="eyebrow">Más vendidos</span>
-          <h2 className="mt-1 font-display text-xl font-semibold text-ink">Productos más vendidos</h2>
+          <span className="eyebrow">Mais vendidos</span>
+          <h2 className="mt-1 font-display text-xl font-semibold text-ink">Produtos mais vendidos</h2>
         </div>
         <Link href="/admin/products" className="text-sm text-accent-strong hover:underline">
-          Todos los productos →
+          Todos os produtos →
         </Link>
       </div>
       {products.length === 0 ? (
-        emptyNote("Aún no hay ventas: tus productos más vendidos aparecerán aquí.")
+        emptyNote("Ainda não há vendas: seus produtos mais vendidos aparecerão aqui.")
       ) : (
         <ol className="mt-4 space-y-3">
           {products.map((p, i) => (
@@ -74,10 +74,10 @@ export function CategorySalesPanel({ categories }: { categories: CategorySales[]
   const max = categories.reduce((m, c) => Math.max(m, c.revenue), 0) || 1;
   return (
     <section className={card}>
-      <span className="eyebrow">Composición</span>
-      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Ventas por categoría</h2>
+      <span className="eyebrow">Composição</span>
+      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Vendas por categoria</h2>
       {categories.length === 0 ? (
-        emptyNote("Aún no hay ventas: el rendimiento por categoría aparecerá aquí.")
+        emptyNote("Ainda não há vendas: o desempenho por categoria aparecerá aqui.")
       ) : (
         <ul className="mt-4 space-y-3.5">
           {categories.map((c) => (
@@ -116,15 +116,15 @@ export function RecentCustomersPanel({ customers }: { customers: AdminCustomerRo
     <section className={card}>
       <div className="flex items-center justify-between">
         <div>
-          <span className="eyebrow">Audiencia</span>
-          <h2 className="mt-1 font-display text-xl font-semibold text-ink">Clientes nuevos</h2>
+          <span className="eyebrow">Público</span>
+          <h2 className="mt-1 font-display text-xl font-semibold text-ink">Novos clientes</h2>
         </div>
         <Link href="/admin/customers" className="text-sm text-accent-strong hover:underline">
-          Ver todo →
+          Ver tudo →
         </Link>
       </div>
       {customers.length === 0 ? (
-        emptyNote("Aún no hay clientes: las registraciones aparecerán aquí.")
+        emptyNote("Ainda não há clientes: os cadastros aparecerão aqui.")
       ) : (
         <ul className="mt-4 space-y-3">
           {customers.map((c) => (
@@ -163,10 +163,10 @@ export function PaymentMethodPanel({ methods }: { methods: PaymentSlice[] }) {
   const max = methods.reduce((m, x) => Math.max(m, x.revenue), 0) || 1;
   return (
     <section className={card}>
-      <span className="eyebrow">Pagos</span>
-      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Ingresos por método</h2>
+      <span className="eyebrow">Pagamentos</span>
+      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Receita por método</h2>
       {methods.length === 0 ? (
-        emptyNote("Aún no hay pedidos pagados: el desglose por método de pago aparecerá aquí.")
+        emptyNote("Ainda não há pedidos pagos: o detalhamento por método aparecerá aqui.")
       ) : (
         <ul className="mt-4 space-y-3.5">
           {methods.map((m) => (
@@ -227,16 +227,16 @@ export function SalesHighlightsPanel({ points }: { points: DailyPoint[] }) {
   const avgActive = activeDays > 0 ? Math.round(total / activeDays) : 0;
 
   const tiles = [
-    { label: "Mejor día de ventas", value: formatPrice(best.revenue), hint: best.time ? niceDate(best.time) : "—" },
-    { label: "Día con más pedidos", value: `${busiest.orders} pedido${busiest.orders === 1 ? "" : "s"}`, hint: busiest.time ? niceDate(busiest.time) : "—" },
-    { label: "Media por día de venta", value: formatPrice(avgActive), hint: "En días con ventas" },
-    { label: "Días con ventas", value: `${activeDays}`, hint: `de los últimos ${points.length} días` },
+    { label: "Melhor dia de vendas", value: formatPrice(best.revenue), hint: best.time ? niceDate(best.time) : "—" },
+    { label: "Dia com mais pedidos", value: `${busiest.orders} pedido${busiest.orders === 1 ? "" : "s"}`, hint: busiest.time ? niceDate(busiest.time) : "—" },
+    { label: "Média por dia de venda", value: formatPrice(avgActive), hint: "Em dias com vendas" },
+    { label: "Dias com vendas", value: `${activeDays}`, hint: `dos últimos ${points.length} dias` },
   ];
 
   return (
     <section className={card}>
-      <span className="eyebrow">Destacados</span>
-      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Resumen de ventas</h2>
+      <span className="eyebrow">Destaques</span>
+      <h2 className="mt-1 font-display text-xl font-semibold text-ink">Resumo de vendas</h2>
       <div className="mt-4 grid grid-cols-2 gap-3">
         {tiles.map((t) => (
           <div key={t.label} className="rounded-xl border border-[var(--line)] bg-cream-soft px-4 py-3">

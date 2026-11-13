@@ -3,29 +3,25 @@ import { type StoreSettings, whatsappUrl, phoneHref } from "@/lib/settings-share
 import { EmailLink } from "./email-link";
 import { InstagramIcon } from "@/components/icons";
 
-// Contact details & socials come from Admin → Settings. Anything left blank is
-// hidden rather than showing a placeholder.
-
 const NAV = [
-  { label: "Inicio", href: "/" },
-  { label: "Menú", href: "/shop" },
-  { label: "Sucursales", href: "/sucursal" },
-  { label: "Nosotros", href: "/about" },
-  { label: "Contacto", href: "/contact" },
+  { label: "Início", href: "/" },
+  { label: "Coleção", href: "/shop" },
+  { label: "Sobre nós", href: "/about" },
+  { label: "Contato", href: "/contact" },
 ];
 
 const HELP = [
-  { label: "Estado de pedido", href: "/account/orders" },
-  { label: "Delivery y devoluciones", href: "/shipping" },
-  { label: "Ingredientes y alergias", href: "/care" },
-  { label: "Preguntas frecuentes", href: "/faq" },
+  { label: "Acompanhar pedido", href: "/account/orders" },
+  { label: "Entregas e devoluções", href: "/shipping" },
+  { label: "Materiais e cuidados", href: "/care" },
+  { label: "Perguntas frequentes", href: "/faq" },
 ];
 
 const TRUST = [
-  "Hecho al momento",
-  "Delivery y retiro",
-  "Pago contra entrega",
-  "Tradición camba desde 1986",
+  "Acabamento de alta durabilidade",
+  "Entrega em todo o Brasil",
+  "Pagamento na entrega ou on-line",
+  "Design funcional Inbramet",
 ];
 
 export function SiteFooter({ settings }: { settings: StoreSettings }) {
@@ -35,38 +31,33 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
     whatsappUrl: whatsappUrl(settings),
     phoneHref: phoneHref(settings),
   };
-  // The programme name (and whether it exists at all) comes from Admin → Club Camba.
   const help = settings.loyalty.enabled
-    ? [{ label: settings.loyalty.name, href: "/club-camba" }, ...HELP]
+    ? [{ label: settings.loyalty.name, href: "/clube-inbramet" }, ...HELP]
     : HELP;
   return (
     <footer
       className="relative overflow-hidden text-light/80"
-      style={{ background: "linear-gradient(180deg, #3c6e1b 0%, #1d3a0e 100%)" }}
+      style={{ background: "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)" }}
     >
-      {/* accent top line + soft glow */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[rgba(255,216,102,0.7)] to-transparent" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-[rgba(230,255,87,0.55)] to-transparent" />
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-56"
-        style={{ background: "radial-gradient(50% 100% at 50% 0%, rgba(255,216,102,0.12), transparent 70%)" }}
+        style={{ background: "radial-gradient(50% 100% at 50% 0%, rgba(230,255,87,0.08), transparent 70%)" }}
       />
 
       <div className="relative mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-12 md:gap-10">
-        {/* Brand + socials */}
         <div className="flex flex-col items-center text-center md:col-span-4 md:items-start md:text-left">
-          <Link href="/" aria-label="Inbramet — inicio" className="inline-flex">
+          <Link href="/" aria-label="Inbramet — início" className="inline-flex">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/inbramet-logo.png"
+              src="/products/inbramet-icon-transparent.png"
               alt="Inbramet"
-              width={228}
-              height={169}
               className="h-14 w-auto"
             />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-light/60">
-            comida típica cruceña desde 1986: majao, picantes, empanadas de keperí y
-            parrilla — con delivery y retiro en tienda.
+            Móveis contemporâneos em aço, madeira e polímero: mesas, cadeiras,
+            bancos, banquetas e conjuntos com entrega para todo o Brasil.
           </p>
           <div className="mt-6 flex gap-3">
             {CONTACT.instagram && (
@@ -92,8 +83,8 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
             {CONTACT.email && (
               <EmailLink
                 email={CONTACT.email}
-                ariaLabel="Correo"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(255,216,102,0.35)] text-light/80 transition hover:border-accent hover:bg-accent hover:text-brand-deep"
+                ariaLabel="E-mail"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(230,255,87,0.35)] text-light/80 transition hover:border-accent hover:bg-accent hover:text-brand-deep"
               >
                 <MailIcon />
               </EmailLink>
@@ -101,15 +92,12 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
           </div>
         </div>
 
-        {/* Explore */}
         <FooterCol title="Explorar" links={NAV} className="md:col-span-2" />
 
-        {/* Help */}
-        <FooterCol title="Ayuda" links={help} className="md:col-span-3" />
+        <FooterCol title="Ajuda" links={help} className="md:col-span-3" />
 
-        {/* Contact */}
         <div className="flex flex-col items-center text-center md:col-span-3 md:items-start md:text-left">
-          <h3 className="eyebrow mb-4 text-accent-soft">Contáctanos</h3>
+          <h3 className="eyebrow mb-4 text-accent-soft">Fale conosco</h3>
           <ul className="space-y-3 text-sm text-light/70">
             <li className="flex items-center justify-center gap-2.5 md:justify-start">
               <PinIcon /> {CONTACT.city}
@@ -133,19 +121,18 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
             </li>
             <li>
               <Link href="/contact" className="flex items-center justify-center gap-2.5 transition-colors hover:text-accent-soft md:justify-start">
-                <MailIcon /> Envíanos un mensaje
+                <MailIcon /> Envie uma mensagem
               </Link>
             </li>
           </ul>
         </div>
       </div>
 
-      {/* Trust strip */}
-      <div className="relative border-t border-[rgba(255,216,102,0.18)]">
+      <div className="relative border-t border-[rgba(248,250,246,0.12)]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-2 px-6 py-4 text-[0.68rem] uppercase tracking-[0.16em] text-light/55">
           {TRUST.map((t) => (
             <span key={t} className="flex items-center gap-1.5">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-soft)" strokeWidth="2.4">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2.4">
                 <path d="M5 12l5 5L20 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               {t}
@@ -154,11 +141,10 @@ export function SiteFooter({ settings }: { settings: StoreSettings }) {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="relative border-t border-[rgba(255,216,102,0.18)]">
+      <div className="relative border-t border-[rgba(248,250,246,0.12)]">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-5 text-center text-xs text-light/45 sm:flex-row sm:text-left">
-          <span>© {new Date().getFullYear()} Inbramet. Todos los derechos reservados.</span>
-          <span>Hecho en Santa Cruz, Bolivia · El mejor sabor de Santa Cruz</span>
+          <span>© {new Date().getFullYear()} Inbramet. Todos os direitos reservados.</span>
+          <span>Design funcional · Mesas, cadeiras e conjuntos para cada espaço</span>
         </div>
       </div>
     </footer>
@@ -203,17 +189,15 @@ function Social({
   return (
     <a
       href={href}
-      // Web profiles open in a new tab; mailto:/tel: open the mail/phone app directly.
       {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       aria-label={label}
-      className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(255,216,102,0.35)] text-light/80 transition hover:border-accent hover:bg-accent hover:text-brand-deep"
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(230,255,87,0.35)] text-light/80 transition hover:border-accent hover:bg-accent hover:text-brand-deep"
     >
       {children}
     </a>
   );
 }
 
-/* ---- icons ---- */
 function FacebookIcon() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">

@@ -16,7 +16,7 @@ function cell(v: unknown): string {
 
 export async function GET(request: Request) {
   const session = await getVerifiedAdmin();
-  if (!session) return new Response("Unauthorized", { status: 401 });
+  if (!session) return new Response("Não autorizado", { status: 401 });
 
   const status = new URL(request.url).searchParams.get("status")?.toUpperCase();
   const where = status && STATUSES.includes(status) ? { status: status as never } : {};
@@ -25,14 +25,14 @@ export async function GET(request: Request) {
   try {
     orders = await prisma.order.findMany({ where, orderBy: { createdAt: "desc" }, include: { items: true } });
   } catch {
-    return new Response("Database unavailable", { status: 503 });
+    return new Response("Banco de dados indisponível", { status: 503 });
   }
 
   const header = [
-    "Order number", "Date", "Status", "Payment method", "Payment status",
-    "Customer", "Phone", "Email", "City", "Address", "Postal code",
-    "Items", "Item count", "Subtotal (Bs)", "Shipping (Bs)", "Total (Bs)",
-    "Courier", "Tracking number", "Notes",
+    "Número do pedido", "Data", "Status", "Método de pagamento", "Status do pagamento",
+    "Cliente", "Telefone", "E-mail", "Cidade", "Endereço", "CEP",
+    "Itens", "Qtd. itens", "Subtotal (R$)", "Frete (R$)", "Total (R$)",
+    "Transportadora", "Código de rastreio", "Observações",
   ];
   const rows = orders.map((o) => [
     o.orderNumber,
@@ -56,13 +56,12 @@ export async function GET(request: Request) {
     o.notes ?? "",
   ]);
 
-  // BOM so Excel opens UTF-8 (Urdu names, "–" etc.) correctly.
-  const csv = "﻿" + [header, ...rows].map((r) => r.map(cell).join(",")).join("\r\n");
+  const csv = "\uFEFF" + [header, ...rows].map((r) => r.map(cell).join(",")).join("\r\n");
   const stamp = new Date().toISOString().slice(0, 10);
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="Inbramet-orders-${status?.toLowerCase() || "all"}-${stamp}.csv"`,
+      "Content-Disposition": `attachment; filename="inbramet-pedidos-${status?.toLowerCase() || "todos"}-${stamp}.csv"`,
       "Cache-Control": "no-store",
     },
   });

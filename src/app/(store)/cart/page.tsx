@@ -13,14 +13,13 @@ export default function CartPage() {
 
   function handleRemove(id: string, name: string) {
     remove(id);
-    toast.info(`${name} se quitó del carrito`);
+    toast.info(`${name} foi removido do carrinho`);
   }
 
-  // Cart lives in localStorage — avoid flashing an empty "Bs 0" bag before it loads.
   if (!ready) {
     return (
       <div className="mx-auto max-w-6xl px-5 py-14" aria-busy="true">
-        <h1 className="font-display text-4xl font-semibold text-ink">Carrito</h1>
+        <h1 className="font-display text-4xl font-semibold text-ink">Carrinho</h1>
         <div className="mt-10 space-y-4">
           {[0, 1].map((i) => (
             <div key={i} className="h-28 animate-pulse rounded-xl bg-cream-soft" />
@@ -33,13 +32,13 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-2xl px-5 py-24 text-center">
-        <h1 className="font-display text-4xl font-semibold text-ink">Tu carrito está vacío</h1>
-        <p className="mt-3 text-muted">Encuentra tu próximo antojo en el menú.</p>
+        <h1 className="font-display text-4xl font-semibold text-ink">Seu carrinho está vazio</h1>
+        <p className="mt-3 text-muted">Encontre sua próxima peça na nossa coleção.</p>
         <Link
           href="/shop"
           className="mt-8 inline-block rounded-full bg-gradient-to-r from-accent-soft to-accent px-8 py-3 text-sm font-medium text-brand transition hover:opacity-90"
         >
-          Explorar el menú
+          Explorar a coleção
         </Link>
       </div>
     );
@@ -48,11 +47,10 @@ export default function CartPage() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-14">
       <h1 className="font-display text-4xl font-semibold text-ink">
-        Carrito{ready && count > 0 ? ` (${count})` : ""}
+        Carrinho{ready && count > 0 ? ` (${count})` : ""}
       </h1>
 
       <div className="mt-10 grid items-start gap-10 lg:grid-cols-[1fr_360px]">
-        {/* Items */}
         <ul className="divide-y divide-[var(--line)] border-y border-[var(--line)]">
           {items.map((item) => (
             <li key={item.id} className="flex gap-4 py-5">
@@ -84,7 +82,7 @@ export default function CartPage() {
                     <button
                       onClick={() => setQuantity(item.id, item.quantity - 1)}
                       className="px-3 py-1.5 text-ink transition hover:text-accent-strong"
-                      aria-label="Quitar una unidad"
+                      aria-label="Remover uma unidade"
                     >
                       −
                     </button>
@@ -92,7 +90,7 @@ export default function CartPage() {
                     <button
                       onClick={() => setQuantity(item.id, item.quantity + 1)}
                       className="px-3 py-1.5 text-ink transition hover:text-accent-strong"
-                      aria-label="Agregar una unidad"
+                      aria-label="Adicionar uma unidade"
                     >
                       +
                     </button>
@@ -101,7 +99,7 @@ export default function CartPage() {
                     onClick={() => handleRemove(item.id, item.name)}
                     className="text-sm text-muted underline-offset-4 hover:text-red-700 hover:underline"
                   >
-                    Quitar
+                    Remover
                   </button>
                 </div>
               </div>
@@ -109,17 +107,16 @@ export default function CartPage() {
           ))}
         </ul>
 
-        {/* Summary — locked in place while items scroll */}
         <aside className="rounded-xl border border-[var(--line)] bg-surface/70 p-6 lg:sticky lg:top-24 lg:self-start">
-          <h2 className="font-display text-xl font-semibold text-ink">Resumen del pedido</h2>
+          <h2 className="font-display text-xl font-semibold text-ink">Resumo do pedido</h2>
           <dl className="mt-5 space-y-3 text-sm">
             <div className="flex justify-between">
               <dt className="text-muted">Subtotal</dt>
               <dd className="text-ink">{formatPrice(subtotal)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-muted">Delivery</dt>
-              <dd className="text-ink">Calculado al pagar</dd>
+              <dt className="text-muted">Frete</dt>
+              <dd className="text-ink">Calculado ao finalizar</dd>
             </div>
           </dl>
           <div className="mt-5 flex justify-between border-t border-[var(--line)] pt-5">
@@ -129,18 +126,17 @@ export default function CartPage() {
             </span>
           </div>
           {savings > 0 && <SavingsStrip amount={savings} className="mt-5" />}
-          {/* Guests are sent to sign in first (checkout needs an account), then back. */}
           <Link
             href="/checkout"
             className="mt-6 block rounded-full bg-gradient-to-r from-accent-soft to-accent px-8 py-3.5 text-center text-sm font-medium text-brand transition hover:opacity-90"
           >
-            Proceder al pago
+            Finalizar compra
           </Link>
           <Link
             href="/shop"
             className="mt-3 block text-center text-sm text-accent-strong hover:underline"
           >
-            Seguir comprando
+            Continuar comprando
           </Link>
         </aside>
       </div>

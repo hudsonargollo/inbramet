@@ -6,8 +6,8 @@ import { getStoreSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/shipping" },
-  title: "Delivery y devoluciones",
-  description: "Delivery en moto y retiro en sucursal en Santa Cruz, Bolivia: costos, tiempos y política de devoluciones de Inbramet.",
+  title: "Envios e devoluções",
+  description: "Entrega em domicílio Inbramet: valores de frete, prazos estimados e política de trocas e devoluções.",
 };
 
 export default async function ShippingPage() {
@@ -18,46 +18,46 @@ export default async function ShippingPage() {
     <div className="mx-auto max-w-3xl px-5 py-16">
       <div className="text-center">
         <Emblem size={40} className="mx-auto text-brand" accent="var(--color-accent)" />
-        <span className="eyebrow mt-3 block">Ayuda</span>
+        <span className="eyebrow mt-3 block">Ajuda</span>
         <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink">
-          Delivery y devoluciones
+          Envios e devoluções
         </h1>
       </div>
 
       <div className="mt-12 space-y-10">
         <section>
-          <h2 className="font-display text-2xl font-bold text-ink">Delivery en moto</h2>
+          <h2 className="font-display text-2xl font-bold text-ink">Entrega em domicílio</h2>
           <ul className="mt-4 space-y-3 text-ink/80">
-            <li>• Delivery en moto en Santa Cruz. Entrega estimada: {DELIVERY_TIME}. El tiempo puede variar según la preparación, la demanda y la distancia.</li>
+            <li>• Entrega coordenada diretamente pela nossa central on-line. Prazo estimado: {DELIVERY_TIME} conforme disponibilidade, volume e distância.</li>
             <li>
-              • Costo de delivery: <strong>{formatPrice(FLAT_SHIPPING)}</strong>
+              • Valor do frete: <strong>{formatPrice(FLAT_SHIPPING)}</strong>
               {FREE_SHIPPING_THRESHOLD > 0 ? (
-                <> — <strong>gratis</strong> en pedidos desde {formatPrice(FREE_SHIPPING_THRESHOLD)}.</>
+                <> — <strong>grátis</strong> em pedidos a partir de {formatPrice(FREE_SHIPPING_THRESHOLD)}.</>
               ) : (
-                <> — y <strong>gratis</strong> en todos los pedidos de Inbramet.</>
+                <> — e <strong>grátis</strong> em todos os pedidos da Inbramet.</>
               )}
             </li>
-            <li>• Preparamos tu pedido al momento y sale directo de la sucursal que elegiste.</li>
-            <li>• También puedes retirar en tienda sin costo: te avisamos por WhatsApp cuando esté listo.</li>
+            <li>• Conferimos cada peça cuidadosamente antes da expedição.</li>
+            <li>• Você recebe o código e as atualizações do envio diretamente no seu e-mail.</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="font-display text-2xl font-bold text-ink">Cambios y devoluciones</h2>
+          <h2 className="font-display text-2xl font-bold text-ink">Trocas e devoluções</h2>
           <ul className="mt-4 space-y-3 text-ink/80">
-            <li>• Si tu pedido llega incompleto o en mal estado, contáctanos con tu número de pedido y cuéntanos qué pasó.</li>
-            <li>• Nos importa que disfrutes tu comida. Revisamos lo ocurrido con cuidado y lo más rápido posible.</li>
-            <li>• Adjunta una foto del pedido si puedes: nos ayuda a revisar lo ocurrido.</li>
-            <li>• Coordinamos contigo la solución más adecuada para tu pedido.</li>
+            <li>• Se o seu móvel chegar com avaria de transporte ou peça faltante, fale conosco informando o número do pedido em até 48 horas.</li>
+            <li>• Queremos seus ambientes impecáveis. Analisamos cada solicitação com prioridade para resolver rapidamente.</li>
+            <li>• Envie uma foto da embalagem ou do detalhe, se possível: isso agiliza a troca ou reposição.</li>
+            <li>• Combinamos com você a coleta ou substituição mais prática.</li>
           </ul>
         </section>
 
         <section className="rounded-xl border border-[var(--line)] bg-cream-soft p-6 text-sm text-muted">
-          ¿Necesitas ayuda con un pedido? Escríbenos desde la{" "}
+          Precisa de ajuda com um pedido? Escreva pela{" "}
           <Link href="/contact" className="text-accent-strong hover:underline">
-            página de contacto
+            página de contato
           </Link>{" "}
-          con tu número de orden.
+          informando o número do seu pedido.
         </section>
       </div>
     </div>

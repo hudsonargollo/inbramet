@@ -27,7 +27,7 @@ export function AddToCart({ product }: { product: Omit<CartItem, "quantity"> }) 
     setAdded(true);
     if (addedTimer.current) window.clearTimeout(addedTimer.current);
     addedTimer.current = window.setTimeout(() => setAdded(false), 1800);
-    toast.success(`${qty} × ${product.name} agregado a tu carrito`, { title: "Agregado al carrito" });
+    toast.success(`${qty} × ${product.name} adicionado ao carrinho`, { title: "Adicionado ao carrinho" });
   }
 
   // Checks out just this product (the rest of the cart is left untouched).
@@ -41,7 +41,7 @@ export function AddToCart({ product }: { product: Omit<CartItem, "quantity"> }) 
         disabled
         className="w-full cursor-not-allowed rounded-full border border-[var(--line)] px-8 py-3.5 text-sm font-medium tracking-wide text-muted"
       >
-        Agotado
+        Esgotado
       </button>
     );
   }
@@ -55,14 +55,14 @@ export function AddToCart({ product }: { product: Omit<CartItem, "quantity"> }) 
         <div
           className="flex items-center justify-center rounded-full border border-[var(--line-strong)] bg-surface"
           role="group"
-          aria-label={`Cantidad de ${product.name}`}
+          aria-label={`Quantidade de ${product.name}`}
         >
           <button
             type="button"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             disabled={qty <= 1}
             className={`rounded-l-full ${stepBtn}`}
-            aria-label="Quitar una unidad"
+            aria-label="Remover uma unidade"
           >
             −
           </button>
@@ -77,7 +77,7 @@ export function AddToCart({ product }: { product: Omit<CartItem, "quantity"> }) 
             onClick={() => setQty((q) => Math.min(product.stock, q + 1))}
             disabled={qty >= product.stock}
             className={`rounded-r-full ${stepBtn}`}
-            aria-label="Agregar una unidad"
+            aria-label="Adicionar uma unidade"
           >
             +
           </button>
@@ -86,14 +86,14 @@ export function AddToCart({ product }: { product: Omit<CartItem, "quantity"> }) 
         <button
           type="button"
           onClick={handleAdd}
-          className={`flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 py-3.5 text-sm font-semibold uppercase tracking-[0.06em] transition duration-200 active:scale-[0.98] sm:px-7 ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-semibold uppercase tracking-[0.06em] transition duration-200 active:scale-[0.98] sm:px-7 ${
             added
-              ? "bg-accent text-brand-deep shadow-[0_16px_34px_-16px_rgba(255,204,4,0.95)]"
-              : "bg-brand text-light shadow-[0_16px_34px_-16px_rgba(76,138,35,0.8)] hover:bg-brand-deep"
+              ? "bg-accent text-brand-deep shadow-[0_16px_34px_-16px_rgba(15,23,42,0.4)]"
+              : "bg-brand text-light shadow-[0_16px_34px_-16px_rgba(15,23,42,0.55)] hover:bg-brand-deep"
           }`}
         >
           {added ? <CheckIcon /> : <CartIcon />}
-          <span>{added ? "Agregado" : "Agregar al carrito"}</span>
+          <span>{added ? "Adicionado" : "Adicionar ao carrinho"}</span>
         </button>
       </div>
 
@@ -105,9 +105,9 @@ export function AddToCart({ product }: { product: Omit<CartItem, "quantity"> }) 
       <button
         type="button"
         onClick={handleBuyNow}
-        className="w-full rounded-full bg-gradient-to-r from-accent-soft to-accent px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.08em] text-brand shadow-[0_14px_34px_-14px_rgba(255,204,4,0.7)] transition hover:opacity-90"
+        className="w-full rounded-full bg-gradient-to-r from-accent-soft to-accent px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.08em] text-brand shadow-[0_14px_34px_-14px_rgba(15,23,42,0.35)] transition hover:opacity-90"
       >
-        Comprar ahora
+        Comprar agora
       </button>
     </div>
   );

@@ -15,7 +15,7 @@ type Props = {
 export function ShopBrowser({ eyebrow, title, description, products, facets }: Props) {
   const countLine = (
     <p className="mb-5 border-b border-[var(--line)] pb-4 text-sm text-muted">
-      {products.length} {products.length === 1 ? "producto" : "productos"}
+      {products.length} {products.length === 1 ? "produto" : "produtos"}
     </p>
   );
 
@@ -28,11 +28,10 @@ export function ShopBrowser({ eyebrow, title, description, products, facets }: P
       </header>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[250px_1fr] xl:gap-10">
-        {/* Desktop sidebar (mobile uses the drawer in ShopToolbar) */}
         <aside className="hidden lg:block">
-          <div className="rounded-2xl border border-[var(--line)] bg-surface/60 p-5 shadow-[0_24px_50px_-40px_rgba(29,58,14,0.5)]">
+          <div className="rounded-2xl border border-[var(--line)] bg-surface/60 p-5 shadow-[0_24px_50px_-40px_rgba(15,23,42,0.4)]">
             <p className="mb-5 font-display text-xl font-semibold text-ink">Filtrar</p>
-            <Suspense fallback={<div className="text-sm text-muted">Cargando filtros…</div>}>
+            <Suspense fallback={<div className="text-sm text-muted">Carregando filtros…</div>}>
               <ShopFilters facets={facets} />
             </Suspense>
           </div>

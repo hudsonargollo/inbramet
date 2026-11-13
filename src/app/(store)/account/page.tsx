@@ -8,7 +8,7 @@ import { Emblem } from "@/components/brand/emblem";
 import { logoutAction, startEmailVerification } from "../auth-actions";
 
 export const metadata: Metadata = {
-  title: "Mi cuenta",
+  title: "Minha conta",
   robots: { index: false },
 };
 
@@ -65,13 +65,13 @@ export default async function AccountPage() {
         <div className="flex items-center gap-3">
           <Emblem size={38} className="text-accent-strong" />
           <div>
-            <h1 className="font-display text-3xl font-bold text-ink">Hola, {firstName}</h1>
-            <p className="text-sm text-muted">Te damos la bienvenida a tu cuenta</p>
+            <h1 className="font-display text-3xl font-bold text-ink">Olá, {firstName}</h1>
+            <p className="text-sm text-muted">Boas-vindas à sua conta</p>
           </div>
         </div>
         <form action={logoutAction}>
           <button className="rounded-full border border-[var(--line-strong)] px-5 py-2 text-sm text-ink transition hover:border-accent hover:text-accent-strong">
-            Cerrar sesión
+            Sair
           </button>
         </form>
       </div>
@@ -79,14 +79,14 @@ export default async function AccountPage() {
       {!verified && (
         <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-accent/50 bg-accent/10 px-5 py-4">
           <div>
-            <p className="font-medium text-ink">Verifica tu correo</p>
+            <p className="font-medium text-ink">Verifique seu e-mail</p>
             <p className="text-sm text-muted">
-              Enviaremos un código de 6 dígitos a {session.email} para confirmar que es tuyo.
+              Enviaremos um código de 6 dígitos para {session.email} para confirmar que é seu.
             </p>
           </div>
           <form action={startEmailVerification}>
             <button className="rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-deep transition hover:bg-accent-soft">
-              Verificar correo
+              Verificar e-mail
             </button>
           </form>
         </div>
@@ -98,11 +98,11 @@ export default async function AccountPage() {
           <h2 className="eyebrow mb-3">Perfil</h2>
           <dl className="space-y-2 text-sm">
             <div>
-              <dt className="text-muted">Nombre</dt>
+              <dt className="text-muted">Nome</dt>
               <dd className="text-ink">{session.name}</dd>
             </div>
             <div>
-              <dt className="text-muted">Correo</dt>
+              <dt className="text-muted">E-mail</dt>
               <dd className="break-all text-ink">
                 {session.email}
                 {verified && (
@@ -117,25 +117,25 @@ export default async function AccountPage() {
             href="/shop"
             className="mt-5 block rounded-full bg-accent px-5 py-2.5 text-center text-sm font-semibold text-brand-deep transition hover:bg-accent-soft"
           >
-            Seguir comprando
+            Continuar comprando
           </Link>
         </aside>
 
         {/* Orders */}
         <section>
-          <h2 className="font-display text-2xl font-semibold text-ink">Historial de pedidos</h2>
+          <h2 className="font-display text-2xl font-semibold text-ink">Histórico de pedidos</h2>
 
           {orders.length === 0 ? (
             <div className="mt-4 rounded-xl border border-dashed border-[var(--line)] bg-cream-soft py-14 text-center">
-              <p className="font-display text-lg text-ink">Aún no tienes pedidos</p>
+              <p className="font-display text-lg text-ink">Você ainda não tem pedidos</p>
               <p className="mt-1 text-sm text-muted">
-                Cuando hagas un pedido, aparecerá aquí.
+                Quando fizer um pedido, ele aparecerá aqui.
               </p>
               <Link
                 href="/shop"
                 className="mt-5 inline-block text-sm font-medium text-accent-strong hover:underline"
               >
-                Empezar a comprar →
+                Começar a comprar →
               </Link>
             </div>
           ) : (
@@ -149,7 +149,7 @@ export default async function AccountPage() {
                     <p className="font-medium text-ink">{o.orderNumber}</p>
                     <p className="text-sm text-muted">
                       {formatDate(o.createdAt)}{" "}
-                      · {o.itemCount} {o.itemCount === 1 ? "producto" : "productos"}
+                      · {o.itemCount} {o.itemCount === 1 ? "produto" : "produtos"}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
@@ -162,9 +162,9 @@ export default async function AccountPage() {
           )}
 
           <p className="mt-6 text-sm text-muted">
-            ¿Hiciste un pedido como invitado?{" "}
+            Fez um pedido como visitante?{" "}
             <Link href="/account/orders" className="text-accent-strong hover:underline">
-              Rastréalo con tu número de pedido
+              Rastreie com o número do pedido
             </Link>
           </p>
         </section>

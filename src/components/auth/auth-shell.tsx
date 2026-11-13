@@ -17,20 +17,20 @@ type Props = {
 export function AuthShell({
   children,
   backHref = "/",
-  backLabel = "Volver a la tienda",
+  backLabel = "Voltar para a loja",
   eyebrow = "Inbramet",
 }: Props) {
   return (
     <section
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-14"
-      style={{ background: "linear-gradient(160deg, #1d3a0e 0%, #3c6e1b 55%, #1d3a0e 100%)" }}
+      style={{ background: "linear-gradient(160deg, #0f172a 0%, #1e293b 55%, #0f172a 100%)" }}
     >
       {/* Layered accent light for depth */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(55% 45% at 50% -5%, rgba(255,216,102,0.18), transparent 70%), radial-gradient(50% 40% at 50% 105%, rgba(255,204,4,0.14), transparent 70%)",
+            "radial-gradient(55% 45% at 50% -5%, rgba(230,255,87,0.12), transparent 70%), radial-gradient(50% 40% at 50% 105%, rgba(230,255,87,0.08), transparent 70%)",
         }}
       />
       {/* Faint brand watermark */}
@@ -40,12 +40,12 @@ export function AuthShell({
       />
 
       {/* Thin accent frame around the whole stage */}
-      <div className="pointer-events-none absolute inset-4 rounded-[1.4rem] border border-[rgba(163,212,120,0.22)] sm:inset-6" />
+      <div className="pointer-events-none absolute inset-4 rounded-[1.4rem] border border-[rgba(230,255,87,0.18)] sm:inset-6" />
 
       {/* Back link */}
       <Link
         href={backHref}
-        className="group absolute left-6 top-6 z-10 inline-flex items-center gap-2 rounded-full border border-[rgba(163,212,120,0.3)] bg-[rgba(255,255,255,0.04)] px-4 py-2 text-xs font-medium uppercase tracking-[0.14em] text-light/85 backdrop-blur transition hover:border-accent hover:text-accent sm:left-10 sm:top-10"
+        className="group absolute left-6 top-6 z-10 inline-flex items-center gap-2 rounded-full border border-[rgba(230,255,87,0.28)] bg-[rgba(255,255,255,0.04)] px-4 py-2 text-xs font-medium uppercase tracking-[0.14em] text-light/85 backdrop-blur transition hover:border-accent hover:text-accent sm:left-10 sm:top-10"
       >
         <span className="transition-transform group-hover:-translate-x-0.5">‹</span>
         {backLabel}
@@ -53,9 +53,9 @@ export function AuthShell({
 
       {/* Floating card */}
       <div className="animate-auth-in relative w-full max-w-md">
-        <div className="relative overflow-hidden rounded-2xl border border-[rgba(163,212,120,0.5)] bg-cream p-8 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.7)] sm:p-10">
+        <div className="relative overflow-hidden rounded-2xl border border-[rgba(230,255,87,0.35)] bg-cream p-8 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.7)] sm:p-10">
           {/* Inner accent hairline frame */}
-          <div className="pointer-events-none absolute inset-3 rounded-xl border border-[rgba(255,204,4,0.28)]" />
+          <div className="pointer-events-none absolute inset-3 rounded-xl border border-[rgba(15,23,42,0.12)]" />
           {/* Top accent bar */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent" />
 
@@ -63,7 +63,7 @@ export function AuthShell({
             <div className="flex flex-col items-center text-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/inbramet-logo.png"
+                src="/products/inbramet-icon-transparent.png"
                 alt="Inbramet"
                 width={228}
                 height={169}
@@ -76,9 +76,9 @@ export function AuthShell({
               )}
               {/* Divider with center diamond */}
               <span className="mt-5 flex w-28 items-center gap-2">
-                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgba(255,204,4,0.5)]" />
+                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgba(15,23,42,0.35)]" />
                 <span className="h-1.5 w-1.5 rotate-45 bg-accent-strong" />
-                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgba(255,204,4,0.5)]" />
+                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgba(15,23,42,0.35)]" />
               </span>
             </div>
 

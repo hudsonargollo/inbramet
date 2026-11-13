@@ -21,14 +21,14 @@ export function OrderLookup({ defaultOrder = "" }: { defaultOrder?: string }) {
           name="order"
           defaultValue={state.values?.order ?? defaultOrder}
           required
-          placeholder="Número de pedido (ej. CC01-XXXXXX-XXXXXXXX)"
+          placeholder="Número do pedido (ex. IN01-XXXXXX-XXXXXXXX)"
           className={inputCls}
         />
-        <input name="email" type="email" required placeholder="Correo usado al pagar" defaultValue={state.values?.email} className={inputCls} />
+        <input name="email" type="email" required placeholder="E-mail usado na compra" defaultValue={state.values?.email} className={inputCls} />
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-brand-deep shadow-[0_14px_32px_-16px_rgba(255,204,4,0.9)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft disabled:opacity-60"
+          className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-brand-deep shadow-[0_14px_32px_-16px_rgba(15,23,42,0.4)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft disabled:opacity-60"
         >
           {pending ? "Buscando…" : "Rastrear pedido"}
         </button>
@@ -46,7 +46,7 @@ export function OrderLookup({ defaultOrder = "" }: { defaultOrder?: string }) {
             <div>
               <p className="font-display text-xl font-semibold text-ink">{state.order.orderNumber}</p>
               <p className="text-sm text-muted">
-                Realizado el {new Date(state.order.createdAt).toLocaleDateString("es-BO")}
+                Realizado em {new Date(state.order.createdAt).toLocaleDateString("pt-BR")}
               </p>
             </div>
             <StatusBadge status={state.order.status} />
@@ -65,7 +65,7 @@ export function OrderLookup({ defaultOrder = "" }: { defaultOrder?: string }) {
 
           <div className="mt-4 flex justify-between text-sm">
             <span className="text-muted">
-              Pago: {PAYMENT_METHOD_LABEL[state.order.paymentMethod] ?? state.order.paymentMethod} ·{" "}
+              Pagamento: {PAYMENT_METHOD_LABEL[state.order.paymentMethod] ?? state.order.paymentMethod} ·{" "}
               {PAYMENT_STATUS_LABEL[state.order.paymentStatus] ?? state.order.paymentStatus}
             </span>
             <span className="font-medium text-ink">{formatPrice(state.order.total)}</span>
@@ -73,9 +73,9 @@ export function OrderLookup({ defaultOrder = "" }: { defaultOrder?: string }) {
 
           {state.order.trackingNumber && state.order.courierName && (
             <div className="mt-4 rounded-lg border border-accent/40 bg-accent/5 p-4">
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-accent-strong">Delivery</p>
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-accent-strong">Entrega</p>
               <p className="mt-1.5 text-sm text-ink">
-                {state.order.courierName} · Seguimiento{" "}
+                {state.order.courierName} · Código{" "}
                 <span className="font-medium">{state.order.trackingNumber}</span>
               </p>
               {state.order.trackUrl && (
@@ -85,7 +85,7 @@ export function OrderLookup({ defaultOrder = "" }: { defaultOrder?: string }) {
                   rel="noopener noreferrer"
                   className="mt-2 inline-block text-sm font-medium text-accent-strong underline underline-offset-4 hover:text-accent"
                 >
-                  Rastrea tu paquete →
+                  Rastrear envio →
                 </a>
               )}
             </div>

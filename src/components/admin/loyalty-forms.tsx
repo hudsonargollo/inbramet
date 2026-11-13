@@ -6,7 +6,7 @@ import { deleteReward, saveLoyaltyRules, saveReward, adjustCustomer, type Loyalt
 import type { LoyaltySettings } from "@/lib/settings-shared";
 
 const input =
-  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-[rgba(255,204,4,0.2)] disabled:opacity-60";
+  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 disabled:opacity-60";
 const labelCls = "mb-1.5 block text-xs font-medium uppercase tracking-[0.1em] text-muted";
 const saveBtn =
   "rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-brand-deep transition hover:bg-accent-soft disabled:opacity-60";
@@ -35,14 +35,14 @@ function Card({
   const toast = useToast();
 
   useEffect(() => {
-    if (state.ok) toast.success(success, { title: "Guardado" });
+    if (state.ok) toast.success(success, { title: "Salvo" });
     else if (state.error) toast.error(state.error);
   }, [state, toast, success]);
 
   return (
     <section
       id={id}
-      className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6"
+      className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6"
     >
       <h2 className="font-display text-xl font-semibold text-ink">{title}</h2>
       <p className="mt-1 text-sm text-muted">{description}</p>
@@ -56,7 +56,7 @@ function Card({
         {!disabled && (
           <div className="flex justify-end">
             <button type="submit" disabled={pending} className={saveBtn}>
-              {pending ? "Guardando…" : "Guardar"}
+              {pending ? "Salvando…" : "Salvar"}
             </button>
           </div>
         )}
@@ -118,10 +118,10 @@ export function LoyaltyRulesForm({
   return (
     <Card
       id="reglas"
-      title="Reglas del programa"
-      description="Se aplican a la tienda, al checkout y a la página del club al instante."
+      title="Regras do programa"
+      description="São aplicadas na loja, no checkout e na página do clube imediatamente."
       action={saveLoyaltyRules}
-      success="Reglas actualizadas."
+      success="Regras atualizadas."
       disabled={!canEdit}
     >
       {(state) => (
@@ -134,9 +134,9 @@ export function LoyaltyRulesForm({
               className="mt-0.5 h-4 w-4 accent-[var(--color-accent-strong)]"
             />
             <span>
-              <span className="block text-sm font-medium text-ink">Programa activo</span>
+              <span className="block text-sm font-medium text-ink">Programa ativo</span>
               <span className="block text-xs text-muted">
-                Al pausarlo se ocultan la página del club, los sellos en el checkout y el canje de regalos.
+                Ao pausar, a página do clube, os selos no checkout e o resgate de brindes ficam ocultos.
               </span>
             </span>
           </label>
@@ -144,7 +144,7 @@ export function LoyaltyRulesForm({
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="loy-name" className={labelCls}>
-                Nombre del programa
+                Nome do programa
               </label>
               <input
                 id="loy-name"
@@ -153,40 +153,40 @@ export function LoyaltyRulesForm({
                 maxLength={40}
                 className={input}
               />
-              <p className="mt-1 text-xs text-muted">Aparece en el menú, el pie y la página del club.</p>
+              <p className="mt-1 text-xs text-muted">Exibido na coleção, no rodapé e na página do clube.</p>
             </div>
             <Num
               name="stampsToFree"
-              label="Sellos para un producto gratis"
+              label="Selos para 1 produto grátis"
               defaultValue={rules.stampsToFree}
               min={1}
               max={100}
-              hint="10 = «cada 10 sellos, 1 gratis»."
+              hint="10 = «a cada 10 selos, 1 grátis»."
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Num
               name="pointsPer"
-              label="Puntos por cada bloque de gasto"
+              label="Pontos por bloco de gasto"
               defaultValue={rules.pointsPer}
               min={0}
-              hint="0 puntos pausa la tienda de regalos sin borrar saldos."
+              hint="0 pontos pausa a loja de brindes sem apagar saldos."
             />
             <Num
               name="pointsAmount"
-              label="Bs de gasto que otorgan esos puntos"
+              label="Valor em R$ que gera esses pontos"
               defaultValue={rules.pointsAmount}
               min={1}
-              hint="Ej. 1 sello por unidad + 1 punto cada Bs 10."
+              hint="Ex.: 1 selo por unidade + 1 ponto a cada R$ 10."
             />
             <Num
               name="expiryDays"
-              label="Días de validez"
+              label="Dias de validade"
               defaultValue={rules.expiryDays}
               min={0}
               max={3650}
-              hint="0 = sellos y puntos no vencen nunca."
+              hint="0 = selos e pontos não expiram."
             />
             <label className="flex items-center gap-3 self-end rounded-lg border border-[var(--line-strong)] px-4 py-2.5">
               <input
@@ -195,12 +195,12 @@ export function LoyaltyRulesForm({
                 defaultChecked={rules.pointsOnShipping}
                 className="h-4 w-4 accent-[var(--color-accent-strong)]"
               />
-              <span className="text-sm text-ink">El delivery también suma puntos</span>
+              <span className="text-sm text-ink">Frete também soma pontos</span>
             </label>
           </div>
 
           <fieldset className="space-y-3">
-            <legend className={labelCls}>¿Qué productos suman sellos?</legend>
+            <legend className={labelCls}>Quais produtos somam selos?</legend>
             {(["all", "category", "product"] as const).map((value) => (
               <label key={value} className="flex items-center gap-3 text-sm text-ink">
                 <input
@@ -212,10 +212,10 @@ export function LoyaltyRulesForm({
                   className="h-4 w-4 accent-[var(--color-accent-strong)]"
                 />
                 {value === "all"
-                  ? "Todo el menú"
+                  ? "Toda a coleção"
                   : value === "category"
-                    ? "Solo estas categorías"
-                    : "Solo estos productos"}
+                    ? "Somente estas categorias"
+                    : "Somente estes produtos"}
               </label>
             ))}
 
@@ -284,15 +284,15 @@ export function RewardForm({ reward, canEdit }: { reward?: RewardRow; canEdit: b
       className="rounded-xl border border-[var(--line-strong)] bg-cream-soft/60 p-4"
     >
       <summary className="cursor-pointer text-sm font-medium text-ink">
-        {isNew ? "Nuevo regalo" : reward!.name}
+        {isNew ? "Novo brinde" : reward!.name}
       </summary>
       <div className="mt-4">
         <Card
           id={`regalo-${reward?.id ?? "nuevo"}`}
-          title={isNew ? "Añadir regalo" : "Editar regalo"}
-          description="Los regalos se canjean con puntos en la página del club."
+          title={isNew ? "Adicionar brinde" : "Editar brinde"}
+          description="Os brindes são resgatados com pontos na página do clube."
           action={saveReward}
-          success="Regalo guardado."
+          success="Brinde salvo."
           disabled={!canEdit}
         >
           {(state) => (
@@ -301,7 +301,7 @@ export function RewardForm({ reward, canEdit }: { reward?: RewardRow; canEdit: b
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor={`n-${reward?.id ?? "new"}`} className={labelCls}>
-                    Nombre
+                    Nome
                   </label>
                   <input
                     id={`n-${reward?.id ?? "new"}`}
@@ -313,28 +313,28 @@ export function RewardForm({ reward, canEdit }: { reward?: RewardRow; canEdit: b
                 </div>
                 <div>
                   <label htmlFor={`i-${reward?.id ?? "new"}`} className={labelCls}>
-                    Imagen (opcional)
+                    Imagem (opcional)
                   </label>
                   <input
                     id={`i-${reward?.id ?? "new"}`}
                     name="image"
                     defaultValue={state.values?.image ?? reward?.image ?? ""}
-                    placeholder="/uploads/… o https://…"
+                    placeholder="/uploads/… ou https://…"
                     className={input}
                   />
                 </div>
                 <Num
                   name="costPoints"
-                  label="Puntos"
+                  label="Pontos"
                   defaultValue={reward?.costPoints ?? 200}
                   min={1}
                 />
-                <Num name="stock" label="Unidades disponibles" defaultValue={reward?.stock ?? 10} min={0} />
-                <Num name="order" label="Orden de aparición" defaultValue={reward?.order ?? 0} min={0} />
+                <Num name="stock" label="Unidades disponíveis" defaultValue={reward?.stock ?? 10} min={0} />
+                <Num name="order" label="Ordem de exibição" defaultValue={reward?.order ?? 0} min={0} />
               </div>
               <div>
                 <label htmlFor={`d-${reward?.id ?? "new"}`} className={labelCls}>
-                  Descripción (opcional)
+                  Descrição (opcional)
                 </label>
                 <textarea
                   id={`d-${reward?.id ?? "new"}`}
@@ -366,17 +366,17 @@ function DeleteRewardButton({ id, name, onDone }: { id: string; name: string; on
     <button
       type="button"
       onClick={async () => {
-        if (!confirm(`¿Borrar "${name}" del catálogo de regalos?`)) return;
+        if (!confirm(`Excluir "${name}" do catálogo de brindes?`)) return;
         const res = await deleteReward(id);
         if (res.ok) {
-          toast.success("Regalo borrado.");
+          toast.success("Brinde excluído.");
           onDone();
           window.location.reload();
-        } else toast.error(res.error ?? "No se pudo borrar.");
+        } else toast.error(res.error ?? "Não foi possível excluir.");
       }}
       className="text-sm text-red-700 transition hover:underline"
     >
-      Borrar este regalo
+      Excluir este brinde
     </button>
   );
 }
@@ -395,7 +395,7 @@ export function AdjustForm({
     <Card
       id={`ajuste-${customerId}`}
       title="Ajuste manual"
-      description="Regala sellos o puntos, o corrige un error. Cada ajuste queda registrado con tu nota."
+      description="Conceda selos ou pontos, ou corrija um erro. Cada ajuste fica registrado com sua observação."
       action={adjustCustomer}
       success="Ajuste registrado."
       disabled={!canEdit}
@@ -404,15 +404,15 @@ export function AdjustForm({
         <>
           <input type="hidden" name="customerId" value={customerId} />
           <div className="grid gap-4 sm:grid-cols-2">
-            <Num name="stamps" label="Sellos (+/-)" defaultValue={0} min={-1000} max={1000} />
-            <Num name="points" label="Puntos (+/-)" defaultValue={0} min={-100000} max={100000} />
+            <Num name="stamps" label="Selos (+/-)" defaultValue={0} min={-1000} max={1000} />
+            <Num name="points" label="Pontos (+/-)" defaultValue={0} min={-100000} max={100000} />
           </div>
           <div>
             <label htmlFor={`p-${customerId}`} className={labelCls}>
-              Producto de los sellos (opcional)
+              Produto dos selos (opcional)
             </label>
             <select id={`p-${customerId}`} name="productId" defaultValue="" className={input}>
-              <option value="">Sin producto (ajuste general)</option>
+              <option value="">Sem produto (ajuste geral)</option>
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -420,7 +420,7 @@ export function AdjustForm({
               ))}
             </select>
             <p className="mt-1 text-xs text-muted">
-              Los sellos pertenecen a un producto: cada tarjeta canjea ese mismo producto gratis.
+              Os selos pertencem a um produto: cada cartão resgata esse mesmo produto grátis.
             </p>
           </div>
           <div>
@@ -432,7 +432,7 @@ export function AdjustForm({
               name="note"
               required
               maxLength={200}
-              placeholder="Ej. Reposición por pedido perdido"
+              placeholder="Ex. Reposição por pedido extraviado"
               className={input}
             />
           </div>

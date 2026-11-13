@@ -5,7 +5,7 @@ import { toggleMessageHandled } from "./actions";
 import { splitReferencePhotos } from "@/lib/custom-request";
 import { formatDate } from "@/lib/format";
 
-export const metadata = { title: "Mensajes" };
+export const metadata = { title: "Mensagens" };
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +31,7 @@ function MessageBody({ message }: { message: string }) {
       {photos.length > 0 && (
         <div className="mt-3">
           <p className="mb-2 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-accent-strong">
-            Fotos de referencia ({photos.length}): haz clic para abrir a tamaño completo
+            Fotos de referência ({photos.length}): clique para abrir em tamanho original
           </p>
           <div className="flex flex-wrap gap-2">
             {photos.map((src, i) => (
@@ -43,7 +43,7 @@ function MessageBody({ message }: { message: string }) {
                 className="block h-24 w-24 overflow-hidden rounded-lg border border-[var(--line-strong)] transition hover:border-accent"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- customer upload, any size */}
-                <img src={src} alt={`Foto de referencia ${i + 1}`} className="h-full w-full object-cover" loading="lazy" />
+                <img src={src} alt={`Foto de referência ${i + 1}`} className="h-full w-full object-cover" loading="lazy" />
               </a>
             ))}
           </div>
@@ -60,18 +60,18 @@ export default async function AdminMessagesPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-ink">Mensajes</h1>
+      <h1 className="font-display text-3xl font-bold text-ink">Mensagens</h1>
       <p className="mt-1 text-sm text-muted">
-        Mensajes del formulario de contacto ({open} abiertos) y suscripciones al newsletter / “avísame”.
+        Mensagens do formulário de contato ({open} em aberto) e inscritos na newsletter / “avise-me”.
       </p>
 
       <div className="mt-6 space-y-8">
         {!dbConnected && <DbBanner />}
 
-        <section className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)]">
-          <h2 className="border-b border-[var(--line)] px-5 py-4 font-display text-xl font-semibold text-ink">Bandeja de entrada</h2>
+        <section className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)]">
+          <h2 className="border-b border-[var(--line)] px-5 py-4 font-display text-xl font-semibold text-ink">Caixa de entrada</h2>
           {messages.length === 0 ? (
-            <p className="px-5 py-12 text-center text-sm text-muted">Aún no hay mensajes.</p>
+            <p className="px-5 py-12 text-center text-sm text-muted">Ainda não há mensagens.</p>
           ) : (
             <ul>
               {messages.map((m) => (
@@ -79,7 +79,7 @@ export default async function AdminMessagesPage() {
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium text-ink">
-                        {m.subject || "Mensaje"}{" "}
+                        {m.subject || "Mensagem"}{" "}
                         {m.topic && (
                           <span className="ml-1 rounded-full bg-accent/10 px-2 py-0.5 text-[0.65rem] uppercase tracking-wider text-accent-strong">
                             {m.topic}
@@ -96,7 +96,7 @@ export default async function AdminMessagesPage() {
                     </div>
                     <form action={toggleMessageHandled.bind(null, m.id, !m.handled)}>
                       <button className="rounded-md border border-[var(--line-strong)] px-3 py-1.5 text-xs text-ink transition hover:border-accent hover:text-accent-strong">
-                        {m.handled ? "Reabrir" : "Marcar como atendido"}
+                        {m.handled ? "Reabrir" : "Marcar como atendida"}
                       </button>
                     </form>
                   </div>
@@ -107,20 +107,20 @@ export default async function AdminMessagesPage() {
           )}
         </section>
 
-        <section className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)]">
+        <section className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)]">
           <h2 className="border-b border-[var(--line)] px-5 py-4 font-display text-xl font-semibold text-ink">
-            Suscriptores <span className="text-sm font-normal text-muted">({subscriberCount})</span>
+            Inscritos <span className="text-sm font-normal text-muted">({subscriberCount})</span>
           </h2>
           {subscribers.length === 0 ? (
-            <p className="px-5 py-12 text-center text-sm text-muted">Aún no hay suscripciones.</p>
+            <p className="px-5 py-12 text-center text-sm text-muted">Ainda não há inscritos.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--line)] text-left text-[0.68rem] uppercase tracking-wider text-muted">
-                    <th className="px-5 py-3 font-medium">Correo electrónico</th>
-                    <th className="px-5 py-3 font-medium">Origen</th>
-                    <th className="px-5 py-3 font-medium">Se unió</th>
+                    <th className="px-5 py-3 font-medium">E-mail</th>
+                    <th className="px-5 py-3 font-medium">Origem</th>
+                    <th className="px-5 py-3 font-medium">Data de inscrição</th>
                   </tr>
                 </thead>
                 <tbody>

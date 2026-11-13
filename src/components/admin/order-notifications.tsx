@@ -104,7 +104,7 @@ export function OrderNotifications() {
       // OS notification (works even if the tab is in the background)
       try {
         if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-          const n = new Notification("Nuevo pedido · Inbramet", {
+          const n = new Notification("Novo pedido · Inbramet", {
             body: `${order.orderNumber} — ${formatPrice(order.total)} · ${order.customerName}`,
             tag: order.id,
           });
@@ -194,7 +194,7 @@ export function OrderNotifications() {
       {/* Bell */}
       <button
         onClick={toggle}
-        aria-label={`Notificaciones${unread ? ` (${unread} nuevos)` : ""}`}
+        aria-label={`Notificações${unread ? ` (${unread} novos)` : ""}`}
         className="relative flex h-9 w-9 items-center justify-center rounded-full text-light/85 transition hover:bg-brand-dark hover:text-accent"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
@@ -208,7 +208,7 @@ export function OrderNotifications() {
         )}
         {/* live-connection dot */}
         <span
-          title={connected ? "En vivo" : "Reconectando…"}
+          title={connected ? "Ao vivo" : "Reconectando…"}
           className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ring-brand ${
             connected ? "bg-emerald-400" : "bg-amber-400"
           }`}
@@ -219,16 +219,16 @@ export function OrderNotifications() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border border-[var(--line)] bg-surface text-ink shadow-[0_24px_60px_-24px_rgba(29,58,14,0.5)]">
+          <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border border-[var(--line)] bg-surface text-ink shadow-[0_24px_60px_-24px_rgba(15,23,42,0.45)]">
             <div className="flex items-center justify-between border-b border-[var(--line)] px-4 py-3">
-              <span className="font-display text-base font-semibold">Notificaciones</span>
+              <span className="font-display text-base font-semibold">Notificações</span>
               <span className="text-[0.68rem] text-muted">
-                {connected ? "● En vivo" : "○ Reconectando"}
+                {connected ? "● Ao vivo" : "○ Reconectando"}
               </span>
             </div>
             {notes.length === 0 ? (
               <p className="px-4 py-10 text-center text-sm text-muted">
-                Aún no hay pedidos nuevos. Los nuevos pedidos aparecerán aquí al instante.
+                Ainda não há pedidos novos. Novos pedidos aparecerão aqui em tempo real.
               </p>
             ) : (
               <ul className="max-h-96 divide-y divide-[var(--line)] overflow-y-auto">
@@ -258,7 +258,7 @@ export function OrderNotifications() {
               onClick={() => setOpen(false)}
               className="block border-t border-[var(--line)] px-4 py-2.5 text-center text-sm text-accent-strong hover:bg-cream-soft"
             >
-              Ver todos los pedidos →
+              Ver todos os pedidos →
             </Link>
           </div>
         </>
@@ -269,7 +269,7 @@ export function OrderNotifications() {
         <Link
           href={`/admin/orders/${toast.id}`}
           onClick={() => setToast(null)}
-          className="fixed bottom-5 right-5 z-[60] flex w-[19rem] items-start gap-3 rounded-xl border border-accent/40 bg-surface p-4 text-ink shadow-[0_24px_60px_-20px_rgba(29,58,14,0.55)] animate-[toastin_.35s_ease]"
+          className="fixed bottom-5 right-5 z-[60] flex w-[19rem] items-start gap-3 rounded-xl border border-accent/40 bg-surface p-4 text-ink shadow-[0_24px_60px_-20px_rgba(15,23,42,0.5)] animate-[toastin_.35s_ease]"
         >
           <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-soft to-accent text-brand">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -278,7 +278,7 @@ export function OrderNotifications() {
             </svg>
           </span>
           <span className="min-w-0">
-            <span className="block text-sm font-semibold">Nuevo pedido recibido 🎉</span>
+            <span className="block text-sm font-semibold">Novo pedido recebido 🎉</span>
             <span className="mt-0.5 block truncate text-xs text-muted">
               {toast.orderNumber} · {formatPrice(toast.total)} · {toast.customerName}
             </span>
@@ -291,10 +291,10 @@ export function OrderNotifications() {
 
 function timeAgo(iso: string): string {
   const s = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
-  if (s < 60) return "ahora mismo";
+  if (s < 60) return "agora mesmo";
   const m = Math.floor(s / 60);
-  if (m < 60) return `hace ${m} min`;
+  if (m < 60) return `há ${m} min`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `hace ${h} h`;
-  return `hace ${Math.floor(h / 24)} d`;
+  if (h < 24) return `há ${h} h`;
+  return `há ${Math.floor(h / 24)} d`;
 }

@@ -11,14 +11,14 @@ const STYLES: Record<string, { dot: string; cls: string }> = {
 };
 
 const LABELS: Record<string, string> = {
-  PENDING: "Pendiente",
+  PENDING: "Pendente",
   CONFIRMED: "Confirmado",
-  PROCESSING: "En preparación",
+  PROCESSING: "Em preparação",
   SHIPPED: "Enviado",
-  DELIVERED: "Entregado",
+  DELIVERED: "Entregue",
   CANCELLED: "Cancelado",
-  PAID: "Pagado",
-  FAILED: "Fallido",
+  PAID: "Pago",
+  FAILED: "Falhou",
   REFUNDED: "Reembolsado",
 };
 

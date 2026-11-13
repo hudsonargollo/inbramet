@@ -8,17 +8,17 @@ export function Marquee({ items }: { items: string[] }) {
 
   return (
     <div
-      className="marquee-pause relative overflow-hidden border-y border-[rgba(163,212,120,0.28)] py-2.5 text-light"
-      style={{ background: "linear-gradient(90deg, #3c6e1b 0%, #4c8a23 50%, #3c6e1b 100%)" }}
+      className="marquee-pause relative overflow-hidden border-y border-accent/25 py-2.5 text-light"
+      style={{ background: "linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)" }}
     >
       {/* soft accent glow edges */}
       <div
         className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16"
-        style={{ background: "linear-gradient(90deg, #3c6e1b, transparent)" }}
+        style={{ background: "linear-gradient(90deg, #0f172a, transparent)" }}
       />
       <div
         className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16"
-        style={{ background: "linear-gradient(270deg, #3c6e1b, transparent)" }}
+        style={{ background: "linear-gradient(270deg, #0f172a, transparent)" }}
       />
 
       <div className="flex w-max animate-marquee items-center whitespace-nowrap">

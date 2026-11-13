@@ -6,10 +6,8 @@ import { useCallback, type ReactNode } from "react";
 import type { ShopFacets } from "@/lib/types";
 import { PriceRange } from "./price-range";
 
-// Params owned by the sidebar; "Clear all" removes exactly these.
 export const FILTER_KEYS = ["material", "minPrice", "maxPrice", "sale", "stock"] as const;
 
-/** Read / update the shop's URL search params (filters live in the URL). */
 export function useShopQuery() {
   const router = useRouter();
   const pathname = usePathname();
@@ -106,16 +104,15 @@ export function ShopFilters({ facets }: { facets: ShopFacets }) {
   const maxPrice = num("maxPrice");
 
   const activeCategory = pathname.startsWith("/shop/") ? decodeURIComponent(pathname.slice(6)) : "";
-  // Legacy filler values from the old catalog aren't a real "presentación".
   const materials = facets.materials.filter((m) => !/f[oó]rmula|matem[aá]tica/i.test(m.name));
   const qs = params.toString();
   const withQs = (path: string) => (qs ? `${path}?${qs}` : path);
 
   return (
     <div className="space-y-5">
-      <Section title="Categorías">
+      <Section title="Categorias">
         <ul className="space-y-0.5 text-sm">
-          {[{ name: "Todo el menú", slug: "", count: facets.total }, ...facets.categories].map((c) => {
+          {[{ name: "Toda a coleção", slug: "", count: facets.total }, ...facets.categories].map((c) => {
             const active = activeCategory === c.slug;
             return (
               <li key={c.slug || "all"}>
@@ -134,7 +131,7 @@ export function ShopFilters({ facets }: { facets: ShopFacets }) {
                   {c.count > 0 ? (
                     <Count n={c.count} />
                   ) : (
-                    <span className="ml-auto text-[0.6rem] uppercase tracking-[0.14em] text-muted">Pronto</span>
+                    <span className="ml-auto text-[0.6rem] uppercase tracking-[0.14em] text-muted">Em breve</span>
                   )}
                 </Link>
               </li>
@@ -143,9 +140,8 @@ export function ShopFilters({ facets }: { facets: ShopFacets }) {
         </ul>
       </Section>
 
-      <Section title="Precio">
+      <Section title="Preço">
         <PriceRange
-          // re-sync when the URL range or the scope's bounds change
           key={`${minPrice}|${maxPrice}|${facets.priceMin}|${facets.priceMax}`}
           bounds={[facets.priceMin, facets.priceMax]}
           min={minPrice}
@@ -156,10 +152,10 @@ export function ShopFilters({ facets }: { facets: ShopFacets }) {
         />
       </Section>
 
-      <Section title="Ofertas y disponibilidad">
+      <Section title="Ofertas e disponibilidade">
         <div className="space-y-1">
           <Switch
-            label="En oferta"
+            label="Em oferta"
             hint={
               <span className="rounded bg-brand px-1.5 py-0.5 text-[0.58rem] font-semibold uppercase tracking-wider text-accent-soft">
                 % Off
@@ -170,7 +166,7 @@ export function ShopFilters({ facets }: { facets: ShopFacets }) {
             onChange={(on) => setParams({ sale: on ? "1" : null })}
           />
           <Switch
-            label="Solo disponibles"
+            label="Apenas disponíveis"
             count={facets.inStock}
             checked={stock}
             onChange={(on) => setParams({ stock: on ? "1" : null })}
@@ -179,8 +175,8 @@ export function ShopFilters({ facets }: { facets: ShopFacets }) {
       </Section>
 
       {materials.length > 0 && (
-        <Section title="Marca o tamaño">
-          <div className="space-y-0.5 text-sm" role="radiogroup" aria-label="Marca o tamaño">
+        <Section title="Cor ou acabamento">
+          <div className="space-y-0.5 text-sm" role="radiogroup" aria-label="Cor ou acabamento">
             {[{ name: "", count: 0 }, ...materials].map((m) => {
               const checked = material === m.name;
               return (
@@ -200,7 +196,7 @@ export function ShopFilters({ facets }: { facets: ShopFacets }) {
                     {checked && <span className="h-2 w-2 rounded-full bg-gradient-to-br from-accent-soft to-accent-strong" />}
                   </span>
                   <span className={checked ? "font-medium text-ink" : "text-ink/80 group-hover:text-ink"}>
-                    {m.name || "Todas las presentaciones"}
+                    {m.name || "Todos os acabamentos"}
                   </span>
                   {m.name && <Count n={m.count} />}
                 </button>

@@ -4,9 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
 
-// One points purchase in the rewards shop. On success the page is refreshed (so
-// the balance and the "para recoger" list update) and the code is kept here,
-// because that code is what the counter asks for.
 export function RedeemButton({
   rewardId,
   rewardName,
@@ -17,7 +14,6 @@ export function RedeemButton({
   rewardId: string;
   rewardName: string;
   costPoints: number;
-  /** How many points the customer still needs (0 = can afford it). */
   pointsShort: number;
   stock: number;
 }) {
@@ -38,16 +34,16 @@ export function RedeemButton({
       });
       const data = (await res.json()) as { ok: boolean; code?: string; error?: string };
       if (!res.ok || !data.ok || !data.code) {
-        throw new Error(data.error || "No pudimos completar el canje.");
+        throw new Error(data.error || "Não foi possível concluir o resgate.");
       }
       setCode(data.code);
-      toast.success(`Canjeaste "${rewardName}". Pide tu regalo en caja con el código ${data.code}.`, {
-        title: "¡Regalo reservado!",
+      toast.success(`Você resgatou "${rewardName}". Informe o código ${data.code} no seu próximo pedido ou atendimento.`, {
+        title: "Brinde reservado!",
       });
       router.refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No pudimos completar el canje.", {
-        title: "Canje no realizado",
+      toast.error(err instanceof Error ? err.message : "Não foi possível concluir o resgate.", {
+        title: "Resgate não concluído",
       });
     } finally {
       setBusy(false);
@@ -57,7 +53,7 @@ export function RedeemButton({
   if (code) {
     return (
       <p className="mt-3 rounded-lg border border-accent/50 bg-accent/10 px-3 py-2 text-center text-xs text-ink">
-        Presenta este código en caja: <span className="font-mono text-sm font-semibold">{code}</span>
+        Código de resgate: <span className="font-mono text-sm font-semibold">{code}</span>
       </p>
     );
   }
@@ -69,20 +65,20 @@ export function RedeemButton({
       disabled={disabled}
       title={
         stock <= 0
-          ? "Agotado por ahora"
+          ? "Esgotado no momento"
           : pointsShort > 0
-            ? `Te faltan ${pointsShort} puntos para este regalo`
-            : `Canjear por ${costPoints} puntos`
+            ? `Faltam ${pointsShort} pontos para este brinde`
+            : `Resgatar por ${costPoints} pontos`
       }
       className="mt-3 w-full rounded-full bg-gradient-to-r from-accent-soft to-accent px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] text-brand transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45"
     >
       {busy
-        ? "Canjeando…"
+        ? "Resgatando…"
         : stock <= 0
-          ? "Agotado"
+          ? "Esgotado"
           : pointsShort > 0
-            ? `Faltan ${pointsShort} pts`
-            : `Canjear ${costPoints} pts`}
+            ? `Faltam ${pointsShort} pts`
+            : `Resgatar ${costPoints} pts`}
     </button>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 // The cart page is a client component, so its metadata lives here.
 export const metadata: Metadata = {
-  title: "Carrito",
+  title: "Carrinho",
   robots: { index: false },
 };
 

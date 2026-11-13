@@ -3,7 +3,7 @@ import { PerformanceRings } from "@/components/admin/performance-rings";
 import { OrderPipelineDonut } from "@/components/admin/order-pipeline-donut";
 import { requireAdmin, scopeBranchId } from "@/lib/admin";
 
-export const metadata = { title: "Rendimiento" };
+export const metadata = { title: "Desempenho" };
 
 export const dynamic = "force-dynamic";
 
@@ -17,9 +17,9 @@ export default async function PerformancePage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-ink">Rendimiento</h1>
+      <h1 className="font-display text-3xl font-bold text-ink">Desempenho</h1>
       <p className="mt-1 text-sm text-muted">
-        La salud de la tienda y tu flujo de pedidos, de un vistazo.
+        A saúde da loja e o seu fluxo de pedidos em uma visão rápida.
       </p>
 
       <div className="mt-6">

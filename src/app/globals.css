@@ -5,81 +5,90 @@
 
 /* ============================================================
    Inbramet — brand theme
-   Slate surfaces + gold accent, from the Inbramet logotype.
+   Slate + warm gold, taken from the Inbramet mark.
    ============================================================ */
 @theme {
-  /* Brand — camba green (darkened from the logo's #76b72d for white text) */
-  --color-brand: #4c8a23;      /* primary green */
-  --color-brand-dark: #3c6e1b;
-  --color-brand-deep: #1d3a0e; /* dark green surfaces */
-  --color-panel: #eef6e4;      /* soft green panel */
-  --color-panel-2: #dcecc6;
-
-  /* Accent — sun yellow (buttons stay bright, never mustard) */
-  --color-accent: #ffcc04;
-  --color-accent-soft: #ffe066;
-  --color-accent-strong: #9a6b00; /* readable gold for text on light */
-  --color-gold: #ffe066;
-
-  /* Neutrals — warm white */
-  --color-ink: #1a1f14;
-  --color-cream: #f7f8f1;
-  --color-cream-soft: #fbfcf6;
-  --color-sand: #eff3e4;
-  --color-surface: #ffffff;    /* cards / inputs (flips in dark mode) */
-  --color-light: #f9faf4;      /* fixed white — text on dark surfaces (never flips) */
-  --color-muted: #66735a;      /* muted text on light */
-  --color-muted-dark: #c6d8b0; /* muted text on dark green */
-
-  /* Form feedback */
-  --color-ok: #2f7d5c;
-  --color-bad: #b3261e;
-
+  /* Brand — deep slate (page / base) */
+  --color-brand: #0f172a;        /* page / base dark */
+  --color-brand-dark: #1e293b;   /* cards / surfaces */
+  --color-brand-deep: #0f172a;   /* darkest surfaces */
+  --color-panel: #F8FAF6;        /* paper — light mode base */
+  --color-panel-2: #F6F9E0;      /* gold tint */
+  /* Accent — warm gold (one per page, never as a background) */
+  --color-accent: #E6FF57;
+  --color-accent-soft: #F6F9E0;
+  --color-accent-strong: #B45309; /* readable gold for text on light */
+  --color-gold: #E6FF57;
+  /* Neutrals */
+  --color-ink: #0F172A;          /* dark text */
+  --color-cream: #F8FAF6;
+  --color-cream-soft: #F8FAF6;
+  --color-sand: #E2E8F0;         /* subtle card alt */
+  --color-surface: #1e293b;      /* dark surface (flips in dark mode) */
+  --color-light: #F8FAF6;        /* fixed light — text on dark surfaces (never flips) */
+  --color-muted: #475569;        /* muted text on light */
+  --color-muted-dark: #94a3b8;   /* muted text on dark */
+  --color-ok: #166534;
+  --color-bad: #991b1b;
   /* Fonts (wired via next/font in layout.tsx) */
   --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* ---- Semantic utilities used across the code ---- */
+@layer utilities {
+  .bg-cream { background-color: var(--color-cream); }
+  .bg-cream-soft { background-color: var(--color-cream-soft); }
+  .bg-panel { background-color: var(--color-panel); }
+  .bg-surface { background-color: var(--color-surface); }
+  .bg-light { background-color: var(--color-light); }
+  .text-ink { color: var(--color-ink); }
+  .text-light { color: var(--color-light); }
+  .text-brand { color: var(--color-brand); }
+  .text-muted { color: var(--color-muted); }
+  .text-accent { color: var(--color-accent); }
+  .text-accent-strong { color: var(--color-accent-strong); }
+  .bg-accent { background-color: var(--color-accent); }
+  .bg-accent-soft { background-color: var(--color-accent-soft); }
+  .border-accent { border-color: var(--color-accent); }
+}
+
 :root {
   color-scheme: light;
-  --background: #f7f8f1;
-  --foreground: #1a1f14;
-  --line: rgba(26, 31, 20, 0.14);
-  --line-strong: rgba(26, 31, 20, 0.34);
-  --frame: rgba(26, 31, 20, 0.55);
+  --background: #F8FAF6;
+  --foreground: #0F172A;
+  --line: rgba(15, 23, 42, 0.14);
+  --line-strong: rgba(15, 23, 42, 0.34);
+  --frame: rgba(15, 23, 42, 0.55);
 }
 
 /* ---------- Dark theme (toggle sets data-theme="dark" on <html>) ---------- */
 :root[data-theme="dark"] {
   color-scheme: dark;
-
-  --color-brand: #76b72d;
-  --color-brand-dark: #6aa328;
-  --color-brand-deep: #16290b;
-  --color-panel: #151d0f;
-  --color-panel-2: #1b2613;
-
-  --color-accent: #ffcc04;
-  --color-accent-soft: #ffe066;
-  --color-accent-strong: #f0b400;
-  --color-gold: #ffe066;
-
-  --color-ink: #eef4e4;
-  --color-cream: #10160b;
-  --color-cream-soft: #151c0f;
-  --color-sand: #1c2613;
-  --color-surface: #161e10;
-  --color-light: #f9faf4;
-  --color-muted: #a4b691;
-  --color-muted-dark: #c6d8b0;
+  --color-brand: #0f172a;
+  --color-brand-dark: #1e293b;
+  --color-brand-deep: #0f172a;
+  --color-panel: #1e293b;
+  --color-panel-2: #1e293b;
+  --color-accent: #E6FF57;
+  --color-accent-soft: #F6F9E0;
+  --color-accent-strong: #F0B400;
+  --color-gold: #E6FF57;
+  --color-ink: #F8FAF6;
+  --color-cream: #0f172a;
+  --color-cream-soft: #1e293b;
+  --color-sand: #334155;
+  --color-surface: #1e293b;
+  --color-light: #F8FAF6;
+  --color-muted: #94a3b8;
+  --color-muted-dark: #cbd5e1;
   --color-ok: #6cc59a;
   --color-bad: #f08a80;
-
-  --background: #10160b;
-  --foreground: #eef4e4;
-  --line: rgba(238, 244, 228, 0.14);
-  --line-strong: rgba(238, 244, 228, 0.30);
-  --frame: rgba(255, 204, 4, 0.45);
+  --background: #0f172a;
+  --foreground: #F8FAF6;
+  --line: rgba(248, 250, 246, 0.14);
+  --line-strong: rgba(248, 250, 246, 0.30);
+  --frame: rgba(230, 255, 87, 0.45);
 }
 
 * {
@@ -104,6 +113,7 @@ select:-webkit-autofill {
   box-shadow: 0 0 0 1000px var(--color-surface) inset;
   transition: background-color 600000s 0s, color 600000s 0s;
 }
+
 input:autofill {
   box-shadow: 0 0 0 1000px var(--color-surface) inset;
   -webkit-text-fill-color: var(--color-ink);
@@ -129,6 +139,7 @@ h1, h2 {
   font-weight: 800;
   letter-spacing: -0.02em;
 }
+
 h3, h4 {
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -141,7 +152,7 @@ p {
 
 /* Brand gradient text utility */
 .brand-text {
-  background: linear-gradient(120deg, var(--color-brand), #76b72d 55%, var(--color-accent-strong));
+  background: linear-gradient(120deg, var(--color-brand), #334155 55%, var(--color-accent-strong));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -220,11 +231,12 @@ p {
   animation: chatin 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   transform-origin: bottom right;
 }
+
 /* Soft attention pulse for the chat launcher */
 @keyframes chatpulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 199, 44, 0.55); }
-  70% { box-shadow: 0 0 0 14px rgba(255, 199, 44, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 199, 44, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(230, 255, 87, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(230, 255, 87, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(230, 255, 87, 0); }
 }
 .animate-chatpulse {
   animation: chatpulse 2.6s ease-out infinite;
@@ -287,7 +299,7 @@ p {
   border-radius: 9999px;
   border: 2px solid var(--color-accent-strong);
   background: radial-gradient(circle, var(--color-accent-soft) 0 28%, var(--color-surface) 32%);
-  box-shadow: 0 3px 10px rgba(18, 53, 31, 0.28);
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.28);
   cursor: grab;
   transition: transform 0.15s ease;
 }
@@ -298,7 +310,7 @@ p {
   border-radius: 9999px;
   border: 2px solid var(--color-accent-strong);
   background: radial-gradient(circle, var(--color-accent-soft) 0 28%, var(--color-surface) 32%);
-  box-shadow: 0 3px 10px rgba(18, 53, 31, 0.28);
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.28);
   cursor: grab;
 }
 .range-dual input[type="range"]:active::-webkit-slider-thumb {
@@ -306,10 +318,10 @@ p {
   transform: scale(1.12);
 }
 .range-dual input[type="range"]:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px rgba(224, 123, 42, 0.35);
+  box-shadow: 0 0 0 4px rgba(230, 255, 87, 0.35);
 }
 .range-dual input[type="range"]:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 4px rgba(224, 123, 42, 0.35);
+  box-shadow: 0 0 0 4px rgba(230, 255, 87, 0.35);
 }
 .range-dual input[type="range"]:focus {
   outline: none;
@@ -342,7 +354,9 @@ p {
   from { opacity: 0; filter: blur(10px); transform: translateY(0.5em) scale(0.985); }
   to   { opacity: 1; filter: blur(0);   transform: none; }
 }
-.split-word { opacity: 0; }
+.split-word {
+  opacity: 0;
+}
 .split-word.is-in {
   animation: word-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -355,7 +369,9 @@ p {
   from { opacity: 0; filter: blur(8px); transform: translateY(14px); }
   to   { opacity: 1; filter: blur(0);   transform: none; }
 }
-.slide-text-in { animation: slide-text-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.slide-text-in {
+  animation: slide-text-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
 /* Product-gallery autoplay bar */
 @keyframes gallery-progress {
@@ -371,18 +387,24 @@ p {
 @keyframes route-dash {
   to { stroke-dashoffset: -260; }
 }
-.route-dash { animation: route-dash 9s linear infinite; }
+.route-dash {
+  animation: route-dash 9s linear infinite;
+}
 @keyframes rider-drift {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.8deg); }
   50%      { transform: translate3d(0, -9px, 0) rotate(0.8deg); }
 }
-.animate-rider { animation: rider-drift 6.5s ease-in-out infinite; }
+.animate-rider {
+  animation: rider-drift 6.5s ease-in-out infinite;
+}
 @keyframes ring-pulse {
   0%   { opacity: 0.55; transform: scale(0.72); }
   70%  { opacity: 0;    transform: scale(1.18); }
   100% { opacity: 0;    transform: scale(1.18); }
 }
-.animate-ring { animation: ring-pulse 4.8s ease-out infinite; }
+.animate-ring {
+  animation: ring-pulse 4.8s ease-out infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .split-word, .split-word.is-in, .rotate-word, .slide-text-in {
@@ -401,7 +423,7 @@ p {
 }
 
 /* Native dropdown lists follow the theme (Chrome on Linux / Windows paints
-   <option> rows itself — without this they stay white in dark mode). */
+  <option> rows itself — without this they stay white in dark mode). */
 select option {
   background-color: var(--color-surface);
   color: var(--color-ink);

@@ -26,15 +26,15 @@ export function RegisterForm({ next }: { next?: string }) {
   return (
     <AuthShell>
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold text-ink">Crear cuenta</h1>
+        <h1 className="font-display text-3xl font-bold text-ink">Criar conta</h1>
         <p className="mt-1 text-sm text-muted">
-          Únete a Inbramet para un pago más rápido. Te enviaremos un código para confirmar que eres tú.
+          Cadastre-se na Inbramet para comprar mais rápido. Enviaremos um código para confirmar seu e-mail.
         </p>
       </div>
 
       {next?.startsWith("/checkout") && (
         <p className="mt-5 rounded-xl border border-accent/50 bg-accent/10 px-3.5 py-3 text-center text-sm text-ink">
-          Necesitas una cuenta para hacer tu pedido: toma un minuto y tu carrito se guarda.
+          Você precisa de uma conta para finalizar seu pedido: leva um minuto e seu carrinho fica salvo.
         </p>
       )}
 
@@ -42,30 +42,30 @@ export function RegisterForm({ next }: { next?: string }) {
         {next && <input type="hidden" name="next" value={next} />}
         <AuthField
           name="name"
-          label="Nombre completo"
+          label="Nome completo"
           icon="user"
           autoComplete="name"
-          placeholder="Tu nombre"
+          placeholder="Seu nome"
           {...f.bind("name")}
           {...f.field("name")}
         />
         <AuthField
           name="email"
-          label="Correo electrónico"
+          label="E-mail"
           icon="mail"
           type="email"
           autoComplete="email"
-          placeholder="tu@ejemplo.com"
+          placeholder="voce@email.com.br"
           {...f.bind("email")}
           {...f.field("email")}
         />
         <AuthField
           name="password"
-          label="Contraseña"
+          label="Senha"
           icon="lock"
           password
           autoComplete="new-password"
-          placeholder="Crea una contraseña"
+          placeholder="Crie uma senha"
           {...f.bind("password")}
           {...password}
         >
@@ -81,12 +81,12 @@ export function RegisterForm({ next }: { next?: string }) {
       </form>
 
       <p className="mt-6 text-center text-sm text-muted">
-        ¿Ya tienes una cuenta?{" "}
+        Já tem uma conta?{" "}
         <Link
           href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
           className="font-semibold text-accent-strong hover:underline"
         >
-          Iniciar sesión
+          Entrar
         </Link>
       </p>
     </AuthShell>

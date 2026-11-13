@@ -11,11 +11,11 @@ type Tab = (typeof TABS)[number];
 
 const TAB_LABELS: Record<Tab, string> = {
   ALL: "Todos",
-  PENDING: "Pendientes",
+  PENDING: "Pendentes",
   CONFIRMED: "Confirmados",
-  PROCESSING: "En preparación",
+  PROCESSING: "Em preparação",
   SHIPPED: "Enviados",
-  DELIVERED: "Entregados",
+  DELIVERED: "Entregues",
   CANCELLED: "Cancelados",
 };
 
@@ -40,7 +40,7 @@ export function OrdersTable({ orders }: { orders: AdminOrderRow[] }) {
   }, [orders, tab, q]);
 
   return (
-    <div className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)]">
+    <div className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)]">
       {/* Toolbar */}
       <div className="flex flex-col gap-3 border-b border-[var(--line)] p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full sm:max-w-xs">
@@ -50,7 +50,7 @@ export function OrdersTable({ orders }: { orders: AdminOrderRow[] }) {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Buscar pedido # o cliente…"
+            placeholder="Buscar pedido # ou cliente…"
             className="w-full rounded-lg border border-[var(--line-strong)] bg-cream-soft py-2 pl-9 pr-3 text-sm text-ink outline-none transition focus:border-accent"
           />
         </div>
@@ -83,8 +83,8 @@ export function OrdersTable({ orders }: { orders: AdminOrderRow[] }) {
 
       {filtered.length === 0 ? (
         <div className="px-4 py-16 text-center">
-          <p className="font-display text-lg text-ink">No hay pedidos que coincidan</p>
-          <p className="mt-1 text-sm text-muted">Prueba otra búsqueda o filtro de estado.</p>
+          <p className="font-display text-lg text-ink">Nenhum pedido encontrado</p>
+          <p className="mt-1 text-sm text-muted">Tente outra busca ou filtro de status.</p>
         </div>
       ) : (
         <>
@@ -95,10 +95,10 @@ export function OrdersTable({ orders }: { orders: AdminOrderRow[] }) {
                 <tr className="border-b border-[var(--line)] text-left text-[0.68rem] uppercase tracking-wider text-muted">
                   <th className="px-4 py-3 font-medium">Pedido</th>
                   <th className="px-4 py-3 font-medium">Cliente</th>
-                  <th className="px-4 py-3 font-medium">Pago</th>
-                  <th className="px-4 py-3 font-medium">Estado</th>
+                  <th className="px-4 py-3 font-medium">Pagamento</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 text-right font-medium">Total</th>
-                  <th className="px-4 py-3 font-medium">Fecha</th>
+                  <th className="px-4 py-3 font-medium">Data</th>
                 </tr>
               </thead>
               <tbody>
@@ -110,12 +110,12 @@ export function OrdersTable({ orders }: { orders: AdminOrderRow[] }) {
                   >
                     <td className="px-4 py-3">
                       <span className="block whitespace-nowrap font-medium text-accent-strong">{o.orderNumber}</span>
-                      <span className="mt-0.5 block text-xs text-muted">{o.itemCount} producto{o.itemCount === 1 ? "" : "s"}</span>
+                      <span className="mt-0.5 block text-xs text-muted">{o.itemCount} produto{o.itemCount === 1 ? "" : "s"}</span>
                     </td>
                     <td className="px-4 py-3 text-ink">
                       {o.customerName}
                       <span className="mt-0.5 block text-xs text-muted">
-                        {o.branchName} · {o.fulfillment === "PICKUP" ? "Retiro" : "Envío"}
+                        Entrega padrão
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -149,8 +149,7 @@ export function OrdersTable({ orders }: { orders: AdminOrderRow[] }) {
                 </div>
                 <div className="flex items-center justify-between gap-2 text-xs text-muted">
                   <span>
-                    {o.branchName} · {o.fulfillment === "PICKUP" ? "Retiro" : "Envío"} · {o.itemCount}{" "}
-                    producto{o.itemCount === 1 ? "" : "s"} · {o.paymentMethod}
+                    Entrega · {o.itemCount} produto{o.itemCount === 1 ? "" : "s"} · {o.paymentMethod}
                   </span>
                   <span>{formatDate(o.createdAt)}</span>
                 </div>

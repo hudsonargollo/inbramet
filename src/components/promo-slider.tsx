@@ -4,8 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Emblem } from "./brand/emblem";
 
-// Favourites carousel: the copy and the photography rotate together like a
-// slideshow (seamless two-way loop, arrows, dots, autoplay progress, pause).
 const SLIDES: {
   src: string;
   focus: string;
@@ -16,50 +14,50 @@ const SLIDES: {
   href: string;
 }[] = [
   {
-    src: "/imgs/menu/majao-de-pato.jpeg",
-    focus: "center 55%",
-    label: "Platos típicos",
-    title: "Majao de pato, el clásico",
-    copy: "Arroz batido con pato desmenuzado y urucú, huevo, plátano y yuca frita. El sabor camba de siempre, a Bs 55.",
-    cta: "Ver platos típicos",
-    href: "/shop/platos-tipicos-y-combinados",
+    src: "/products/jogomesa4cadeirasestampado.webp",
+    focus: "center center",
+    label: "Conjuntos",
+    title: "Salas de jantar prontas para viver",
+    copy: "Conjuntos de mesa + 4 cadeiras com tampo estampado e aço resistente para cozinha, copa ou área gourmet.",
+    cta: "Ver conjuntos",
+    href: "/shop/conjuntos",
   },
   {
-    src: "/imgs/menu/empanadas-de-carne-6-unid.jpeg",
-    focus: "center 50%",
-    label: "Empanadas",
-    title: "De carne y de keperí",
-    copy: "Seis empanadas recién hechas con salsa tártara para compartir. Las infaltables de la mesa camba.",
-    cta: "Ver empanadas",
-    href: "/shop/empanadas",
+    src: "/products/cadeira-amarela1.webp",
+    focus: "center center",
+    label: "Cadeiras",
+    title: "Ergonomia e cor em policarbonato",
+    copy: "Cadeiras leves, empilháveis e fáceis de limpar em amarelo, vermelho e preto para sala de jantar ou escritório.",
+    cta: "Ver cadeiras",
+    href: "/shop/cadeiras",
   },
   {
-    src: "/imgs/menu/churrasco.jpeg",
-    focus: "center 55%",
-    label: "Parrilla",
-    title: "Churrasco a la parrilla",
-    copy: "Carne jugosa con arroz con queso, ensalada del día, yuca frita y llajua. Directo de la parrilla a tu mesa.",
-    cta: "Ver parrilla",
-    href: "/shop/parrilla",
+    src: "/products/mesa-pretobranca.webp",
+    focus: "center center",
+    label: "Mesas",
+    title: "Linhas limpas em aço e branco",
+    copy: "Mesas retangulares e bancadas estampadas projetadas para acompanhar o ritmo do dia a dia com estilo.",
+    cta: "Ver mesas",
+    href: "/shop/mesas",
   },
   {
-    src: "/imgs/menu/gaseosa-coca-cola-500-ml.jpg",
-    focus: "center 50%",
-    label: "Bebidas",
-    title: "Bien frías, siempre",
-    copy: "Coca-Cola, Sprite, Fanta, Pepsi y Guaraná de 500 ml para acompañar tu pedido. Delivery o retiro en tienda.",
-    cta: "Ver bebidas",
-    href: "/shop/bebidas",
+    src: "/products/bancoazul.webp",
+    focus: "center center",
+    label: "Bancos",
+    title: "Madeira maciça e aço",
+    copy: "Bancos com encosto firme para hall de entrada, varandas e áreas de convivência. Entrega em todo o Brasil.",
+    cta: "Ver bancos",
+    href: "/shop/bancos",
   },
 ];
 
-const INTERVAL = 5200;
+const INTERVAL = 5600;
 const N = SLIDES.length;
-const TOTAL = N + 2; // clones at both ends for a seamless two-way loop
+const TOTAL = N + 2;
 const TRACK = [SLIDES[N - 1], ...SLIDES, SLIDES[0]];
 
 export function PromoSlider() {
-  const [index, setIndex] = useState(1); // 1..N are the real slides
+  const [index, setIndex] = useState(1);
   const [anim, setAnim] = useState(true);
   const [playing, setPlaying] = useState(true);
   const [hovered, setHovered] = useState(false);
@@ -80,14 +78,12 @@ export function PromoSlider() {
     return () => clearInterval(id);
   }, [playing, hovered, goNext]);
 
-  // re-enable animation on the frame after a seamless snap disabled it
   useEffect(() => {
     if (anim) return;
     const r = requestAnimationFrame(() => requestAnimationFrame(() => setAnim(true)));
     return () => cancelAnimationFrame(r);
   }, [anim]);
 
-  // when a clone finishes showing, snap (without anim) to its real twin
   const handleTransitionEnd = () => {
     if (index === TOTAL - 1) {
       setAnim(false);
@@ -111,13 +107,12 @@ export function PromoSlider() {
       onMouseLeave={() => setHovered(false)}
     >
       <div className="grid items-stretch lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-        {/* ── Text panel ── */}
         <div className="relative z-10 order-2 flex flex-col items-center justify-center px-6 py-16 text-center lg:order-1 lg:items-start lg:px-14 lg:py-24 lg:text-left">
           <Emblem size={40} className="text-accent-soft" />
 
           <div key={activeDot} className="contents">
             <span className="slide-text-in eyebrow mt-4 block text-accent-soft">
-              Los favoritos de la casa
+              Os favoritos da loja
             </span>
             <h2
               className="slide-text-in mt-3 max-w-[16ch] font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl"
@@ -134,7 +129,7 @@ export function PromoSlider() {
 
             <Link
               href={slide.href}
-              className="slide-text-in mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-9 py-3.5 text-sm font-bold text-brand-deep shadow-[0_18px_40px_-16px_rgba(255,204,4,0.9)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft"
+              className="slide-text-in mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-9 py-3.5 text-sm font-bold text-brand-deep transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft"
               style={{ animationDelay: "200ms" }}
             >
               {slide.cta}
@@ -144,7 +139,6 @@ export function PromoSlider() {
             </Link>
           </div>
 
-          {/* Controls — arrows, progress, dots, pause */}
           <div className="mt-9 flex w-full max-w-[18rem] items-center justify-center gap-3 sm:max-w-xs lg:max-w-none lg:justify-start">
             <ArrowButton dir="prev" onClick={goPrev} />
 
@@ -176,7 +170,7 @@ export function PromoSlider() {
                     setAnim(true);
                     setIndex(i + 1);
                   }}
-                  aria-label={`Ir a ${s.label}`}
+                  aria-label={`Ir para ${s.label}`}
                   aria-current={i === activeDot}
                   title={s.label}
                   className={`h-2 rounded-full transition-all ${
@@ -190,7 +184,7 @@ export function PromoSlider() {
             <button
               type="button"
               onClick={() => setPlaying((p) => !p)}
-              aria-label={playing ? "Pausar el carrusel" : "Reproducir el carrusel"}
+              aria-label={playing ? "Pausar carrossel" : "Reproduzir carrossel"}
               aria-pressed={!playing}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-light/70 transition hover:bg-light/10 hover:text-accent-soft"
             >
@@ -208,7 +202,6 @@ export function PromoSlider() {
           </div>
         </div>
 
-        {/* ── Image slider ── */}
         <div
           className="relative order-1 min-h-[62vh] touch-pan-y overflow-hidden lg:order-2 lg:min-h-[600px]"
           onTouchStart={(e) => {
@@ -251,7 +244,7 @@ export function PromoSlider() {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(29,58,14,0.65) 0%, rgba(29,58,14,0.15) 24%, rgba(29,58,14,0) 48%), linear-gradient(180deg, rgba(29,58,14,0.10) 0%, rgba(29,58,14,0.30) 100%)",
+                "linear-gradient(90deg, rgba(15,23,42,0.72) 0%, rgba(15,23,42,0.18) 28%, rgba(15,23,42,0) 52%), linear-gradient(180deg, rgba(15,23,42,0.10) 0%, rgba(15,23,42,0.32) 100%)",
             }}
           />
           <span className="absolute bottom-6 right-6 rounded-full bg-cream/90 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-deep">
@@ -260,8 +253,7 @@ export function PromoSlider() {
         </div>
       </div>
 
-      {/* Thin accent inset frame around the whole band */}
-      <div className="pointer-events-none absolute inset-4 z-10 border border-[rgba(255,216,102,0.35)] sm:inset-6" />
+      <div className="pointer-events-none absolute inset-4 z-10 border border-[rgba(230,255,87,0.28)] sm:inset-6" />
     </section>
   );
 }
@@ -271,8 +263,8 @@ function ArrowButton({ dir, onClick }: { dir: "prev" | "next"; onClick: () => vo
     <button
       type="button"
       onClick={onClick}
-      aria-label={dir === "prev" ? "Diapositiva anterior" : "Diapositiva siguiente"}
-      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(255,216,102,0.5)] text-accent-soft transition hover:border-accent hover:bg-accent hover:text-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      aria-label={dir === "prev" ? "Slide anterior" : "Próximo slide"}
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(230,255,87,0.4)] text-accent-soft transition hover:border-accent hover:bg-accent hover:text-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d={dir === "prev" ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"} strokeLinecap="round" strokeLinejoin="round" />

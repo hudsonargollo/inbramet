@@ -6,7 +6,7 @@ type Props = {
   confirmText?: string;
 };
 
-export function DeleteButton({ action, label = "Eliminar", confirmText = "¿Eliminar este elemento?" }: Props) {
+export function DeleteButton({ action, label = "Excluir", confirmText = "Excluir este item?" }: Props) {
   return (
     <form
       action={action}

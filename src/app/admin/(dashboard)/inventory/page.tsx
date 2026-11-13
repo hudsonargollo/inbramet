@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin";
-import { getBranchById, getBranches } from "@/lib/branch";
+import { getBranches } from "@/lib/branch";
 import { getAdminInventory } from "@/lib/admin-data";
 import { getStoreSettings } from "@/lib/settings";
 import { DbBanner } from "@/components/admin/db-banner";
 import { setBranchProductActive, setBranchStock } from "./actions";
 
-export const metadata = { title: "Inventario" };
+export const metadata = { title: "Estoque" };
 export const dynamic = "force-dynamic";
 
 const field =
@@ -15,23 +15,17 @@ const field =
 export default async function AdminInventoryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ branch?: string; q?: string }>;
+  searchParams: Promise<{ q?: string }>;
 }) {
   const session = await requireAdmin();
   const params = await searchParams;
-  const isAdmin = session.role === "ADMIN";
-
-  const branches = isAdmin ? await getBranches() : [];
-  const requested = typeof params.branch === "string" ? params.branch : "";
-  const branchId = isAdmin
-    ? branches.find((b) => b.id === requested)?.id ?? branches[0]?.id ?? ""
-    : session.branchId ?? "";
+  const branches = await getBranches();
+  const branchId = session.branchId ?? branches[0]?.id ?? "";
   const q = typeof params.q === "string" ? params.q.trim() : "";
 
-  const [{ dbConnected, rows }, settings, branch] = await Promise.all([
+  const [{ dbConnected, rows }, settings] = await Promise.all([
     getAdminInventory(branchId, q),
     getStoreSettings(),
-    branchId ? getBranchById(branchId) : Promise.resolve(null),
   ]);
   const lowThreshold = settings.inventory.lowStockThreshold;
   const units = rows.reduce((n, r) => n + r.stock, 0);
@@ -39,93 +33,56 @@ export default async function AdminInventoryPage({
 
   return (
     <div>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="font-display text-3xl font-semibold text-ink">Inventario</h1>
-          <p className="mt-1 text-sm text-muted">
-            El catálogo es compartido; aquí ajustas las existencias de{" "}
-            <strong className="text-ink">{branch?.name ?? "la sucursal"}</strong>.
-          </p>
-        </div>
-        {isAdmin && (
-          <Link
-            href="/admin/branches"
-            className="rounded-full border border-[var(--line-strong)] px-4 py-2 text-sm font-medium text-ink transition hover:border-accent hover:text-accent-strong"
-          >
-            Gestionar sucursales
-          </Link>
-        )}
+      <div>
+        <h1 className="font-display text-3xl font-semibold text-ink">Estoque</h1>
+        <p className="mt-1 text-sm text-muted">
+          Gerencie as quantidades em estoque e a disponibilidade de cada produto na loja online.
+        </p>
       </div>
 
-      {isAdmin && branches.length > 0 && (
-        <form method="get" className="mt-5 flex flex-wrap items-end gap-3">
-          <div>
-            <label htmlFor="inv-branch" className="mb-1.5 block text-xs font-medium uppercase tracking-[0.1em] text-muted">
-              Sucursal
-            </label>
-            <select
-              id="inv-branch"
-              name="branch"
-              defaultValue={branchId}
-              className="rounded-lg border border-[var(--line-strong)] bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent"
-            >
-              {branches.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name} · {b.code}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="inv-q" className="mb-1.5 block text-xs font-medium uppercase tracking-[0.1em] text-muted">
-              Buscar
-            </label>
-            <input
-              id="inv-q"
-              name="q"
-              defaultValue={q}
-              placeholder="Nombre, marca o SKU"
-              className="rounded-lg border border-[var(--line-strong)] bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent"
-            />
-          </div>
-          <button
-            type="submit"
-            className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-light transition hover:bg-brand-dark"
-          >
-            Ver
-          </button>
-        </form>
-      )}
+      <form method="get" className="mt-5 flex flex-wrap items-end gap-3">
+        <div>
+          <label htmlFor="inv-q" className="mb-1.5 block text-xs font-medium uppercase tracking-[0.1em] text-muted">
+            Buscar
+          </label>
+          <input
+            id="inv-q"
+            name="q"
+            defaultValue={q}
+            placeholder="Nome, marca ou SKU"
+            className="rounded-lg border border-[var(--line-strong)] bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-accent"
+          />
+        </div>
+        <button
+          type="submit"
+          className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-light transition hover:bg-brand-dark"
+        >
+          Filtrar
+        </button>
+      </form>
 
       {!dbConnected && <div className="mt-6"><DbBanner /></div>}
 
       {!branchId ? (
         <div className="mt-6 rounded-xl border border-dashed border-[var(--line)] bg-cream-soft py-16 text-center">
-          <p className="font-display text-xl text-ink">No hay sucursal asignada</p>
+          <p className="font-display text-xl text-ink">Estoque ainda não inicializado</p>
           <p className="mt-1 text-sm text-muted">
-            {isAdmin
-              ? "Crea la primera sucursal para empezar a cargar inventario."
-              : "Pide a un administrador que asigne tu usuario a una sucursal."}
+            Conecte o banco de dados e execute o seed (<code>npm run db:seed</code>) para gerenciar o estoque da loja.
           </p>
-          {isAdmin && (
-            <Link href="/admin/branches/new" className="mt-4 inline-block rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-light">
-              + Nueva sucursal
-            </Link>
-          )}
         </div>
       ) : (
         <>
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <Stat label="Productos" value={String(rows.length)} />
-            <Stat label="Unidades en stock" value={String(units)} />
-            <Stat label={`Stock bajo (≤ ${lowThreshold})`} value={String(low)} tone={low > 0 ? "warn" : "ok"} />
+            <Stat label="Produtos" value={String(rows.length)} />
+            <Stat label="Unidades em estoque" value={String(units)} />
+            <Stat label={`Estoque baixo (≤ ${lowThreshold})`} value={String(low)} tone={low > 0 ? "warn" : "ok"} />
           </div>
 
           {rows.length === 0 ? (
             <div className="mt-6 rounded-xl border border-dashed border-[var(--line)] bg-cream-soft py-16 text-center">
-              <p className="font-display text-xl text-ink">Sin productos</p>
+              <p className="font-display text-xl text-ink">Sem produtos</p>
               <p className="mt-1 text-sm text-muted">
-                {q ? "Ningún producto coincide con la búsqueda." : "Agrega productos al catálogo para cargar existencias."}
+                {q ? "Nenhum produto corresponde à sua busca." : "Adicione produtos ao catálogo para gerenciar o estoque."}
               </p>
             </div>
           ) : (
@@ -133,10 +90,10 @@ export default async function AdminInventoryPage({
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--line)] text-left text-xs uppercase tracking-wider text-muted">
-                    <th className="px-4 py-3">Producto</th>
-                    <th className="px-4 py-3">Categoría</th>
-                    <th className="px-4 py-3">Stock</th>
-                    <th className="px-4 py-3">Disponibilidad</th>
+                    <th className="px-4 py-3">Produto</th>
+                    <th className="px-4 py-3">Categoria</th>
+                    <th className="px-4 py-3">Estoque</th>
+                    <th className="px-4 py-3">Disponibilidade</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,7 +104,7 @@ export default async function AdminInventoryPage({
                           {p.name}
                         </Link>
                         {p.sku && <p className="text-xs text-muted">SKU {p.sku}</p>}
-                        {!p.catalogActive && <p className="text-xs text-amber-700">Oculto en el catálogo</p>}
+                        {!p.catalogActive && <p className="text-xs text-amber-700">Oculto no catálogo</p>}
                       </td>
                       <td className="px-4 py-3 text-muted">{p.category}</td>
                       <td className="px-4 py-3">
@@ -160,21 +117,21 @@ export default async function AdminInventoryPage({
                             min={0}
                             step={1}
                             defaultValue={p.stock}
-                            aria-label={`Stock de ${p.name}`}
+                            aria-label={`Estoque de ${p.name}`}
                             className={field}
                           />
                           <button
                             type="submit"
                             className="rounded-lg border border-[var(--line-strong)] px-2.5 py-1.5 text-xs font-medium text-ink transition hover:border-accent hover:text-accent-strong"
                           >
-                            Guardar
+                            Salvar
                           </button>
                         </form>
                         {p.available && p.stock === 0 && (
-                          <p className="mt-1 text-xs text-red-600">Sin stock</p>
+                          <p className="mt-1 text-xs text-red-600">Sem estoque</p>
                         )}
                         {p.available && p.stock > 0 && p.stock <= lowThreshold && (
-                          <p className="mt-1 text-xs text-amber-700">Stock bajo</p>
+                          <p className="mt-1 text-xs text-amber-700">Estoque baixo</p>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -187,7 +144,7 @@ export default async function AdminInventoryPage({
                               p.available ? "bg-green-100 text-green-800" : "bg-gray-200 text-gray-600"
                             }`}
                           >
-                            {p.available ? "Disponible" : "Oculto aquí"}
+                            {p.available ? "Disponível" : "Oculto"}
                           </span>
                           <button
                             type="submit"

@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   // Generous for real shoppers, protects the API bill from abuse.
   if (!rateLimit(`chat:${ip}`, 20, 10 * 60_000)) {
     return NextResponse.json(
-      { reply: "You're sending messages very quickly — please wait a few minutes, or contact our team directly on /contact.", mode: "basic" },
+      { reply: "Você está enviando mensagens muito rápido — aguarde alguns minutos ou fale com nossa equipe em /contact.", mode: "basic" },
       { status: 429 }
     );
   }
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json({ error: "Requisição inválida" }, { status: 400 });
   }
 
   const raw = Array.isArray(body.messages) ? body.messages : [];
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   // The conversation must start with the customer and end with their question.
   while (history.length && history[0].role !== "user") history.shift();
   if (!history.length || history[history.length - 1].role !== "user") {
-    return NextResponse.json({ error: "Send a question" }, { status: 400 });
+    return NextResponse.json({ error: "Envie uma pergunta" }, { status: 400 });
   }
 
   const result = await answerCustomer(history);

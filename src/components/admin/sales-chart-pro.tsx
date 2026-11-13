@@ -16,12 +16,12 @@ type Tip = { x: number; y: number; width: number; date: string; revenue: number;
 type Stats = { revenue: number; orders: number; avg: number; change: number | null; label: string };
 
 const PRESETS: { key: string; label: string; days: number | "all" }[] = [
-  { key: "1W", label: "1W", days: 7 },
+  { key: "1W", label: "1S", days: 7 },
   { key: "1M", label: "1M", days: 30 },
   { key: "3M", label: "3M", days: 90 },
   { key: "6M", label: "6M", days: 180 },
-  { key: "1Y", label: "1Y", days: 365 },
-  { key: "ALL", label: "Todo", days: "all" },
+  { key: "1Y", label: "1A", days: 365 },
+  { key: "ALL", label: "Tudo", days: "all" },
 ];
 
 function shortMoney(n: number): string {
@@ -52,24 +52,24 @@ function palette() {
     typeof document !== "undefined" && document.documentElement.getAttribute("data-theme") === "dark";
   return dark
     ? {
-        text: "#d8e8c4",
-        grid: "rgba(163,212,120,0.10)",
-        border: "rgba(163,212,120,0.18)",
-        line: "#cda65a",
-        top: "rgba(205,166,90,0.5)",
-        bottom: "rgba(205,166,90,0.02)",
-        cross: "#ffa25c",
-        marker: "#241319",
+        text: "#cbd5e1",
+        grid: "rgba(148,163,184,0.12)",
+        border: "rgba(148,163,184,0.2)",
+        line: "#e6ff57",
+        top: "rgba(230,255,87,0.38)",
+        bottom: "rgba(230,255,87,0.02)",
+        cross: "#e6ff57",
+        marker: "#0f172a",
         orders: "#818cf8",
       }
     : {
-        text: "#5b6b7c",
-        grid: "rgba(22,69,42,0.07)",
-        border: "rgba(22,69,42,0.14)",
-        line: "#ce5f10",
-        top: "rgba(255,204,4,0.45)",
-        bottom: "rgba(255,204,4,0.02)",
-        cross: "#ce5f10",
+        text: "#475569",
+        grid: "rgba(15,23,42,0.07)",
+        border: "rgba(15,23,42,0.14)",
+        line: "#0f172a",
+        top: "rgba(230,255,87,0.5)",
+        bottom: "rgba(230,255,87,0.04)",
+        cross: "#334155",
         marker: "#ffffff",
         orders: "#6366f1",
       };
@@ -187,7 +187,7 @@ export function SalesChartPro({ points }: { points: DailyPoint[] }) {
       lineWidth: 2,
       priceLineVisible: false,
       lastValueVisible: false,
-      priceFormat: { type: "custom", formatter: (v: number) => `Bs ${shortMoney(v)}`, minMove: 1 },
+      priceFormat: { type: "custom", formatter: (v: number) => `R$ ${shortMoney(v)}`, minMove: 1 },
       crosshairMarkerVisible: true,
       crosshairMarkerRadius: 5,
       crosshairMarkerBorderColor: c.marker,
@@ -286,17 +286,17 @@ export function SalesChartPro({ points }: { points: DailyPoint[] }) {
   const empty = points.every((p) => p.revenue === 0);
 
   return (
-    <section className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)] sm:p-6">
+    <section className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] sm:p-6">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span className="eyebrow">Analíticas</span>
-          <h2 className="mt-1 font-display text-xl font-semibold text-ink">Rendimiento de ventas</h2>
-          <p className="mt-0.5 text-xs text-muted">{stats.label || "Desplázate para hacer zoom · arrastra para moverte"}</p>
+          <span className="eyebrow">Análises</span>
+          <h2 className="mt-1 font-display text-xl font-semibold text-ink">Desempenho de vendas</h2>
+          <p className="mt-0.5 text-xs text-muted">{stats.label || "Role para dar zoom · arraste para navegar"}</p>
           {/* Legend */}
           <div className="mt-2 flex items-center gap-4 text-xs text-muted">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-3 rounded-sm bg-accent-strong" /> Ingresos
+              <span className="h-2 w-3 rounded-sm bg-accent-strong" /> Receita
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-3 rounded-sm" style={{ background: "#6366f1" }} /> Pedidos
@@ -320,13 +320,13 @@ export function SalesChartPro({ points }: { points: DailyPoint[] }) {
           </div>
           {/* Zoom controls */}
           <div className="inline-flex items-center gap-1">
-            <ZoomBtn label="Alejar" onClick={() => zoom(1.6)}>
+            <ZoomBtn label="Menos zoom" onClick={() => zoom(1.6)}>
               <path d="M5 12h14" strokeLinecap="round" />
             </ZoomBtn>
-            <ZoomBtn label="Acercar" onClick={() => zoom(0.6)}>
+            <ZoomBtn label="Mais zoom" onClick={() => zoom(0.6)}>
               <path d="M12 5v14M5 12h14" strokeLinecap="round" />
             </ZoomBtn>
-            <ZoomBtn label="Restablecer zoom" onClick={() => onPreset("ALL", "all")}>
+            <ZoomBtn label="Redefinir zoom" onClick={() => onPreset("ALL", "all")}>
               <path d="M4 4v6h6M20 20v-6h-6" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M20 10a8 8 0 0 0-14-4M4 14a8 8 0 0 0 14 4" strokeLinecap="round" />
             </ZoomBtn>
@@ -336,13 +336,13 @@ export function SalesChartPro({ points }: { points: DailyPoint[] }) {
 
       {/* Insight tiles (reflect the visible window) */}
       <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Insight label="Ventas (visibles)" value={formatPrice(stats.revenue)} />
-        <Insight label="Pedidos (visibles)" value={String(stats.orders)} />
-        <Insight label="Valor medio del pedido" value={formatPrice(stats.avg)} />
+        <Insight label="Vendas (visíveis)" value={formatPrice(stats.revenue)} />
+        <Insight label="Pedidos (visíveis)" value={String(stats.orders)} />
+        <Insight label="Ticket médio" value={formatPrice(stats.avg)} />
         <Insight
-          label="Crecimiento"
+          label="Crescimento"
           value={stats.change == null ? "—" : `${stats.change >= 0 ? "+" : ""}${stats.change}%`}
-          hint="frente al periodo anterior equivalente"
+          hint="em relação ao período anterior"
           tone={stats.change == null ? "neutral" : stats.change >= 0 ? "up" : "down"}
         />
       </div>
@@ -352,7 +352,7 @@ export function SalesChartPro({ points }: { points: DailyPoint[] }) {
         <div ref={wrapRef} style={{ width: "100%", height: 340 }} />
         {tip && (
           <div
-            className="pointer-events-none absolute z-10 rounded-xl border border-[var(--line)] bg-surface px-3.5 py-2.5 shadow-[0_18px_44px_-18px_rgba(29,58,14,0.5)]"
+            className="pointer-events-none absolute z-10 rounded-xl border border-[var(--line)] bg-surface px-3.5 py-2.5 shadow-[0_18px_44px_-18px_rgba(15,23,42,0.45)]"
             style={{
               left: Math.min(Math.max(tip.x, 70), tip.width - 70),
               top: Math.max(tip.y - 16, 4),
@@ -373,7 +373,7 @@ export function SalesChartPro({ points }: { points: DailyPoint[] }) {
         {empty && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <p className="rounded-full bg-cream-soft px-4 py-1.5 text-xs text-muted">
-              Aún no hay ventas: tus ingresos diarios se mostrarán aquí a medida que lleguen pedidos.
+              Ainda não há vendas: sua receita diária aparecerá aqui conforme chegarem pedidos.
             </p>
           </div>
         )}

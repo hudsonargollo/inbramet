@@ -3,34 +3,26 @@ import { usePathname } from "next/navigation";
 import { HeaderCart } from "./cart/header-cart";
 import { MobileMenu } from "./mobile-menu";
 import { ThemeToggle } from "./theme-toggle";
-import { useBranchPicker } from "./branch-picker";
 
 const NAV = [
-  { label: "Inicio", href: "/" },
-  { label: "Menú", href: "/shop" },
-  { label: "Sucursales", href: "/sucursal" },
-  { label: "Nosotros", href: "/about" },
-  { label: "Contacto", href: "/contact" },
+  { label: "Início", href: "/" },
+  { label: "Coleção", href: "/shop" },
+  { label: "Sobre nós", href: "/about" },
+  { label: "Contato", href: "/contact" },
 ];
 
-// Shared style for the header's circular icon buttons
 const iconBtn =
   "relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] bg-surface/60 text-brand transition hover:border-accent hover:bg-accent/10 hover:text-accent-strong dark:text-ink";
 
 export function SiteHeader({
-  branch = null,
   clubName = null,
 }: {
-  branch?: { name: string } | null;
   clubName?: string | null;
 }) {
   const pathname = usePathname();
-  const picker = useBranchPicker();
 
-  // The programme name is owner-editable (Admin → Club Camba), so the link is
-  // built from settings instead of hardcoded into NAV.
   const nav = clubName
-    ? [...NAV.slice(0, 2), { label: clubName, href: "/club-camba" }, ...NAV.slice(2)]
+    ? [...NAV.slice(0, 2), { label: clubName, href: "/clube-inbramet" }, ...NAV.slice(2)]
     : NAV;
 
   const isActive = (href: string) =>
@@ -39,15 +31,14 @@ export function SiteHeader({
   return (
     <header className="sticky top-0 z-40 bg-cream/85 backdrop-blur-md">
       <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5 sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-10">
-        {/* Brand */}
         <Link
           href="/"
-          aria-label="Inbramet — inicio"
+          aria-label="Inbramet — início"
           className="group flex min-w-0 shrink items-center transition-transform duration-300 hover:scale-[1.02] lg:shrink-0 lg:justify-self-start"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/inbramet-logo.png"
+            src="/products/inbramet-icon-transparent.png"
             alt="Inbramet"
             width={228}
             height={169}
@@ -55,7 +46,6 @@ export function SiteHeader({
           />
         </Link>
 
-        {/* Primary nav */}
         <nav className="hidden items-center gap-8 lg:flex lg:justify-self-center">
           {nav.map((item) => {
             const active = isActive(item.href);
@@ -84,41 +74,21 @@ export function SiteHeader({
           })}
         </nav>
 
-        {/* Actions */}
         <div className="flex shrink-0 items-center gap-1.5 text-brand sm:gap-2 lg:justify-self-end">
-          <button
-            type="button"
-            onClick={() => picker.open()}
-            className="mr-1 hidden items-center gap-1.5 rounded-full border border-[var(--line)] bg-surface/60 px-3 py-1.5 text-xs font-semibold text-brand transition hover:border-accent hover:text-accent-strong md:flex dark:text-ink"
-            title="Cambiar sucursal"
-          >
-            <PinIcon />
-            <span className="max-w-[10rem] truncate">{branch?.name ?? "Elegir sucursal"}</span>
-          </button>
           <Link href="/search" aria-label="Buscar" className={`${iconBtn} hidden sm:flex`}>
             <SearchIcon />
           </Link>
-          <Link href="/account" aria-label="Mi cuenta" className={`${iconBtn} hidden sm:flex`}>
+          <Link href="/account" aria-label="Minha conta" className={`${iconBtn} hidden sm:flex`}>
             <UserIcon />
           </Link>
           <ThemeToggle className={iconBtn} />
           <HeaderCart className={iconBtn} />
-          <MobileMenu branchName={branch?.name ?? null} clubName={clubName} />
+          <MobileMenu clubName={clubName} />
         </div>
       </div>
 
-      {/* Accent hairline */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[rgba(255,204,4,0.5)] to-transparent" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-[rgba(230,255,87,0.45)] to-transparent" />
     </header>
-  );
-}
-
-function PinIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-      <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z" strokeLinejoin="round" />
-      <circle cx="12" cy="10" r="2.5" />
-    </svg>
   );
 }
 

@@ -1,55 +1,89 @@
-// The store's brand mark — the Inbramet logo. `SunMark` is the line-art
-// sun from the logo, used for faint decorative watermarks where the
-// full-colour mark would be too heavy.
+// The store's brand mark — the Inbramet logo, a custom SVG mark (not a clip-art
+// icon). Concept: a stacked form suggesting both furniture construction and a held
+// form — a subtle "compass/arch" in a single geometric path. Single path,
+// filled, geometric.
+import type { SVGProps } from "react";
 
-type MarkProps = {
-  size?: number;
-  className?: string;
-  /** Kept for call sites that still pass a colour; the logo carries its own. */
-  color?: string;
-  /** Highlight used by the sun watermark (rays). */
+type MarkProps = SVGProps<SVGSVGElement> & {
+  /** A warm gold accent for the "arch" ray; the mark carries its own slate. */
   accent?: string;
+  size?: number; /** Default 28 */
 };
 
-export function Emblem({ size = 44, className = "" }: MarkProps) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/images/inbramet-icon.png"
-      alt=""
-      width={size}
-      height={size}
-      aria-hidden="true"
-      className={`shrink-0 rounded-[22%] object-cover ${className}`}
-      style={{ width: size, height: size }}
-    />
-  );
-}
+const GOLD = "#E6FF57";
+const INK = "#0F172A";
 
-export function SunMark({
-  size = 44,
-  className = "",
-  color = "currentColor",
-  accent = "var(--color-accent)",
-}: MarkProps) {
+function Mark({ viewBox = "0 0 64 64", accent = GOLD, className, size = 28, ...props }: MarkProps) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 64 64"
+      viewBox={viewBox}
       fill="none"
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
+      className={className}
+      style={{ width: size, height: size }}
+      {...props}
     >
-      {/* sun disc */}
-      <circle cx="32" cy="32" r="13" stroke={color} strokeWidth="3.2" />
-      {/* rays */}
+      {/* stacked mark: base slab + arch/compass */}
+      <rect x="6" y="48" width="52" height="10" rx="4" fill={INK} />
+      <rect x="18" y="24" width="28" height="22" rx="5" fill={GOLD} />
+      {/* arch/compass line suggesting a held form + construction */}
       <path
-        d="M32 8v7M32 49v7M8 32h7M49 32h7M15 15l5 5M44 44l5 5M49 15l-5 5M20 44l-5 5"
-        stroke={accent}
+        d="M28 32 Q40 32 40 45 M28 44 Q28 34 20 34"
+        stroke="var(--color-cream)"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M44 24 L44 21 M18 24 L18 21"
+        stroke="var(--color-cream)"
         strokeWidth="3"
         strokeLinecap="round"
       />
     </svg>
   );
 }
+
+export function InbrametMark({ className = "", ...props }: MarkProps) {
+  return <Mark className={className} {...props} />;
+}
+
+/** Icon-only tile (menu, favicon, app icons). Slate base + warm gold accent. */
+export function InbrametIcon({ size = 28, className = "", ...props }: MarkProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={className}
+      style={{ width: size, height: size }}
+      {...props}
+    >
+      <rect x="6" y="48" width="52" height="10" rx="4" fill={INK} />
+      <rect x="18" y="24" width="28" height="22" rx="5" fill={GOLD} />
+      <path
+        d="M28 32 Q40 32 40 45 M28 44 Q28 34 20 34"
+        stroke="var(--color-cream)"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M44 24 L44 21 M18 24 L18 21"
+        stroke="var(--color-cream)"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export const Emblem = InbrametMark;
+export const SunMark = InbrametIcon;
+

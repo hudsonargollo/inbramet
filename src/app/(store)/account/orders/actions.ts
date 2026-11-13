@@ -28,7 +28,7 @@ async function lookup(_prev: LookupState, formData: FormData): Promise<LookupSta
   const orderNumber = String(formData.get("order") ?? "").trim().toUpperCase();
   const email = String(formData.get("email") ?? "").trim();
   if (!orderNumber || !email) {
-    return { status: "error", message: "Ingresa tu número de pedido y tu correo." };
+    return { status: "error", message: "Informe o número do pedido e seu e-mail." };
   }
   if (!rateLimit(`track:${await clientIp()}`, 20, 10 * 60_000)) {
     return { status: "error", message: TOO_MANY };
@@ -40,8 +40,8 @@ async function lookup(_prev: LookupState, formData: FormData): Promise<LookupSta
       status: "error",
       message:
         result.reason === "db-down"
-          ? "El rastreo de pedidos no está disponible ahora. Intenta más tarde o contáctanos."
-          : "No se encontró un pedido con ese número y correo. Verifica e intenta de nuevo.",
+          ? "O rastreamento de pedidos está indisponível no momento. Tente mais tarde ou entre em contato."
+          : "Não encontramos um pedido com esse número e e-mail. Verifique e tente novamente.",
     };
   }
   const { courier, trackingNumber } = result.order;

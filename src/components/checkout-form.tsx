@@ -20,34 +20,21 @@ export type CheckoutDefaults = {
 };
 
 const inputCls =
-  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-accent focus:ring-2 focus:ring-[rgba(255,204,4,0.22)]";
+  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-accent focus:ring-2 focus:ring-accent/25";
 const labelCls = "mb-1.5 block text-xs font-medium uppercase tracking-[0.1em] text-muted";
 
 const NOTICES = {
-  cancelled: "El pago se canceló. Puedes intentarlo de nuevo abajo.",
-  failed: "El pago falló. Inténtalo de nuevo o elige pago contra entrega.",
+  cancelled: "O pagamento foi cancelado. Você pode tentar novamente abaixo.",
+  failed: "O pagamento falhou. Tente novamente ou escolha pagamento na entrega.",
 } as const;
-
-export type CheckoutBranch = {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  phone: string | null;
-  hours: string | null;
-  deliveryEnabled: boolean;
-  pickupEnabled: boolean;
-};
 
 export function CheckoutForm({
   defaults,
   paymentNotice = null,
   gateways = { PAYFAST: false, SAFEPAY: false },
   buyNow = null,
-  branch,
-  shippingRules = { flatFee: 15, freeThreshold: 0, deliveryTime: "" },
+  shippingRules = { flatFee: 45, freeThreshold: 1200, deliveryTime: "" },
 }: {
-  branch: CheckoutBranch;
   shippingRules?: { flatFee: number; freeThreshold: number; deliveryTime: string };
   buyNow?: CartItem | null;
   defaults?: CheckoutDefaults;
@@ -56,7 +43,6 @@ export function CheckoutForm({
 }) {
   const router = useRouter();
   const cart = useCart();
-  // Single-item "Buy it now" checkout, otherwise the whole cart.
   const items = buyNow ? [buyNow] : cart.items;
   const subtotal = buyNow ? buyNow.price * buyNow.quantity : cart.subtotal;
   const savings = buyNow
@@ -65,16 +51,12 @@ export function CheckoutForm({
   const ready = buyNow ? true : cart.ready;
   const toast = useToast();
   const [payment, setPayment] = useState<PaymentMethod>("COD");
-  const [fulfillment, setFulfillment] = useState<"DELIVERY" | "PICKUP">(
-    branch.deliveryEnabled ? "DELIVERY" : "PICKUP"
-  );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(paymentNotice ? NOTICES[paymentNotice] : null);
 
-  const isPickup = fulfillment === "PICKUP";
-  const baseShipping = isPickup ? 0 : shippingFor(subtotal, shippingRules);
+  const baseShipping = shippingFor(subtotal, shippingRules);
 
-  // ---- Club Camba: what this cart earns, and any full card to spend ----
+  // ---- Clube Inbramet: o que este pedido acumula e se há cartela para resgate ----
   const [loyalty, setLoyalty] = useState<LoyaltyCartPreview | null>(null);
   const [redeemId, setRedeemId] = useState<string | null>(null);
   const cartKey = items.map((i) => `${i.id}:${i.quantity}`).join(",");
@@ -94,35 +76,29 @@ export function CheckoutForm({
     })
       .then((r) => (r.ok ? (r.json() as Promise<LoyaltyCartPreview>) : null))
       .then((data) => {
-        if (!cancelled && data?.ok) setLoyalty(data);
+        if (!cancelled && data?.ok) {
+          setLoyalty(data);
+          if (redeemId && !data.redeemable.some((r) => r.productId === redeemId)) {
+            setRedeemId(null);
+          }
+        }
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartKey, redeemId, ready, isPickup]);
-
-  // A card can stop being spendable (quantity changed, staff adjusted it); drop
-  // the selection so the shopper is never promised a redemption that will fail.
-  useEffect(() => {
-    if (!redeemId || !loyalty) return;
-    if (!loyalty.redeemable.some((r) => r.productId === redeemId)) setRedeemId(null);
-  }, [loyalty, redeemId]);
+  }, [cartKey, redeemId, ready]);
 
   const freeLine = loyalty?.redeemable.find((r) => r.productId === redeemId) ?? null;
   const discount = freeLine ? freeLine.price : 0;
   const payableSubtotal = subtotal - discount;
-  const shipping = isPickup
-    ? 0
-    : freeLine
-      ? shippingFor(payableSubtotal, shippingRules)
-      : baseShipping;
+  const shipping = freeLine ? shippingFor(payableSubtotal, shippingRules) : baseShipping;
   const total = payableSubtotal + shipping;
 
   const paymentNoticeShown = useRef(false);
   useEffect(() => {
-    if (!paymentNotice || paymentNoticeShown.current) return; // guard StrictMode double-invoke
+    if (!paymentNotice || paymentNoticeShown.current) return;
     paymentNoticeShown.current = true;
     toast.error(NOTICES[paymentNotice]);
   }, [paymentNotice, toast]);
@@ -130,7 +106,7 @@ export function CheckoutForm({
   if (!ready) {
     return (
       <div className="mx-auto max-w-6xl px-5 py-12" aria-busy="true">
-        <h1 className="font-display text-4xl font-semibold text-ink">Pago</h1>
+        <h1 className="font-display text-4xl font-semibold text-ink">Finalizar compra</h1>
         <div className="mt-8 h-96 animate-pulse rounded-2xl bg-cream-soft" />
       </div>
     );
@@ -139,12 +115,12 @@ export function CheckoutForm({
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-2xl px-5 py-24 text-center">
-        <h1 className="font-display text-3xl font-semibold text-ink">Tu carrito está vacío</h1>
+        <h1 className="font-display text-3xl font-semibold text-ink">Seu carrinho está vazio</h1>
         <Link
           href="/shop"
           className="mt-6 inline-block rounded-full bg-gradient-to-r from-accent-soft to-accent px-8 py-3 text-sm font-medium text-brand"
         >
-          Explorar el menú
+          Explorar a coleção
         </Link>
       </div>
     );
@@ -160,11 +136,10 @@ export function CheckoutForm({
       customerName: form.get("customerName"),
       email: form.get("email"),
       phone: form.get("phone"),
-      branchId: branch.id,
-      fulfillment,
-      address: isPickup ? null : form.get("address"),
-      city: isPickup ? null : form.get("city"),
-      postalCode: isPickup ? null : form.get("postalCode"),
+      fulfillment: "DELIVERY",
+      address: form.get("address"),
+      city: form.get("city"),
+      postalCode: form.get("postalCode"),
       notes: form.get("notes"),
       paymentMethod: payment,
       redeemProductId: freeLine ? redeemId : null,
@@ -184,12 +159,11 @@ export function CheckoutForm({
       });
       const data = await res.json();
       if (res.status === 401 && data.signIn) {
-        // Session ended while on this page — sign in again and come back.
         router.push(`/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`);
         return;
       }
       if (!res.ok || !data.ok) {
-        throw new Error(data.error || "No pudimos procesar tu pedido. Inténtalo de nuevo.");
+        throw new Error(data.error || "Não foi possível processar seu pedido. Tente novamente.");
       }
       if (data.redirectUrl) {
         window.location.href = data.redirectUrl;
@@ -197,114 +171,70 @@ export function CheckoutForm({
       }
       router.push(`/checkout/success?order=${encodeURIComponent(data.orderNumber)}`);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Algo salió mal.";
+      const message = err instanceof Error ? err.message : "Algo deu errado.";
       setError(message);
-      toast.error(message, { title: "Pedido no realizado" });
+      toast.error(message, { title: "Pedido não concluído" });
       setSubmitting(false);
     }
   }
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
-      <h1 className="font-display text-4xl font-semibold text-ink">Pago</h1>
+      <h1 className="font-display text-4xl font-semibold text-ink">Finalizar compra</h1>
       {defaults?.email && (
         <p className="mt-2 text-sm text-muted">
-          Sesión iniciada como <span className="text-ink">{defaults.email}</span> — este pedido se
-          guardará en tu cuenta.
+          Conectado como <span className="text-ink">{defaults.email}</span> — este pedido ficará
+          salvo na sua conta.
         </p>
       )}
 
       <form onSubmit={handleSubmit} className="mt-8 grid items-start gap-8 lg:grid-cols-[1fr_390px] lg:gap-12">
-        {/* Details */}
         <div className="space-y-8">
-          <Section step={1} title="Sucursal, contacto y entrega">
-            <div className="mb-5 rounded-xl border border-[var(--line-strong)] bg-cream-soft p-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-[0.68rem] font-medium uppercase tracking-[0.14em] text-muted">Pedido en</p>
-                  <p className="mt-0.5 font-display text-lg font-semibold text-ink">{branch.name}</p>
-                  <p className="text-sm text-muted">{branch.address} · {branch.city}</p>
-                  {branch.hours && <p className="text-xs text-muted">{branch.hours}</p>}
-                  {branch.phone && <p className="text-xs text-muted">Tel. {branch.phone}</p>}
-                </div>
-                <Link
-                  href={`/sucursal?next=${encodeURIComponent("/checkout")}`}
-                  className="rounded-full border border-[var(--line-strong)] px-4 py-1.5 text-xs font-medium text-ink transition hover:border-accent hover:text-accent-strong"
-                >
-                  Cambiar sucursal
-                </Link>
-              </div>
-            </div>
-
-            <div className="mb-5 grid gap-2 sm:grid-cols-2">
-              {branch.deliveryEnabled && (
-                <FulfillmentOption
-                  value="DELIVERY"
-                  current={fulfillment}
-                  onSelect={setFulfillment}
-                  title="Delivery a domicilio"
-                  desc={shippingRules.deliveryTime || "Entrega en moto desde esta sucursal"}
-                />
-              )}
-              {branch.pickupEnabled && (
-                <FulfillmentOption
-                  value="PICKUP"
-                  current={fulfillment}
-                  onSelect={setFulfillment}
-                  title="Retiro en tienda"
-                  desc="Recoge gratis en esta sucursal"
-                />
-              )}
-            </div>
-
+          <Section
+            step={1}
+            title="Contato e entrega"
+            hint={shippingRules.deliveryTime || "Entrega coordenada pela loja on-line em todo o Brasil"}
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <label htmlFor="co-customerName" className={labelCls}>Nombre completo</label>
+                <label htmlFor="co-customerName" className={labelCls}>Nome completo</label>
                 <input name="customerName" id="co-customerName" required defaultValue={defaults?.name} className={inputCls} />
               </div>
               <div>
-                <label htmlFor="co-email" className={labelCls}>Correo</label>
-                <input name="email" id="co-email" type="email" required readOnly defaultValue={defaults?.email} title="Las novedades del pedido llegan a tu correo" className={`${inputCls} cursor-not-allowed opacity-75`} />
+                <label htmlFor="co-email" className={labelCls}>E-mail</label>
+                <input name="email" id="co-email" type="email" required readOnly defaultValue={defaults?.email} title="As atualizações do pedido chegam no seu e-mail" className={`${inputCls} cursor-not-allowed opacity-75`} />
               </div>
               <div>
-                <label htmlFor="co-phone" className={labelCls}>Teléfono</label>
-                <input name="phone" id="co-phone" type="tel" required defaultValue={defaults?.phone} placeholder="Ej. 700 00000" className={inputCls} />
+                <label htmlFor="co-phone" className={labelCls}>Telefone / WhatsApp</label>
+                <input name="phone" id="co-phone" type="tel" required defaultValue={defaults?.phone} placeholder="(11) 99999-9999" className={inputCls} />
               </div>
-              {isPickup ? (
-                <div className="sm:col-span-2 rounded-lg border border-dashed border-[var(--line-strong)] px-4 py-3 text-sm text-muted">
-                  Sin dirección: retiras tu pedido en <span className="text-ink">{branch.address}, {branch.city}</span>.
-                </div>
-              ) : (
-                <>
-                  <div className="sm:col-span-2">
-                    <label htmlFor="co-address" className={labelCls}>Dirección de entrega</label>
-                    <input name="address" id="co-address" required placeholder="Calle, número, zona" className={inputCls} />
-                  </div>
-                  <div>
-                    <label htmlFor="co-city" className={labelCls}>Ciudad</label>
-                    <input name="city" id="co-city" required className={inputCls} />
-                  </div>
-                  <div>
-                    <label htmlFor="co-postalCode" className={labelCls}>Código postal (opcional)</label>
-                    <input name="postalCode" id="co-postalCode" className={inputCls} />
-                  </div>
-                </>
-              )}
               <div className="sm:col-span-2">
-                <label htmlFor="co-notes" className={labelCls}>Notas del pedido (opcional)</label>
-                <textarea name="notes" id="co-notes" rows={3} className={inputCls} />
+                <label htmlFor="co-address" className={labelCls}>Endereço de entrega</label>
+                <input name="address" id="co-address" required placeholder="Rua, número, complemento e bairro" className={inputCls} />
+              </div>
+              <div>
+                <label htmlFor="co-city" className={labelCls}>Cidade / UF</label>
+                <input name="city" id="co-city" required placeholder="Ex. São Paulo - SP" className={inputCls} />
+              </div>
+              <div>
+                <label htmlFor="co-postalCode" className={labelCls}>CEP (opcional)</label>
+                <input name="postalCode" id="co-postalCode" placeholder="00000-000" className={inputCls} />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="co-notes" className={labelCls}>Observações do pedido (opcional)</label>
+                <textarea name="notes" id="co-notes" rows={3} placeholder="Horário preferido, portaria ou instruções de entrega…" className={inputCls} />
               </div>
             </div>
           </Section>
 
-          <Section step={2} title="Pago" hint="Todas las transacciones son seguras y cifradas.">
+          <Section step={2} title="Pagamento" hint="Todas as transações são seguras e criptografadas.">
             <div className="overflow-hidden rounded-xl border border-[var(--line-strong)]">
               <PaymentOption
                 value="COD"
                 current={payment}
                 onSelect={setPayment}
-                title="Pago contra entrega (COD)"
-                desc="Recibe tu pedido y paga en efectivo."
+                title="Pagamento na entrega"
+                desc="Receba seu pedido e pague no ato da entrega."
                 last={!gateways.PAYFAST && !gateways.SAFEPAY}
               />
               {gateways.PAYFAST && (
@@ -312,8 +242,8 @@ export function CheckoutForm({
                   value="PAYFAST"
                   current={payment}
                   onSelect={setPayment}
-                  title="Tarjeta de crédito / débito"
-                  desc="Pago seguro en línea con PayFast."
+                  title="Cartão de crédito / débito"
+                  desc="Pagamento on-line seguro com PayFast."
                   icons={<CardBrands />}
                   last={!gateways.SAFEPAY}
                 />
@@ -323,21 +253,20 @@ export function CheckoutForm({
                   value="SAFEPAY"
                   current={payment}
                   onSelect={setPayment}
-                  title="Tarjeta / billetera (Safepay)"
-                  desc="Pago seguro en línea con Safepay."
+                  title="Cartão / carteira digital (Safepay)"
+                  desc="Pagamento on-line seguro com Safepay."
                   icons={<CardBrands />}
                   last
                 />
               )}
             </div>
           </Section>
-
         </div>
 
-        {/* Order summary — sticky/locked on desktop */}
+        {/* Resumo do pedido */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-2xl border border-[var(--line-strong)] bg-surface/80 p-6 shadow-[0_24px_60px_-40px_rgba(29,58,14,0.5)]">
-            <h2 className="font-display text-xl font-semibold text-ink">Resumen del pedido</h2>
+          <div className="rounded-2xl border border-[var(--line-strong)] bg-surface/80 p-6 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.45)]">
+            <h2 className="font-display text-xl font-semibold text-ink">Resumo do pedido</h2>
 
             <ul className="mt-5 max-h-72 space-y-4 overflow-y-auto border-b border-[var(--line)] pb-5 pr-1 text-sm">
               {items.map((i) => (
@@ -370,7 +299,7 @@ export function CheckoutForm({
                   {loyalty.name}
                 </p>
                 <p className="mt-1 text-sm text-ink">
-                  Tienes una tarjeta completa: elige el producto que quieres gratis en este pedido.
+                  Você tem uma cartela completa: escolha o item que deseja ganhar grátis neste pedido.
                 </p>
                 <div className="mt-3 space-y-2">
                   {loyalty.redeemable.map((r) => (
@@ -396,7 +325,7 @@ export function CheckoutForm({
                     onClick={() => setRedeemId(null)}
                     className="text-xs text-muted underline underline-offset-2 hover:text-ink"
                   >
-                    No canjear ahora
+                    Não resgatar agora
                   </button>
                 </div>
               </div>
@@ -409,21 +338,21 @@ export function CheckoutForm({
               </div>
               {freeLine && (
                 <div className="flex justify-between">
-                  <dt className="text-accent-strong">Canje {freeLine.name}</dt>
+                  <dt className="text-accent-strong">Resgate {freeLine.name}</dt>
                   <dd className="text-accent-strong">−{formatPrice(freeLine.price)}</dd>
                 </div>
               )}
               <div className="flex justify-between">
-                <dt className="text-muted">{isPickup ? "Retiro en tienda" : "Delivery"}</dt>
+                <dt className="text-muted">Frete</dt>
                 <dd className="text-ink">
-                  {isPickup ? "Gratis" : shipping === 0 ? "Gratis" : formatPrice(shipping)}
+                  {shipping === 0 ? "Grátis" : formatPrice(shipping)}
                 </dd>
               </div>
-              {!isPickup && shipping > 0 && shippingRules.freeThreshold > 0 && (
-                <p className="text-xs text-muted">Delivery gratis desde {formatPrice(shippingRules.freeThreshold)}.</p>
+              {shipping > 0 && shippingRules.freeThreshold > 0 && (
+                <p className="text-xs text-muted">Frete grátis a partir de {formatPrice(shippingRules.freeThreshold)}.</p>
               )}
-              {!isPickup && shipping === 0 && (
-                <p className="text-xs text-muted">Este pedido califica para delivery gratis.</p>
+              {shipping === 0 && (
+                <p className="text-xs text-muted">Este pedido tem direito a frete grátis.</p>
               )}
             </dl>
 
@@ -435,16 +364,16 @@ export function CheckoutForm({
 
             {loyalty?.enabled && (loyalty.stamps > 0 || loyalty.points > 0) && (
               <p className="mt-3 text-center text-xs text-muted">
-                Este pedido suma{" "}
+                Este pedido acumula{" "}
                 {loyalty.stamps > 0 && (
                   <span className="text-ink">
-                    {loyalty.stamps} sello{loyalty.stamps === 1 ? "" : "s"}
+                    {loyalty.stamps} selo{loyalty.stamps === 1 ? "" : "s"}
                   </span>
                 )}
-                {loyalty.stamps > 0 && loyalty.points > 0 && " y "}
-                {loyalty.points > 0 && <span className="text-ink">{loyalty.points} puntos</span>}
+                {loyalty.stamps > 0 && loyalty.points > 0 && " e "}
+                {loyalty.points > 0 && <span className="text-ink">{loyalty.points} pontos</span>}
                 {" · "}
-                <Link href="/club-camba" className="underline underline-offset-2 hover:text-ink">
+                <Link href="/clube-inbramet" className="underline underline-offset-2 hover:text-ink">
                   {loyalty.name}
                 </Link>
               </p>
@@ -459,10 +388,10 @@ export function CheckoutForm({
               disabled={submitting}
               className="mt-6 block w-full rounded-full bg-gradient-to-r from-accent-soft to-accent px-8 py-3.5 text-center text-sm font-semibold uppercase tracking-[0.1em] text-brand transition hover:opacity-90 disabled:opacity-60"
             >
-              {submitting ? "Procesando pedido…" : "Confirmar pedido"}
+              {submitting ? "Processando pedido…" : "Confirmar pedido"}
             </button>
             <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-xs text-muted">
-              <LockIcon /> Pago seguro y encriptado · Inbramet
+              <LockIcon /> Pagamento seguro e criptografado · Inbramet
             </p>
           </div>
         </aside>
@@ -495,44 +424,6 @@ function Section({
       </div>
       {children}
     </section>
-  );
-}
-
-function FulfillmentOption({
-  value,
-  current,
-  onSelect,
-  title,
-  desc,
-}: {
-  value: "DELIVERY" | "PICKUP";
-  current: "DELIVERY" | "PICKUP";
-  onSelect: (v: "DELIVERY" | "PICKUP") => void;
-  title: string;
-  desc: string;
-}) {
-  const active = current === value;
-  return (
-    <label
-      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition ${
-        active
-          ? "border-accent bg-accent/8"
-          : "border-[var(--line-strong)] hover:border-accent/60"
-      }`}
-    >
-      <input
-        type="radio"
-        name="fulfillment"
-        value={value}
-        checked={active}
-        onChange={() => onSelect(value)}
-        className="h-4 w-4 accent-[var(--color-accent-strong)]"
-      />
-      <span className="min-w-0 flex-1">
-        <span className="block font-medium text-ink">{title}</span>
-        <span className="block text-sm text-muted">{desc}</span>
-      </span>
-    </label>
   );
 }
 

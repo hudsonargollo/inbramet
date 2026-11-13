@@ -76,20 +76,23 @@ export function AdminShell({
         {/* Brand — full logo; the square emblem is only for the collapsed rail. */}
         <Link
           href="/admin"
-          aria-label="Inbramet — panel"
-          className="flex h-16 shrink-0 items-center justify-center border-b border-[rgba(163,212,120,0.2)] px-4 md:h-20"
+          aria-label="Inbramet — painel"
+          className="flex h-16 shrink-0 items-center justify-center border-b border-white/10 px-4 md:h-20"
         >
           {collapsed ? (
             <Emblem size={34} className="shrink-0 text-accent" />
           ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src="/images/inbramet-logo.png"
-              alt="Inbramet"
-              width={228}
-              height={169}
-              className="h-[68px] w-auto drop-shadow-[0_6px_16px_rgba(0,0,0,0.45)]"
-            />
+            <span className="flex items-center gap-2.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/products/inbramet-icon-transparent.png"
+                alt="Inbramet"
+                width={44}
+                height={44}
+                className="h-10 w-auto drop-shadow-[0_6px_16px_rgba(0,0,0,0.45)]"
+              />
+              <span className="font-display text-lg font-bold tracking-[0.14em] text-light">INBRAMET</span>
+            </span>
           )}
         </Link>
 
@@ -99,16 +102,12 @@ export function AdminShell({
         </div>
 
         {/* Footer — consistent icon+label rows so nothing jumps on collapse */}
-        <div className="shrink-0 border-t border-[rgba(163,212,120,0.2)] p-3">
+        <div className="shrink-0 border-t border-white/10 p-3">
           <p
             style={labelStyle}
             className={`truncate px-3 pb-1 text-xs text-light/70 ${collapsed ? "opacity-0" : "opacity-100"}`}
           >
-            {role === "ADMIN"
-              ? "Todas las sucursales"
-              : branchName
-                ? `Sucursal: ${branchName}`
-                : "Sin sucursal asignada"}
+            {branchName ? `Loja Online · ${branchName}` : "Loja Online"}
           </p>
           <p
             style={labelStyle}
@@ -118,7 +117,7 @@ export function AdminShell({
           </p>
           <form action={logoutAction}>
             <button
-              title={collapsed ? "Cerrar sesión" : undefined}
+              title={collapsed ? "Sair" : undefined}
               className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm text-light/80 transition-colors hover:bg-brand-dark hover:text-accent"
             >
               <svg className="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
@@ -126,20 +125,20 @@ export function AdminShell({
                 <path d="M13 4h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span style={labelStyle} className={labelCls}>
-                Cerrar sesión
+                Sair
               </span>
             </button>
           </form>
           <Link
             href="/"
-            title={collapsed ? "Ver tienda" : undefined}
+            title={collapsed ? "Ver loja" : undefined}
             className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-light/60 transition-colors hover:text-accent"
           >
             <svg className="shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
               <path d="M3 11l9-7 9 7M5 10v9h14v-9" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span style={labelStyle} className={labelCls}>
-              Ver tienda
+              Ver loja
             </span>
           </Link>
         </div>
@@ -153,8 +152,8 @@ export function AdminShell({
             {/* Desktop sidebar toggle — clear, always visible */}
             <button
               onClick={toggle}
-              aria-label={collapsed ? "Expandir barra lateral" : "Contraer barra lateral"}
-              title={collapsed ? "Expandir menú" : "Contraer menú"}
+              aria-label={collapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
+              title={collapsed ? "Expandir barra lateral" : "Recolher barra lateral"}
               className="hidden h-9 w-9 items-center justify-center rounded-md text-light/85 transition-colors hover:bg-brand-dark hover:text-accent md:flex"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
@@ -168,25 +167,26 @@ export function AdminShell({
               </svg>
             </button>
             {/* Mobile brand */}
-            <Link href="/admin" aria-label="Inbramet — panel" className="md:hidden">
+            <Link href="/admin" aria-label="Inbramet — painel" className="flex items-center gap-2 md:hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/inbramet-logo.png"
+                src="/products/inbramet-icon-transparent.png"
                 alt="Inbramet"
-                width={228}
-                height={169}
+                width={36}
+                height={36}
                 className="h-8 w-auto"
               />
+              <span className="font-display text-sm font-bold tracking-[0.14em] text-light">INBRAMET</span>
             </Link>
           </div>
 
           <div className="flex items-center gap-3 text-sm sm:gap-4">
             <OrderNotifications />
             <Link href="/" className="text-light/70 transition-colors hover:text-accent md:hidden">
-              Ver tienda
+              Ver loja
             </Link>
             <form action={logoutAction} className="md:hidden">
-              <button className="text-light/80 transition-colors hover:text-accent">Cerrar sesión</button>
+              <button className="text-light/80 transition-colors hover:text-accent">Sair</button>
             </form>
           </div>
         </header>

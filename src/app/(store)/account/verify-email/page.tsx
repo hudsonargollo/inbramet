@@ -6,7 +6,7 @@ import { requireCustomer } from "@/lib/customer-auth";
 import { getPending, maskEmail, resendWaitSeconds } from "@/lib/otp";
 import { verifyEmailAction, resendEmailVerification } from "../../auth-actions";
 
-export const metadata: Metadata = { title: "Verifica tu correo", robots: { index: false } };
+export const metadata: Metadata = { title: "Verifique seu e-mail", robots: { index: false } };
 export const dynamic = "force-dynamic";
 
 // Email verification for an existing account (created before OTP, or at checkout).
@@ -17,9 +17,9 @@ export default async function VerifyEmailPage() {
   const wait = await resendWaitSeconds(pending.email, "verify").catch(() => 0);
 
   return (
-    <AuthShell backHref="/account" backLabel="Volver a la cuenta">
+    <AuthShell backHref="/account" backLabel="Voltar para a conta">
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold text-ink">Verifica tu correo</h1>
+        <h1 className="font-display text-3xl font-bold text-ink">Verifique seu e-mail</h1>
       </div>
       <div className="mt-5">
         <OtpForm
@@ -28,7 +28,7 @@ export default async function VerifyEmailPage() {
           resendAction={resendEmailVerification}
           initialWait={wait}
           changeHref="/account"
-          changeLabel="Volver a mi cuenta"
+          changeLabel="Voltar para minha conta"
         />
       </div>
     </AuthShell>

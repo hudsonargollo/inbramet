@@ -3,8 +3,8 @@ import { Emblem } from "@/components/brand/emblem";
 import { OrderLookup } from "@/components/order-lookup";
 
 export const metadata: Metadata = {
-  title: "Estado del pedido",
-  description: "Rastrea tu pedido de Inbramet — ingresa tu número de pedido y correo.",
+  title: "Status do pedido",
+  description: "Acompanhe seu pedido na Inbramet — informe o número do pedido e seu e-mail.",
   alternates: { canonical: "/account/orders" },
 };
 
@@ -19,10 +19,10 @@ export default async function OrderStatusPage({
     <div className="mx-auto max-w-2xl px-5 py-16">
       <div className="text-center">
         <Emblem size={40} className="mx-auto text-accent-strong" />
-        <span className="eyebrow mt-3 block">Ayuda</span>
-        <h1 className="mt-2 font-display text-4xl font-semibold text-ink">Estado del pedido</h1>
+        <span className="eyebrow mt-3 block">Ajuda</span>
+        <h1 className="mt-2 font-display text-4xl font-semibold text-ink">Status do pedido</h1>
         <p className="mx-auto mt-4 max-w-md text-muted">
-          Ingresa tu número de pedido y el correo usado al pagar para ver el estado.
+          Informe o número do pedido e o e-mail usado na compra para acompanhar o status.
         </p>
       </div>
 

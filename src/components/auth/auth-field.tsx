@@ -70,7 +70,7 @@ export function statusRing(status: FieldStatus): string {
     ? "border-bad bg-bad/[0.04] focus-within:ring-[3px] focus-within:ring-bad/15"
     : status === "valid"
       ? "border-ok/70 focus-within:border-ok focus-within:ring-[3px] focus-within:ring-ok/15"
-      : "border-[var(--line-strong)] focus-within:border-accent focus-within:ring-[3px] focus-within:ring-[rgba(255,204,4,0.22)]";
+      : "border-[var(--line-strong)] focus-within:border-accent focus-within:ring-[3px] focus-within:ring-[rgba(230,255,87,0.3)]";
 }
 
 /** Green tick / red alert at the end of a field box. */
@@ -219,7 +219,7 @@ export function AuthField({
         {labelAside}
       </div>
 
-      <div className={`group relative flex items-center rounded-xl border bg-surface shadow-[inset_0_1px_2px_rgba(29,58,14,0.05)] transition ${ring}`}>
+      <div className={`group relative flex items-center rounded-xl border bg-surface shadow-[inset_0_1px_2px_rgba(15,23,42,0.05)] transition ${ring}`}>
         <Svg className={`pointer-events-none ml-3.5 h-[1.15rem] w-[1.15rem] shrink-0 transition-colors ${iconColor}`}>
           {ICONS[icon]}
         </Svg>
@@ -255,7 +255,7 @@ export function AuthField({
 export function PasswordStrength({ value, highlight }: { value: string; highlight?: boolean }) {
   const rules = passwordRules(value);
   const score = passwordStrength(value);
-  const names = ["", "Débil", "Regular", "Buena", "Fuerte"];
+  const names = ["", "Fraca", "Média", "Boa", "Forte"];
   const bar = score <= 1 ? "bg-bad" : score === 2 ? "bg-accent" : "bg-ok";
 
   return (
@@ -303,7 +303,7 @@ export function AuthSubmit({ pending, label, pendingLabel }: { pending: boolean;
     <button
       type="submit"
       disabled={pending}
-      className="group relative w-full overflow-hidden rounded-full bg-gradient-to-r from-accent-soft via-accent to-accent-strong px-6 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-brand-deep shadow-[0_16px_36px_-14px_rgba(255,204,4,0.75)] transition duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_20px_44px_-14px_rgba(255,204,4,0.9)] disabled:cursor-wait disabled:opacity-80"
+      className="group relative w-full overflow-hidden rounded-full bg-gradient-to-r from-accent-soft via-accent to-accent-strong px-6 py-3.5 text-sm font-bold uppercase tracking-[0.16em] text-brand-deep shadow-[0_16px_36px_-14px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_20px_44px_-14px_rgba(15,23,42,0.45)] disabled:cursor-wait disabled:opacity-80"
     >
       <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-[rgba(236,208,140,0.35)] to-transparent opacity-0 transition-all duration-700 group-hover:left-[110%] group-hover:opacity-100" />
       <span className="relative inline-flex items-center justify-center gap-2.5">
@@ -320,7 +320,7 @@ export function SecureNote() {
   return (
     <p className="mt-3 flex items-center justify-center gap-1.5 text-[0.68rem] uppercase tracking-[0.14em] text-muted">
       <Svg className="h-3.5 w-3.5 text-accent-strong">{ICONS.lock}</Svg>
-      Inicio de sesión seguro y cifrado
+      Login seguro e criptografado
     </p>
   );
 }

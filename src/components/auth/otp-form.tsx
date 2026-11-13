@@ -10,10 +10,10 @@ type Action = (prev: OtpState, fd: FormData) => Promise<OtpState>;
 const LENGTH = 6;
 
 const boxCls =
-  "h-14 w-11 rounded-xl border border-[var(--line-strong)] bg-surface text-center font-display text-2xl font-semibold text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-[rgba(255,204,4,0.3)] disabled:opacity-60 sm:h-16 sm:w-12";
+  "h-14 w-11 rounded-xl border border-[var(--line-strong)] bg-surface text-center font-display text-2xl font-semibold text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-[rgba(230,255,87,0.3)] disabled:opacity-60 sm:h-16 sm:w-12";
 
 const submitBtn =
-  "w-full rounded-full bg-gradient-to-r from-accent-soft via-accent to-accent-strong px-6 py-3.5 text-sm font-bold uppercase tracking-[0.14em] text-brand-deep shadow-[0_16px_36px_-14px_rgba(255,204,4,0.75)] transition duration-300 hover:-translate-y-0.5 hover:brightness-105 disabled:opacity-60";
+  "w-full rounded-full bg-gradient-to-r from-accent-soft via-accent to-accent-strong px-6 py-3.5 text-sm font-bold uppercase tracking-[0.14em] text-brand-deep shadow-[0_16px_36px_-14px_rgba(15,23,42,0.35)] transition duration-300 hover:-translate-y-0.5 hover:brightness-105 disabled:opacity-60";
 
 export function OtpForm({
   maskedEmail,
@@ -38,15 +38,12 @@ export function OtpForm({
   const formRef = useRef<HTMLFormElement>(null);
   const toast = useToast();
 
-  // Countdown for "Resend code"
   useEffect(() => {
     if (wait <= 0) return;
     const t = setTimeout(() => setWait((w) => w - 1), 1000);
     return () => clearTimeout(t);
   }, [wait]);
 
-  // New action results adjust local state during render (React's recommended
-  // pattern instead of setState inside an effect).
   const [seenVerify, setSeenVerify] = useState(state);
   if (state !== seenVerify) {
     setSeenVerify(state);
@@ -59,7 +56,6 @@ export function OtpForm({
     if (resendState.retryAfter) setWait(resendState.retryAfter);
   }
 
-  // Side effects only: toasts + refocus the first box (success redirects).
   const lastVerify = useRef(state);
   useEffect(() => {
     if (state === lastVerify.current) return;
@@ -75,7 +71,7 @@ export function OtpForm({
     if (resendState === lastResend.current) return;
     lastResend.current = resendState;
     if (resendState.ok) {
-      toast.success(resendState.message ?? "Código reenviado.", { title: "Revisa tu correo" });
+      toast.success(resendState.message ?? "Código reenviado.", { title: "Verifique seu e-mail" });
       inputs.current[0]?.focus();
     } else if (resendState.error) toast.error(resendState.error);
   }, [resendState, toast]);
@@ -88,7 +84,6 @@ export function OtpForm({
     for (const ch of chars.replace(/\D/g, "").slice(0, LENGTH - start)) next[i++] = ch;
     setDigits(next);
     inputs.current[Math.min(i, LENGTH - 1)]?.focus();
-    // Auto-submit once all six digits are in.
     if (next.every(Boolean)) requestAnimationFrame(() => formRef.current?.requestSubmit());
   };
 
@@ -111,13 +106,12 @@ export function OtpForm({
   return (
     <div>
       <p className="text-center text-sm text-muted">
-        Enviamos un código de 6 dígitos a <span className="font-medium text-ink">{maskedEmail}</span>. Ingrésalo
-        abajo; vence en 10 minutos.
+        Enviamos um código de 6 dígitos para <span className="font-medium text-ink">{maskedEmail}</span>. Digite abaixo; ele expira em 10 minutos.
       </p>
 
       <form ref={formRef} action={formAction} className="mt-7 space-y-5">
         <input type="hidden" name="code" value={code} />
-        <div className="flex justify-center gap-2 sm:gap-2.5" role="group" aria-label="Código de verificación">
+        <div className="flex justify-center gap-2 sm:gap-2.5" role="group" aria-label="Código de verificação">
           {digits.map((d, i) => (
             <input
               key={i}
@@ -152,7 +146,7 @@ export function OtpForm({
         )}
 
         <button type="submit" disabled={pending || code.length < LENGTH} className={submitBtn}>
-          {pending ? "Verificando…" : "Verificar y continuar"}
+          {pending ? "Verificando…" : "Verificar e continuar"}
         </button>
       </form>
 
@@ -160,7 +154,7 @@ export function OtpForm({
         <form action={resendFormAction}>
           {wait > 0 ? (
             <span>
-              ¿No lo recibiste? Podrás reenviar en <span className="font-medium text-ink tabular-nums">{wait}s</span>
+              Não recebeu? Reenvie em <span className="font-medium text-ink tabular-nums">{wait}s</span>
             </span>
           ) : (
             <button type="submit" disabled={resending} className="font-medium text-accent-strong hover:underline disabled:opacity-60">
@@ -168,7 +162,7 @@ export function OtpForm({
             </button>
           )}
         </form>
-        <p className="text-xs">Revisa también las carpetas de spam o promociones.</p>
+        <p className="text-xs">Confira também a caixa de spam ou promoções.</p>
         <Link href={changeHref} className="text-xs text-accent-strong hover:underline">
           {changeLabel}
         </Link>

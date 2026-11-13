@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ResetPasswordForm } from "@/components/auth/password-reset-forms";
 
 export const metadata: Metadata = {
-  title: "Restablecer contraseña",
+  title: "Redefinir senha",
   robots: { index: false },
 };
 

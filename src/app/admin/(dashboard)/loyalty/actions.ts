@@ -18,7 +18,7 @@ export type LoyaltyState = { ok?: boolean; error?: string; values?: Record<strin
 async function requireOwner() {
   const session = await requireAdmin();
   if (session.role !== "ADMIN")
-    throw new Error("Solo un administrador puede cambiar las reglas del programa.");
+    throw new Error("Apenas administradores podem alterar as regras do programa.");
   return session;
 }
 
@@ -41,7 +41,7 @@ export async function saveLoyaltyRules(
   fd: FormData
 ): Promise<LoyaltyState> {
   const session = await guard(requireOwner);
-  if (!session) return { error: "No tienes permiso para cambiar las reglas." };
+  if (!session) return { error: "Você não tem permissão para alterar as regras." };
 
   const raw = {
     enabled: fd.get("enabled") === "on",
@@ -60,17 +60,17 @@ export async function saveLoyaltyRules(
   const parsed = z
     .object({
       enabled: z.boolean(),
-      name: z.string().min(2, "Ponle un nombre al programa").max(40),
+      name: z.string().min(2, "Dê um nome ao programa").max(40),
       stampsToFree: z.coerce
         .number()
-        .int("Debe ser un número entero")
-        .min(1, "Mínimo 1 sello")
-        .max(100, "Máximo 100 sellos"),
+        .int("Deve ser um número inteiro")
+        .min(1, "Mínimo de 1 selo")
+        .max(100, "Máximo de 100 selos"),
       eligible: z.enum(["all", "category", "product"]),
-      pointsPer: z.coerce.number().int().min(0, "Usa 0 para pausar los puntos").max(10_000),
-      pointsAmount: z.coerce.number().int().min(1, "El gasto base debe ser al menos Bs 1").max(100_000),
+      pointsPer: z.coerce.number().int().min(0, "Use 0 para pausar os pontos").max(10_000),
+      pointsAmount: z.coerce.number().int().min(1, "O valor base deve ser pelo menos R$ 1").max(100_000),
       pointsOnShipping: z.boolean(),
-      expiryDays: z.coerce.number().int().min(0, "0 significa que no vencen").max(3650),
+      expiryDays: z.coerce.number().int().min(0, "0 significa que não expiram").max(3650),
     })
     .safeParse(raw);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message, values };
@@ -94,7 +94,7 @@ export async function saveLoyaltyRules(
     await saveStoreSettings("loyalty", loyalty);
   } catch (err) {
     console.error("[loyalty] rules save failed:", err);
-    return { error: "No se pudo guardar: base de datos no disponible.", values };
+    return { error: "Não foi possível salvar: banco de dados indisponível.", values };
   }
   touched();
   return { ok: true, values };
@@ -106,7 +106,7 @@ export async function saveReward(
   fd: FormData
 ): Promise<LoyaltyState> {
   const session = await guard(requireOwner);
-  if (!session) return { error: "No tienes permiso para editar los regalos." };
+  if (!session) return { error: "Você não tem permissão para editar os prêmios." };
 
   const id = String(fd.get("id") ?? "").trim();
   const raw = {
@@ -120,10 +120,10 @@ export async function saveReward(
   const values = { ...raw, id };
   const parsed = z
     .object({
-      name: z.string().min(2, "Nombra el regalo").max(80),
+      name: z.string().min(2, "Dê um nome ao prêmio").max(80),
       description: z.string().max(240),
-      image: z.string().refine((v) => v === "" || /^\/|^https:\/\//i.test(v), "Enlace de imagen inválido"),
-      costPoints: z.coerce.number().int().min(1, "Mínimo 1 punto").max(1_000_000),
+      image: z.string().refine((v) => v === "" || /^\/|^https:\/\//i.test(v), "Link de imagem inválido"),
+      costPoints: z.coerce.number().int().min(1, "Mínimo de 1 ponto").max(1_000_000),
       stock: z.coerce.number().int().min(0).max(100_000),
       order: z.coerce.number().int().min(0).max(9999),
     })
@@ -140,14 +140,14 @@ export async function saveReward(
       await prisma.reward.update({ where: { id }, data });
     } else {
       // Slug is unique and only used for the URL/seed matching.
-      let slug = slugify(parsed.data.name) || "regalo";
+      let slug = slugify(parsed.data.name) || "premio";
       for (let n = 2; await prisma.reward.findUnique({ where: { slug } }); n++)
         slug = `${slugify(parsed.data.name)}-${n}`;
       await prisma.reward.create({ data: { ...data, slug } });
     }
   } catch (err) {
     console.error("[loyalty] reward save failed:", err);
-    return { error: "No se pudo guardar el regalo.", values };
+    return { error: "Não foi possível salvar o prêmio.", values };
   }
   touched();
   return { ok: true, values };
@@ -164,12 +164,11 @@ export async function setRewardActive(id: string, active: boolean): Promise<void
 
 export async function deleteReward(id: string): Promise<{ ok?: boolean; error?: string }> {
   const session = await guard(requireOwner);
-  if (!session) return { error: "Sin permiso." };
+  if (!session) return { error: "Sem permissão." };
   try {
     await prisma.reward.delete({ where: { id } });
   } catch {
-    // A reward that has been redeemed stays (its canjes apuntan a ella).
-    return { error: "Este regalo ya fue canjeado: desactívalo en lugar de borrarlo." };
+    return { error: "Este prêmio já foi resgatado: desative-o em vez de excluí-lo." };
   }
   touched();
   return { ok: true };
@@ -188,8 +187,6 @@ export async function setRedemptionStatus(id: string, status: string): Promise<v
   try {
     await prisma.$transaction(async (tx) => {
       await tx.redemption.update({ where: { id }, data: { status: to } });
-      // Cancelling gives the prize back to the shelf and the points to the
-      // customer, as one atomic step.
       if (to === "CANCELLED") {
         await tx.reward.update({ where: { id: redemption.rewardId }, data: { stock: { increment: 1 } } });
         await tx.loyaltyEntry.create({
@@ -198,7 +195,7 @@ export async function setRedemptionStatus(id: string, status: string): Promise<v
             rewardId: redemption.rewardId,
             kind: "ADJUST",
             points: redemption.costPoints,
-            note: `Devolución por canje cancelado ${redemption.code}`,
+            note: `Devolução por resgate cancelado ${redemption.code}`,
           },
         });
       }
@@ -216,7 +213,7 @@ export async function adjustCustomer(
   fd: FormData
 ): Promise<LoyaltyState> {
   const session = await guard(requireOwner);
-  if (!session) return { error: "Solo un administrador puede ajustar saldos." };
+  if (!session) return { error: "Apenas administradores podem ajustar saldos." };
 
   const raw = {
     customerId: String(fd.get("customerId") ?? ""),
@@ -232,15 +229,15 @@ export async function adjustCustomer(
       stamps: z.coerce.number().int().min(-1000).max(1000),
       points: z.coerce.number().int().min(-100_000).max(100_000),
       productId: z.string(),
-      note: z.string().min(3, "Escribe por qué haces el ajuste").max(200),
+      note: z.string().min(3, "Informe o motivo do ajuste").max(200),
     })
     .safeParse(raw);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message, values };
   if (parsed.data.stamps === 0 && parsed.data.points === 0)
-    return { error: "Indica sellos o puntos que quieras ajustar.", values };
+    return { error: "Informe os selos ou pontos que deseja ajustar.", values };
 
   const customer = await prisma.customer.findUnique({ where: { id: parsed.data.customerId } });
-  if (!customer) return { error: "Ese cliente ya no existe.", values };
+  if (!customer) return { error: "Este cliente não existe mais.", values };
 
   try {
     await adjustBalance({
@@ -252,7 +249,7 @@ export async function adjustCustomer(
     });
   } catch (err) {
     console.error("[loyalty] adjust failed:", err);
-    return { error: "No se pudo registrar el ajuste.", values };
+    return { error: "Não foi possível registrar o ajuste.", values };
   }
   revalidatePath("/admin/loyalty");
   return { ok: true, values };

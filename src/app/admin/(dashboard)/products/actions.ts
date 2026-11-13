@@ -18,22 +18,22 @@ function keep(fd: FormData): Record<string, string> {
 }
 
 const schema = z.object({
-  name: z.string().min(2, "El nombre es obligatorio"),
+  name: z.string().min(2, "O nome é obrigatório"),
   slug: z.string().optional(),
   description: z.string().optional(),
-  price: z.coerce.number().nonnegative("El precio debe ser 0 o más"),
+  price: z.coerce.number().nonnegative("O preço deve ser 0 ou maior"),
   compareAtPrice: z.coerce.number().nonnegative().optional(),
   sku: z.string().optional(),
   material: z.string().optional(),
   specs: z.string().optional(),
-  categoryId: z.string().min(1, "Elige una categoría"),
+  categoryId: z.string().min(1, "Escolha uma categoria"),
   images: z.string().optional(),
   featured: z.boolean(),
   active: z.boolean(),
   initialStock: z.coerce.number().int().min(0).max(100000),
 }).refine((d) => !d.active || (d.images ?? "").split(/[\n,]/).some((u) => u.trim()), {
   // A live piece without a photo shows as a blank tile in the shop.
-  message: "Agrega al menos una foto para publicar o desactiva la publicación para guardarlo como borrador.",
+  message: "Adicione pelo menos uma foto para publicar ou desmarque a publicação para salvar como rascunho.",
   path: ["images"],
 });
 
@@ -95,7 +95,7 @@ async function createNewProduct(formData: FormData, isCombo: boolean): Promise<P
   const parsed = parse(formData);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message, values: keep(formData) };
   if (isCombo && !parsed.data.description?.trim()) {
-    return { error: "Describe qué incluye el combo.", values: keep(formData) };
+    return { error: "Descreva o que inclui o combo.", values: keep(formData) };
   }
 
   try {
@@ -104,7 +104,7 @@ async function createNewProduct(formData: FormData, isCombo: boolean): Promise<P
         ? (await tx.category.upsert({
             where: { slug: "combos" },
             update: {},
-            create: { name: "Combos", slug: "combos", description: "Combos creados por Inbramet." },
+            create: { name: "Combos", slug: "combos", description: "Conjuntos criados pela Inbramet." },
           })).id
         : parsed.data.categoryId;
       const product = await tx.product.create({ data: { ...toData(parsed.data), categoryId } });
@@ -138,7 +138,7 @@ export async function updateProduct(
   try {
     if (!parsed.data.description?.trim()) {
       const category = await prisma.category.findUnique({ where: { id: parsed.data.categoryId }, select: { slug: true } });
-      if (category?.slug === "combos") return { error: "Describe qué incluye el combo.", values: keep(formData) };
+      if (category?.slug === "combos") return { error: "Descreva o que inclui o combo.", values: keep(formData) };
     }
     await prisma.product.update({ where: { id }, data: toData(parsed.data) });
   } catch (err) {
@@ -163,7 +163,7 @@ export async function deleteProduct(id: string): Promise<void> {
 
 function dbError(err: unknown): string {
   const kind = dbErrorKind(err);
-  if (kind === "unavailable") return "Base de datos no conectada. Configura DATABASE_URL para guardar productos.";
-  if (kind === "duplicate") return "Ya existe un producto con ese slug o SKU.";
-  return "No se pudo guardar el producto. Inténtalo de nuevo.";
+  if (kind === "unavailable") return "Banco de dados não conectado. Configure DATABASE_URL para salvar produtos.";
+  if (kind === "duplicate") return "Já existe um produto com esse slug ou SKU.";
+  return "Não foi possível salvar o produto. Tente novamente.";
 }

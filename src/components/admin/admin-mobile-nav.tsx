@@ -12,7 +12,7 @@ export function AdminMobileNav({ role = "ADMIN" }: { role?: string }) {
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
 
   return (
-    <div className="flex gap-1.5 overflow-x-auto border-b border-[rgba(163,212,120,0.2)] bg-brand px-3 py-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex gap-1.5 overflow-x-auto border-b border-[rgba(230,255,87,0.2)] bg-brand px-3 py-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {visibleLinks(role).map((l) => {
         const active = isActive(l.href);
         return (

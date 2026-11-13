@@ -9,12 +9,12 @@ import { useToast } from "@/components/ui/toast";
 const initial: LoginState = {};
 
 const input =
-  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-accent focus:ring-2 focus:ring-[rgba(255,204,4,0.22)]";
+  "w-full rounded-lg border border-[var(--line-strong)] bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-accent focus:ring-2 focus:ring-accent/25";
 
 const label = "mb-1.5 block text-xs font-medium uppercase tracking-[0.12em] text-muted";
 
 const submitBtn =
-  "w-full rounded-full bg-accent px-6 py-3.5 text-sm font-bold uppercase tracking-[0.14em] text-brand-deep shadow-[0_14px_32px_-16px_rgba(255,204,4,0.9)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft disabled:opacity-60";
+  "w-full rounded-full bg-accent px-6 py-3.5 text-sm font-bold uppercase tracking-[0.14em] text-brand-deep shadow-[0_14px_32px_-16px_rgba(230,255,87,0.75)] transition duration-300 hover:-translate-y-0.5 hover:bg-accent-soft disabled:opacity-60";
 
 export function AdminLoginForm({ notice }: { notice?: string }) {
   const [state, formAction, pending] = useActionState(loginAction, initial);
@@ -25,10 +25,10 @@ export function AdminLoginForm({ notice }: { notice?: string }) {
   }, [state, toast]);
 
   return (
-    <AuthShell backHref="/" backLabel="Volver a la tienda" eyebrow="Panel de gestión">
+    <AuthShell backHref="/" backLabel="Voltar para a loja" eyebrow="Painel de gestão">
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold text-ink">Acceso al panel</h1>
-        <p className="mt-1 text-sm text-muted">Inicia sesión en el panel de gestión.</p>
+        <h1 className="font-display text-3xl font-bold text-ink">Acesso ao painel</h1>
+        <p className="mt-1 text-sm text-muted">Entre no painel de gestão.</p>
       </div>
 
       {notice && !state.error && (
@@ -43,11 +43,11 @@ export function AdminLoginForm({ notice }: { notice?: string }) {
 
       <form action={formAction} className="mt-7 space-y-4">
         <div>
-          <label className={label}>Correo electrónico</label>
-          <input name="email" type="email" required autoComplete="username" placeholder="tu@ejemplo.com" defaultValue={state.values?.email} className={input} />
+          <label className={label}>E-mail</label>
+          <input name="email" type="email" required autoComplete="username" placeholder="voce@exemplo.com.br" defaultValue={state.values?.email} className={input} />
         </div>
         <div>
-          <label className={label}>Contraseña</label>
+          <label className={label}>Senha</label>
           <PasswordInput name="password" required autoComplete="current-password" className={input} />
         </div>
 
@@ -61,7 +61,7 @@ export function AdminLoginForm({ notice }: { notice?: string }) {
       </form>
 
       <p className="mt-6 text-center text-xs text-muted">
-        Solo personal autorizado · Inbramet
+        Apenas pessoal autorizado · Inbramet
       </p>
     </AuthShell>
   );

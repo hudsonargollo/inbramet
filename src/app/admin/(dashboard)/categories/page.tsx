@@ -5,7 +5,7 @@ import { deleteCategory } from "./actions";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { requireAdmin } from "@/lib/admin";
 
-export const metadata = { title: "Categorías" };
+export const metadata = { title: "Categorias" };
 
 export const dynamic = "force-dynamic";
 
@@ -15,22 +15,22 @@ export default async function AdminCategoriesPage() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-bold text-ink">Categorías</h1>
-      <p className="mt-1 text-sm text-muted">Organiza tu catálogo: agrega nuevas colecciones aquí.</p>
+      <h1 className="font-display text-3xl font-bold text-ink">Categorias</h1>
+      <p className="mt-1 text-sm text-muted">Organize seu catálogo: adicione novas coleções aqui.</p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
         {/* List */}
         <div className="min-w-0">
           {!dbConnected && <DbBanner />}
-          <div className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(29,58,14,0.4)]">
+          <div className="rounded-2xl border border-[var(--line)] bg-surface shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)]">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--line)] text-left text-[0.68rem] uppercase tracking-wider text-muted">
-                    <th className="px-4 py-3 font-medium">Categoría</th>
+                    <th className="px-4 py-3 font-medium">Categoria</th>
                     <th className="px-4 py-3 font-medium">Slug</th>
-                    <th className="px-4 py-3 font-medium">Productos</th>
-                    <th className="px-4 py-3 text-right font-medium">Acción</th>
+                    <th className="px-4 py-3 font-medium">Produtos</th>
+                    <th className="px-4 py-3 text-right font-medium">Ação</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -48,13 +48,13 @@ export default async function AdminCategoriesPage() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         {c.products > 0 ? (
-                          <span className="text-xs text-muted" title="Elimina o mueve sus productos primero">
-                            En uso
+                          <span className="text-xs text-muted" title="Remova ou mova os produtos primeiro">
+                            Em uso
                           </span>
                         ) : (
                           <DeleteButton
                             action={deleteCategory.bind(null, c.id)}
-                            confirmText={`¿Eliminar la categoría «${c.name}»? Esta acción no se puede deshacer.`}
+                            confirmText={`Excluir a categoria «${c.name}»? Esta ação não pode ser desfeita.`}
                           />
                         )}
                       </td>
@@ -68,8 +68,8 @@ export default async function AdminCategoriesPage() {
 
         {/* Add form */}
         <aside>
-          <div className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-24px_rgba(29,58,14,0.4)]">
-            <h2 className="mb-4 font-display text-lg font-semibold text-ink">Agregar una categoría</h2>
+          <div className="rounded-2xl border border-[var(--line)] bg-surface p-5 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.35)]">
+            <h2 className="mb-4 font-display text-lg font-semibold text-ink">Adicionar categoria</h2>
             <AddCategoryForm />
           </div>
         </aside>
